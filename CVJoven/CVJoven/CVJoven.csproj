@@ -81,6 +81,16 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CVJoven.Dominio\CVJoven.Dominio.csproj">
+      <Project>{eee1f711-abb2-4157-8bd8-a4c336a327ab}</Project>
+      <Name>CVJoven.Dominio</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CVJoven.Negocio\CVJoven.Negocio.csproj">
+      <Project>{1295cd0f-8f6f-4a19-b65f-292db61121f9}</Project>
+      <Name>CVJoven.Negocio</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
