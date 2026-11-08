@@ -40,7 +40,7 @@
 
                             <div class="text-center">
                                 <span class="text-muted small">¿No tenés cuenta?</span>
-                                <asp:HyperLink ID="hlRegistro" runat="server" NavigateUrl="#" CssClass="small text-decoration-none fw-semibold ms-1">Registrate acá</asp:HyperLink>
+                                <asp:HyperLink ID="hlRegistro" runat="server" NavigateUrl="RegistroUsuarios.aspx" CssClass="small text-decoration-none fw-semibold ms-1">Registrate acá</asp:HyperLink>
                             </div>
                         </div>
                     </div>

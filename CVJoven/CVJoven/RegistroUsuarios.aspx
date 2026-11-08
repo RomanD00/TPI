@@ -18,21 +18,21 @@
 
                     <!-- Tarjeta con fondo blanco y sombra leve (shadow-sm) -->
                     <div class="card border-0 shadow-sm rounded-3 bg-white p-4">
-                        
+
                         <h3 class="text-center mb-4 text-dark fw-bold">Registrar Postulante</h3>
 
                         <!-- Pestañas de selección Postulante / Empresa -->
                         <div class="btn-group w-100 mb-4" role="group" aria-label="Tipo de Registro">
-                            <asp:Button ID="btnPostulante" runat="server" Text="Postulante" 
+                            <asp:Button ID="btnPostulante" runat="server" Text="Postulante"
                                 CssClass="btn btn-outline-primary active" OnClick="btnPostulante_Click" CausesValidation="false" />
-                            <asp:Button ID="btnEmpresa" runat="server" Text="Empresa" 
+                            <asp:Button ID="btnEmpresa" runat="server" Text="Empresa"
                                 CssClass="btn btn-outline-primary" OnClick="btnEmpresa_Click" CausesValidation="false" />
                         </div>
 
                         <!-- Formulario Postulante -->
                         <asp:Panel ID="pnlPostulante" runat="server">
                             <div class="row g-3">
-                                
+
                                 <!-- Nombre -->
                                 <div class="col-md-6">
                                     <label for="<%= txtNombre.ClientID %>" class="form-label text-secondary fw-semibold">Nombre</label>
@@ -58,14 +58,14 @@
                                 </div>
 
                                 <!-- Áreas de Interés -->
-                               <div class="col-12">
-                               <label for="<%= txtAreasInteres.ClientID %>" class="form-label text-secondary fw-semibold">Áreas de Interés</label>
-                               <asp:TextBox ID="txtAreasInteres" runat="server" 
-                               CssClass="form-control" 
-                               placeholder="Seleccione o escriba un área..." 
-                               list="dlAreasInteres" 
-                               AutoCompleteType="off"></asp:TextBox>
-                              </div>
+                                <div class="col-12">
+                                    <label for="<%= txtAreasInteres.ClientID %>" class="form-label text-secondary fw-semibold">Áreas de Interés</label>
+                                    <asp:TextBox ID="txtAreasInteres" runat="server"
+                                        CssClass="form-control"
+                                        placeholder="Seleccione o escriba un área..."
+                                        list="dlAreasInteres"
+                                        autocomplete="off"></asp:TextBox>
+                                </div>
 
                                 <!-- Email -->
                                 <div class="col-12">
@@ -73,9 +73,21 @@
                                     <asp:TextBox ID="txtEmail" runat="server" TextMode="Email" CssClass="form-control" placeholder="correo@ejemplo.com"></asp:TextBox>
                                 </div>
 
+
+                                  <div class="col-md-6">
+      <label for="<%= pssw1.ClientID %>" class="form-label text-secondary fw-semibold">Contraseña</label>
+      <asp:TextBox ID="pssw1" runat="server" CssClass="form-control" TextMode="Password" placeholder="Ingrese su Contraseña"></asp:TextBox>
+  </div>
+
+                                  <div class="col-md-6">
+      <label for="<%= pssw2.ClientID %>" class="form-label text-secondary fw-semibold">Repetir Contraseña</label>
+      <asp:TextBox ID="pssw2" runat="server" CssClass="form-control" TextMode="Password" placeholder="Repita su Contraseña"></asp:TextBox>
+  </div>
+
+
                                 <!-- Botón Registrar (Azul) -->
                                 <div class="col-12 mt-4">
-                                    <asp:Button ID="btnRegistrar" runat="server" Text="Registrar" 
+                                    <asp:Button ID="btnRegistrar" runat="server" Text="Registrar"
                                         CssClass="btn btn-primary w-100 py-2 fw-semibold" OnClick="btnRegistrar_Click" />
                                 </div>
 
@@ -94,6 +106,10 @@
                 </div>
             </div>
         </div>
+          <div class="text-center">
+      <span class="text-muted small">¿Ya tienes cuenta?</span>
+      <asp:HyperLink ID="hlRegistro" runat="server" NavigateUrl="login.aspx" CssClass="small text-decoration-none fw-semibold ms-1">Iniciar Sesion</asp:HyperLink>
+  </div>
     </form>
 
     <!-- Script de Bootstrap 5 -->
