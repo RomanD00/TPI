@@ -10,8 +10,8 @@ namespace CVJoven.Dominio
     internal class ConexionDB
     {
 
-        string 
+      
 
-
+    
     }
 }

@@ -105,7 +105,7 @@ namespace CVJoven
         protected global::System.Web.UI.WebControls.TextBox txtEmail;
 
         /// <summary>
-<<<<<<< HEAD
+
         /// Control pssw1.
         /// </summary>
         /// <remarks>
@@ -125,9 +125,9 @@ namespace CVJoven
 
         /// <summary>
         /// Control btnRegistrar.
-=======
+
         /// btnRegistrar control.
->>>>>>> 3a86e3a61ab5fcb7aa1eaefc320609b2382cdbc9
+
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
