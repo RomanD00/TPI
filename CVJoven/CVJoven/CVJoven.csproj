@@ -109,17 +109,33 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="CrearCurriculum.aspx" />
     <Content Include="Login.aspx" />
+    <Content Include="MisCurriculums.aspx" />
     <Content Include="Web.config" />
     <Content Include="RegistroUsuarios.aspx" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CrearCurriculum.aspx.cs">
+      <DependentUpon>CrearCurriculum.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CrearCurriculum.aspx.designer.cs">
+      <DependentUpon>CrearCurriculum.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Login.aspx.cs">
       <DependentUpon>Login.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Login.aspx.designer.cs">
       <DependentUpon>Login.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="MisCurriculums.aspx.cs">
+      <DependentUpon>MisCurriculums.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MisCurriculums.aspx.designer.cs">
+      <DependentUpon>MisCurriculums.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegistroUsuarios.aspx.cs">
