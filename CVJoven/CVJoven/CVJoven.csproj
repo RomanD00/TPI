@@ -156,6 +156,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CVJoven.Datos\CVJoven.Datos.csproj">
+      <Project>{b00c9c02-840c-4ed1-8d71-329d780c376d}</Project>
+      <Name>CVJoven.Datos</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CVJoven.Dominio\CVJoven.Dominio.csproj">
       <Project>{eee1f711-abb2-4157-8bd8-a4c336a327ab}</Project>
       <Name>CVJoven.Dominio</Name>
