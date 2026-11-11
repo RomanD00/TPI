@@ -8,7 +8,7 @@ namespace CVJoven.Dominio
 {
     public class Empresa
     {
-        public int IdEmpresa { get; set; }
+        public long IdEmpresa { get; set; }
         public int IdTipoUsuario { get; set; }
         public string Mail { get; set; }
         public string Password { get; set; }

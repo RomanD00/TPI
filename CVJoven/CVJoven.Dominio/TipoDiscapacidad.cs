@@ -8,7 +8,7 @@ namespace CVJoven.Dominio
 {
     public class TipoDiscapacidad
     {
-        public int IdDiscapacidad { get; set; }
+        public long IdDiscapacidad { get; set; }
         public string Nombre { get; set; }
         public string Descripcion { get; set; }
     }

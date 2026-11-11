@@ -9,10 +9,10 @@ namespace CVJoven.Dominio
     public class Postulacion
     {
 
-        public int IdPostulacion { get; set; }
-        public int IdUsuario { get; set; }
-        public int IdCV { get; set; }
-        public int IdOferta { get; set; }
+        public long IdPostulacion { get; set; }
+        public long IdUsuario { get; set; }
+        public long IdCV { get; set; }
+        public long IdOferta { get; set; }
         public DateTime FechaPostulacion { get; set; }
         public string EstadoPostulacion { get; set; }
     }

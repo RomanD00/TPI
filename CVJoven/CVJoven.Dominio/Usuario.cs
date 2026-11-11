@@ -9,7 +9,7 @@ namespace CVJoven.Dominio
     public class Usuario
     {
 
-        public int IdUsuario { get; set; }
+        public long IdUsuario { get; set; }
         public int IdTipoUsuario { get; set; }
         public string Mail { get; set; }
         public string Password { get; set; }

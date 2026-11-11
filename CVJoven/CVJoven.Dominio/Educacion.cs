@@ -8,8 +8,8 @@ namespace CVJoven.Dominio
 {
     public class Educacion
     {
-        public int IdEducacion { get; set; }
-        public int IdCV { get; set; }
+        public long IdEducacion { get; set; }
+        public long IdCV { get; set; }
         public string Titulo { get; set; }
         public string Institucion { get; set; }
         public string NivelAlcanzado { get; set; }

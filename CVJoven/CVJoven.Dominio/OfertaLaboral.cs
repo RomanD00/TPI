@@ -9,8 +9,8 @@ namespace CVJoven.Dominio
     public class OfertaLaboral
     {
 
-        public int IdOferta { get; set; }
-        public int IdEmpresa { get; set; }
+        public long IdOferta { get; set; }
+        public long IdEmpresa { get; set; }
         public string TituloOferta { get; set; }
         public string Zona { get; set; }
         public string TipoDeJornada { get; set; }

@@ -8,8 +8,8 @@ namespace CVJoven.Dominio
 {
     public class Habilidad
     {
-        public int IdHabilidad { get; set; }
-        public int IdCV { get; set; }
+        public long IdHabilidad { get; set; }
+        public long IdCV { get; set; }
         public string Descripcion { get; set; }
         public bool TipoHabilidad { get; set; }
     }

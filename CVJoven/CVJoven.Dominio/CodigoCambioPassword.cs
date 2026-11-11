@@ -9,9 +9,9 @@ namespace CVJoven.Dominio
     public class CodigoCambioPassword
     {
 
-        public int IdCodigo { get; set; }
-        public int IdUsuario { get; set; }
-        public int IdEmpresa { get; set; }
+        public long IdCodigo { get; set; }
+        public long IdUsuario { get; set; }
+        public long IdEmpresa { get; set; }
         public string CodigoHash { get; set; }
         public DateTime FechaCreacion  { get; set; }
         public DateTime FechaExpiracion  { get; set; }

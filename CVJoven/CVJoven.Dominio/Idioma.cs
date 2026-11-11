@@ -9,8 +9,8 @@ namespace CVJoven.Dominio
     public class Idioma
     {
 
-        public int IdIdioma { get; set; }
-        public int IdCV { get; set; }
+        public long IdIdioma { get; set; }
+        public long IdCV { get; set; }
         public string Descripcion { get; set; }
         public string Nivel { get; set; }
     }
