@@ -112,6 +112,7 @@
     <Content Include="CrearCurriculum.aspx" />
     <Content Include="Login.aspx" />
     <Content Include="MisCurriculums.aspx" />
+    <Content Include="OfertaLaboral.aspx" />
     <Content Include="Web.config" />
     <Content Include="RegistroUsuarios.aspx" />
   </ItemGroup>
@@ -136,6 +137,13 @@
     </Compile>
     <Compile Include="MisCurriculums.aspx.designer.cs">
       <DependentUpon>MisCurriculums.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="OfertaLaboral.aspx.cs">
+      <DependentUpon>OfertaLaboral.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="OfertaLaboral.aspx.designer.cs">
+      <DependentUpon>OfertaLaboral.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegistroUsuarios.aspx.cs">
