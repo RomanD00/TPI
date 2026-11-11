@@ -45,11 +45,11 @@ namespace CVJoven.Datos
             lector = comando.ExecuteReader();
         }
 
-        public void ejecutarAccion()
+        public int ejecutarAccion()
         {
             comando.Connection = conexion;
             conexion.Open();
-            comando.ExecuteNonQuery();
+            return comando.ExecuteNonQuery();
         }
 
         public void cerrarConexion()
@@ -60,5 +60,6 @@ namespace CVJoven.Datos
             if (conexion.State == ConnectionState.Open)
                 conexion.Close();
         }
+
     }
 }

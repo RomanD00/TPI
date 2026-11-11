@@ -45,6 +45,18 @@
                                     <asp:TextBox ID="txtApellido" runat="server" CssClass="form-control" placeholder="Ingrese su apellido"></asp:TextBox>
                                 </div>
 
+                                   <!-- dni -->
+                                <div class="col-md-6">
+                                   <label for="<%= txtDni.ClientID %>" class="form-label text-secondary fw-semibold">DNI</label>
+                                   <asp:TextBox ID="txtDni" runat="server" CssClass="form-control" placeholder="Ingrese su DNI"></asp:TextBox>
+                                </div>
+
+                                   <!-- Direccion -->
+                                <div class="col-md-6">
+                                   <label for="<%= txtDireccion.ClientID %>" class="form-label text-secondary fw-semibold">Dirección</label>
+                                   <asp:TextBox ID="txtDireccion" runat="server" CssClass="form-control" placeholder="Provincia, Localidad, Calle"></asp:TextBox>
+                                </div>
+
                                 <!-- Fecha de Nacimiento -->
                                 <div class="col-md-6">
                                     <label for="<%= txtFechaNac.ClientID %>" class="form-label text-secondary fw-semibold">Fecha de Nacimiento</label>

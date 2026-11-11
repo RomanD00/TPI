@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace CVJoven.Dominio
 {
@@ -19,5 +23,9 @@ namespace CVJoven.Dominio
         public string ZonaLocalidad { get; set; }
         public string Celular { get; set; }
         public DateTime FechaNacimiento { get; set; }
+
+        
+
     }
+
 }
