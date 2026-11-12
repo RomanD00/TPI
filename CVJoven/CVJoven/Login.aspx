@@ -33,7 +33,10 @@
                             </div>
 
                             <div class="d-grid gap-2 mt-2">
-                                <asp:Button ID="btnIngresar" runat="server" Text="Iniciar Sesión" CssClass="btn btn-primary py-2 fw-semibold" />
+                            <asp:Button ID="btnIngresar" runat="server"
+                                Text="Iniciar Sesión"
+                                CssClass="btn btn-primary py-2 fw-semibold"
+                                OnClick="btnIngresar_Click" />                            
                             </div>
 
                             <hr class="my-4" />

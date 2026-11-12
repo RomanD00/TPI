@@ -10,6 +10,7 @@ namespace CVJoven.Negocio
 {
     public class EmpresaNegocio
     {
+
         public bool RegistrarEmpresa(Empresa empresa)
         {
             EmpresaDatos datos = new EmpresaDatos();
@@ -18,5 +19,37 @@ namespace CVJoven.Negocio
 
             return filasAfectadas == 1;
         }
+
+
+        public Empresa IniciarSesion(string mail, string password)
+        {
+            EmpresaDatos datos = new EmpresaDatos();
+
+            Empresa empresa = datos.BuscarPorMail(mail);
+
+            if (empresa == null)
+            {
+                return null;
+            }
+
+            bool passwordCorrecta = SeguridadPassword.VerificarPassword(
+                password,
+                empresa.Password
+            );
+
+            if (!passwordCorrecta)
+            {
+                return null;
+            }
+
+            // No devolver el hash a la capa de presentación
+            empresa.Password = null;
+
+            return empresa;
+        }
+
+
+
+
     }
 }

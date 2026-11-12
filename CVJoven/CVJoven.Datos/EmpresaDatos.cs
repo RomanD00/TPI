@@ -45,5 +45,61 @@ namespace CVJoven.Datos
                 datos.cerrarConexion();
             }
         }
+
+
+
+
+        public Empresa BuscarPorMail(string mail)
+        {
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.setearConsulta(@"
+            SELECT idEmpresa, idTipoUsuario, mail,
+                   contraseña, nombreLegal, nombreComercial,
+                   CUIT, sector, tamanioDeEmpresa,
+                   paginaWeb, correoRRHH
+            FROM Empresa
+            WHERE mail = @mail");
+
+                datos.setearParametro("@mail", mail);
+
+                datos.ejecutarLectura();
+
+                if (datos.Lector.Read())
+                {
+                    Empresa empresa = new Empresa();
+
+                    empresa.IdEmpresa = Convert.ToInt64(datos.Lector["idEmpresa"]);
+                    empresa.IdTipoUsuario = Convert.ToInt32(datos.Lector["idTipoUsuario"]);
+                    empresa.Mail = datos.Lector["mail"].ToString();
+                    empresa.Password = datos.Lector["contraseña"].ToString();
+                    empresa.NombreLegal = datos.Lector["nombreLegal"].ToString();
+                    empresa.NombreComercial = datos.Lector["nombreComercial"].ToString();
+                    empresa.CUIT = datos.Lector["CUIT"].ToString();
+                    empresa.sector = datos.Lector["sector"].ToString();
+                    empresa.TamanioDeEmpresa = datos.Lector["tamanioDeEmpresa"].ToString();
+
+                    empresa.PaginaWeb = datos.Lector["paginaWeb"] == DBNull.Value
+                        ? null
+                        : datos.Lector["paginaWeb"].ToString();
+
+                    empresa.CorreoRRHH = datos.Lector["correoRRHH"].ToString();
+
+                    return empresa;
+                }
+
+                return null;
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
+
+
+
+
     }
 }
