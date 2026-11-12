@@ -28,6 +28,96 @@ namespace CVJoven
             MostrarEmpresa();
         }
 
+
+        protected void btnRegistrarEmpresa_Click(object sender, EventArgs e)
+        {
+            // Comprobar validaciones
+            if (!Page.IsValid)
+            {
+                return;
+            }
+
+            // Recuperar datos
+            string mail = txtMailEmpresa.Text.Trim();
+            string nombreLegal = txtNombreLegal.Text.Trim();
+            string nombreComercial = txtNombreComercial.Text.Trim();
+            string cuit = txtCUIT.Text.Trim();
+            string sector = txtSector.Text.Trim();
+            string tamanioEmpresa = ddlTamanioEmpresa.SelectedValue;
+            string password = txtPasswordEmpresa.Text;
+            string confirmarPassword = txtConfirmarPasswordEmpresa.Text;
+            string paginaWeb = txtPaginaWeb.Text.Trim();
+            string correoRRHH = txtCorreoRRHH.Text.Trim();
+
+            // Validar contraseñas
+            if (password.Length < 8 || password.Length > 100 ||
+                password != confirmarPassword)
+            {
+                return;
+            }
+
+            // Página web opcional
+            if (string.IsNullOrWhiteSpace(paginaWeb))
+            {
+                paginaWeb = null;
+            }
+
+            // Crear objeto Empresa
+            Empresa empresa = new Empresa();
+
+            empresa.IdTipoUsuario = 2;
+            empresa.Mail = mail;
+            empresa.NombreLegal = nombreLegal;
+            empresa.NombreComercial = nombreComercial;
+            empresa.CUIT = cuit;
+            empresa.sector = sector;
+            empresa.TamanioDeEmpresa = tamanioEmpresa;
+            empresa.PaginaWeb = paginaWeb;
+            empresa.CorreoRRHH = correoRRHH;
+
+            // Generar hash seguro de la contraseña
+            empresa.Password = SeguridadPassword.GenerarHash(password);
+
+            // Registrar empresa en SQL Server
+            try
+            {
+                EmpresaNegocio negocio = new EmpresaNegocio();
+
+                bool registrado = negocio.RegistrarEmpresa(empresa);
+
+                if (registrado)
+                {
+                    ClientScript.RegisterStartupScript(
+                        this.GetType(),
+                        "exito",
+                        "alert('Empresa registrada correctamente');",
+                        true
+                    );
+                }
+                else
+                {
+                    ClientScript.RegisterStartupScript(
+                        this.GetType(),
+                        "error",
+                        "alert('No se pudo registrar la empresa');",
+                        true
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+
+                ClientScript.RegisterStartupScript(
+                    this.GetType(),
+                    "error",
+                    "alert('Ocurrió un error al registrar la empresa');",
+                    true
+                );
+            }
+        }
+
+
         private void MostrarPostulante()
         {
             pnlPostulante.Visible = true;
