@@ -106,12 +106,11 @@ namespace CVJoven
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine(ex);
-
+                string detalleError = ex.Message.Replace("'", "").Replace("\r\n", " ");
                 ClientScript.RegisterStartupScript(
                     this.GetType(),
                     "error",
-                    "alert('Ocurrió un error al registrar la empresa');",
+                    $"alert('Error real: {detalleError}');",
                     true
                 );
             }
@@ -136,67 +135,85 @@ namespace CVJoven
 
         protected void btnRegistrar_Click(object sender, EventArgs e)
         {
+            if (!Page.IsValid)
+            {
+                return;
+            }
+
             if (pnlPostulante.Visible)
             {
-                 EnviarCorreoConfirmacion(registrarPostulante(), txtEmail.Text, txtNombre.Text);
-            }
-            else {
-
-              //  registrarEmpresa();
-
+                registrarPostulante();
             }
         }
-
 
         private bool registrarPostulante()
         {
             try
             {
-                string nombre = txtNombre.Text;
-                string apellido = txtApellido.Text;
-                string dni = txtDni.Text;
-                string direccion = txtDireccion.Text;
-                string celular = txtCelular.Text;
-                string fechaNacimiento = txtFechaNac.Text;
-                string mail = txtEmail.Text;
+                string nombre = txtNombre.Text.Trim();
+                string apellido = txtApellido.Text.Trim();
+                string dni = txtDni.Text.Trim();
+                string direccion = txtDireccion.Text.Trim();
+                string celular = txtCelular.Text.Trim();
+                string fechaNacimientoTexto = txtFechaNac.Text.Trim();
+                string mail = txtEmail.Text.Trim();
                 string password = pssw1.Text;
                 string passwordConfirm = pssw2.Text;
 
-                Dictionary<string, int> contador = new Dictionary<string, int>()
-        {
-            { "success", 0 },
-            { "error", 0 }
-        };
-
-                ValidacionDatos validar = new ValidacionDatos();
-
-                // Reemplazamos el operador ternario por un if/else tradicional para cada validación
-                if (validar.validarString(nombre)) contador["success"]++; else contador["error"]++;
-                if (validar.validarString(apellido)) contador["success"]++; else contador["error"]++;
-                if (validar.validarDni(dni)) contador["success"]++; else contador["error"]++;
-                if (validar.validarPassword(password)) contador["success"]++; else contador["error"]++;
-                if (validar.validarPassword(passwordConfirm)) contador["success"]++; else contador["error"]++;
-
-                // Validación extra de coincidencia de contraseñas
-                if (password != passwordConfirm)
+                if (password.Length < 8 || password.Length > 100 || password != passwordConfirm)
                 {
-                    // Las contraseñas no coinciden
                     return false;
                 }
 
-                // Si se acumuló al menos un error en las validaciones anteriores
-                if (contador["error"] > 0)
+                if (!DateTime.TryParse(fechaNacimientoTexto, out DateTime fechaNacimiento))
                 {
-                    // Hay errores de validación
                     return false;
                 }
 
-                return true;
+                Usuario usuario = new Usuario();
+                usuario.IdTipoUsuario = 1; // 1 = Postulante
+                usuario.Mail = mail;
+                usuario.Nombre = nombre;
+                usuario.Apellido = apellido;
+                usuario.DNI = dni;
+                usuario.ZonaLocalidad = direccion;
+                usuario.Celular = celular;
+                usuario.FechaNacimiento = fechaNacimiento;
+                usuario.Password = SeguridadPassword.GenerarHash(password);
+
+                UsuarioNegocio negocio = new UsuarioNegocio();
+                bool registrado = negocio.RegistrarUsuario(usuario);
+
+                if (registrado)
+                {
+                    ClientScript.RegisterStartupScript(
+                        this.GetType(),
+                        "exitoPostulante",
+                        "alert('Postulante registrado correctamente');",
+                        true
+                    );
+                    return true;
+                }
+                else
+                {
+                    ClientScript.RegisterStartupScript(
+                        this.GetType(),
+                        "errorPostulante",
+                        "alert('No se pudo registrar el postulante (verifique que el correo o DNI no estén repetidos)');",
+                        true
+                    );
+                    return false;
+                }
             }
             catch (Exception ex)
             {
-                ex.ToString();
-                // Manejar la excepción según sea necesario (puedes hacer un Debug.WriteLine(ex.Message))
+                string detalleError = ex.Message.Replace("'", "").Replace("\r\n", " ");
+                ClientScript.RegisterStartupScript(
+                    this.GetType(),
+                    "errorExcepcionPostulante",
+                    $"alert('Error al registrar postulante: {detalleError}');",
+                    true
+                );
                 return false;
             }
         }

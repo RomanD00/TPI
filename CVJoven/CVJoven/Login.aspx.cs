@@ -38,25 +38,39 @@ namespace CVJoven
 
             try
             {
-                EmpresaNegocio negocio = new EmpresaNegocio();
-
-                Empresa empresa = negocio.IniciarSesion(mail, password);
+                // 1. Primero intenta iniciar sesión como Empresa (lo que hizo Fran)
+                EmpresaNegocio empresaNegocio = new EmpresaNegocio();
+                Empresa empresa = empresaNegocio.IniciarSesion(mail, password);
 
                 if (empresa != null)
                 {
-                    // Guardar solamente los datos necesarios
                     Session["IdEmpresa"] = empresa.IdEmpresa;
                     Session["NombreEmpresa"] = empresa.NombreComercial;
                     Session["TipoUsuario"] = empresa.IdTipoUsuario;
 
-                    // Redirigir a una página existente y protegida
                     Response.Redirect("OfertaLaboral.aspx", false);
                     Context.ApplicationInstance.CompleteRequest();
+                    return;
                 }
-                else
+
+                // 2. Si no es empresa, intenta iniciar sesión como Postulante
+                UsuarioNegocio usuarioNegocio = new UsuarioNegocio();
+                Usuario usuario = usuarioNegocio.IniciarSesion(mail, password);
+
+                if (usuario != null)
                 {
-                    lblMensaje.Text = "Correo o contraseña incorrectos.";
+                    Session["IdUsuario"] = usuario.IdUsuario;
+                    Session["NombreUsuario"] = usuario.Nombre + " " + usuario.Apellido;
+                    Session["TipoUsuario"] = usuario.IdTipoUsuario;
+
+                    // Podés cambiar "OfertaLaboral.aspx" o "Default.aspx" según a dónde quieras mandar al postulante
+                    Response.Redirect("OfertaLaboral.aspx", false);
+                    Context.ApplicationInstance.CompleteRequest();
+                    return;
                 }
+
+                // 3. Si no encontró ni empresa ni postulante con esas credenciales
+                lblMensaje.Text = "Correo o contraseña incorrectos.";
             }
             catch (Exception ex)
             {
