@@ -12,7 +12,6 @@ namespace CVJoven.Dominio
 {
     public class Usuario
     {
-
         public long IdUsuario { get; set; }
         public int IdTipoUsuario { get; set; }
         public string Mail { get; set; }
@@ -23,9 +22,5 @@ namespace CVJoven.Dominio
         public string ZonaLocalidad { get; set; }
         public string Celular { get; set; }
         public DateTime FechaNacimiento { get; set; }
-
-        
-
     }
-
 }

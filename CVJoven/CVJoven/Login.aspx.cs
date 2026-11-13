@@ -59,12 +59,13 @@ namespace CVJoven
 
                 if (usuario != null)
                 {
+                    Session["Usuario"] = usuario;
+
                     Session["IdUsuario"] = usuario.IdUsuario;
                     Session["NombreUsuario"] = usuario.Nombre + " " + usuario.Apellido;
                     Session["TipoUsuario"] = usuario.IdTipoUsuario;
 
-                    // Podés cambiar "OfertaLaboral.aspx" o "Default.aspx" según a dónde quieras mandar al postulante
-                    Response.Redirect("OfertaLaboral.aspx", false);
+                    Response.Redirect("MisCurriculums.aspx", false);
                     Context.ApplicationInstance.CompleteRequest();
                     return;
                 }
