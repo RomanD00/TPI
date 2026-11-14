@@ -32,7 +32,6 @@ namespace CVJoven.Negocio
                 datos.setearParametro("@emailConf", email);
 
                 // 3. Ejecutar la acción y capturar el entero que devuelve ExecuteNonQuery()
-                // (Nota: Si tu método 'ejecutarAccion()' actual es void, puedes adaptarlo para que ejecute comando.ExecuteNonQuery() y devuelva ese int)
                resultado = datos.ejecutarAccion();
             }
             catch (Exception ex)
@@ -49,6 +48,71 @@ namespace CVJoven.Negocio
             return resultado;
         }
 
+
+        public int confirmTokenCount(string token, string email)
+        {
+            int count = 0;
+            try
+            {
+                if (isTokenValid(token, email))
+                {
+                    // Creamos una nueva instancia de AccesoDatos para que comience con los parámetros limpios
+                    AccesoDatos datosUpdate = new AccesoDatos();
+                    try
+                    {
+                        datosUpdate.setearConsulta("UPDATE Token SET Confirmacion = 1 WHERE Token = @token AND EmailConfirmado = @emailConf");
+                        datosUpdate.setearParametro("@token", token);
+                        datosUpdate.setearParametro("@emailConf", email);
+
+                        count = datosUpdate.ejecutarAccion();
+                    }
+                    finally
+                    {
+                        datosUpdate.cerrarConexion();
+                    }
+                }
+                else
+                {
+                    count = 0; // Token inválido o expirado
+                }
+            }
+            catch (Exception ex)
+            {
+                // ¡Útil para depurar si algo vuelve a fallar!
+                System.Diagnostics.Debug.WriteLine("Error en confirmTokenCount: " + ex.Message);
+                count = -1;
+            }
+            return count;
+        }
+
+        public bool isTokenValid(string token, string email)
+{
+    bool isValid = false;
+    try
+    {
+        datos.setearConsulta("SELECT TokenExpiracion FROM Token WHERE Token = @token AND EmailConfirmado = @emailConf");
+        
+        // ¡Importante! Faltaba setear estos parámetros aquí también:
+        datos.setearParametro("@token", token);
+        datos.setearParametro("@emailConf", email);
+        
+        datos.ejecutarLectura();
+        if (datos.Lector.Read())
+        {
+            DateTime tokenExpiracion = Convert.ToDateTime(datos.Lector["TokenExpiracion"]);
+            isValid = DateTime.Now <= tokenExpiracion;
+        }
+    }
+    catch (Exception ex)
+    {
+        isValid = false;
+    }
+    finally
+    {
+        datos.cerrarConexion();
+    }
+    return isValid;
+}
 
     }
 }

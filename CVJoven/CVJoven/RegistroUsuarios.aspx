@@ -97,11 +97,7 @@
                                 <div class="col-md-6">
                                    <label for="<%= txtDireccion.ClientID %>" class="form-label text-secondary fw-semibold">Dirección</label>
                                    <asp:TextBox ID="txtDireccion" runat="server" CssClass="form-control" placeholder="Provincia, Localidad, Calle"></asp:TextBox>
-                                <asp:TextBox ID="TextBox1" runat="server"
-                                CssClass="form-control"
-                                MaxLength="100"
-                                placeholder="Provincia, Localidad, Calle">
-                            </asp:TextBox>
+                               
 
                             <asp:RequiredFieldValidator
                                 ID="rfvDireccion"

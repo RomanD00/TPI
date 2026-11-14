@@ -113,6 +113,7 @@
     <Content Include="Login.aspx" />
     <Content Include="MisCurriculums.aspx" />
     <Content Include="OfertaLaboral.aspx" />
+    <Content Include="VerificarLogin.aspx" />
     <Content Include="Web.config" />
     <Content Include="RegistroUsuarios.aspx" />
   </ItemGroup>
@@ -152,6 +153,13 @@
     </Compile>
     <Compile Include="RegistroUsuarios.aspx.designer.cs">
       <DependentUpon>RegistroUsuarios.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="VerificarLogin.aspx.cs">
+      <DependentUpon>VerificarLogin.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="VerificarLogin.aspx.designer.cs">
+      <DependentUpon>VerificarLogin.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

@@ -142,11 +142,11 @@ namespace CVJoven
 
             if (pnlPostulante.Visible)
             {
-                registrarPostulante();
+                registrarPostulante(2);
             }
         }
 
-        private bool registrarPostulante()
+        private void registrarPostulante(int idTipoUsuario)
         {
             try
             {
@@ -162,16 +162,16 @@ namespace CVJoven
 
                 if (password.Length < 8 || password.Length > 100 || password != passwordConfirm)
                 {
-                    return false;
+                    return;
                 }
 
                 if (!DateTime.TryParse(fechaNacimientoTexto, out DateTime fechaNacimiento))
                 {
-                    return false;
+                    return;
                 }
 
                 Usuario usuario = new Usuario();
-                usuario.IdTipoUsuario = 1; // 1 = Postulante
+                usuario.IdTipoUsuario = idTipoUsuario;
                 usuario.Mail = mail;
                 usuario.Nombre = nombre;
                 usuario.Apellido = apellido;
@@ -181,29 +181,33 @@ namespace CVJoven
                 usuario.FechaNacimiento = fechaNacimiento;
                 usuario.Password = SeguridadPassword.GenerarHash(password);
 
-                UsuarioNegocio negocio = new UsuarioNegocio();
-                bool registrado = negocio.RegistrarUsuario(usuario);
+                Session["usuarioPorRegistrar"] = usuario;
 
-                if (registrado)
-                {
-                    ClientScript.RegisterStartupScript(
-                        this.GetType(),
-                        "exitoPostulante",
-                        "alert('Postulante registrado correctamente');",
-                        true
-                    );
-                    return true;
-                }
-                else
-                {
-                    ClientScript.RegisterStartupScript(
-                        this.GetType(),
-                        "errorPostulante",
-                        "alert('No se pudo registrar el postulante (verifique que el correo o DNI no estén repetidos)');",
-                        true
-                    );
-                    return false;
-                }
+                EnviarCorreoConfirmacion(true, mail, nombre);
+
+                ///UsuarioNegocio negocio = new UsuarioNegocio();
+                ///bool registrado = negocio.RegistrarUsuario(usuario);
+
+                /*  if (registrado)
+                  {
+                      ClientScript.RegisterStartupScript(
+                          this.GetType(),
+                          "exitoPostulante",
+                          "alert('Postulante registrado correctamente');",
+                          true
+                      );
+                      return true;
+                  }
+                  else
+                  {
+                      ClientScript.RegisterStartupScript(
+                          this.GetType(),
+                          "errorPostulante",
+                          "alert('No se pudo registrar el postulante (verifique que el correo o DNI no estén repetidos)');",
+                          true
+                      );
+                      return false;
+                  }*/
             }
             catch (Exception ex)
             {
@@ -214,7 +218,7 @@ namespace CVJoven
                     $"alert('Error al registrar postulante: {detalleError}');",
                     true
                 );
-                return false;
+                return;
             }
         }
 
@@ -234,7 +238,7 @@ namespace CVJoven
                 DateTime creacionToken = DateTime.Now;
                 DateTime expiracionToken = creacionToken.AddHours(1); // Token válido por 24 horas
                     string urlDominio = Request.Url.GetLeftPart(UriPartial.Authority);
-                string enlaceVerificacion = $"{urlDominio}/Verificar.aspx?email={emailDestino}&token={tokenUnico}";
+                string enlaceVerificacion = $"{urlDominio}/VerificarLogin.aspx?email={emailDestino}&token={tokenUnico}";
 
                 // Construir el mensaje del correo
                 MailMessage mensaje = new MailMessage();
@@ -254,7 +258,7 @@ namespace CVJoven
                     int res = tokenDB.insertToken(tokenUnico, emailDestino, expiracionToken, creacionToken);
                     if (res > 0) {
 
-                        ClientScript.RegisterStartupScript(this.GetType(), "alerta", "alert('¡Correo enviado con éxito!');", true);
+                        ClientScript.RegisterStartupScript(this.GetType(), "alerta", "alert('¡Correo de verificacion de registro enviado con éxito!');", true);
 
                     }
 
@@ -263,7 +267,7 @@ namespace CVJoven
             catch (Exception ex)
             {
                 // Manejar error de envío si el servidor SMTP no está abierto
-                ClientScript.RegisterStartupScript(this.GetType(), "alert", $"alert('Error al enviar el correo: {ex.Message.Replace("'", "")}');", true);
+                ClientScript.RegisterStartupScript(this.GetType(), "alert", $"alert('Error al enviar el correo: {ex.Message}');", true);
             }
         }
 
