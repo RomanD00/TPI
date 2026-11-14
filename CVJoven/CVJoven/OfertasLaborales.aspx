@@ -1,0 +1,206 @@
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="OfertasLaborales.aspx.cs" Inherits="CVJoven.OfertasLaborales" %>
+
+<!DOCTYPE html>
+<html lang="es">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CVJoven - Ofertas Laborales</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+</head>
+<body class="bg-light text-dark">
+    <form id="form1" runat="server">
+        
+        <!-- 1. CABECERA SUPERIOR -->
+        <header class="bg-white border-bottom px-4 d-flex align-items-center justify-content-between" style="height: 70px;">
+            <div class="d-flex align-items-center gap-3">
+                <a href="MisCurriculums.aspx" class="text-primary text-decoration-none fw-bold fs-4 d-flex align-items-center gap-2">
+                    <i class="bi bi-file-earmark-person-fill"></i>
+                    <span>CVJoven</span>
+                </a>
+                <span class="text-muted d-none d-md-inline">|</span>
+                <a href="MisCurriculums.aspx" class="btn btn-sm btn-light text-secondary d-none d-md-inline-flex align-items-center gap-1">
+                    <i class="bi bi-arrow-left"></i> Volver a Mi espacio
+                </a>
+            </div>
+
+            <!-- Perfil de Usuario -->
+            <div class="d-flex align-items-center gap-2">
+                <div class="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center fw-semibold" style="width: 38px; height: 38px;">
+                    <i class="bi bi-person-fill fs-5"></i>
+                </div>
+                <div class="lh-sm text-end d-none d-sm-block">
+                    <div class="fw-semibold small">
+                        <asp:Label ID="lblNombreUsuario" runat="server" Text="ale Maza"></asp:Label>
+                    </div>
+                    <div class="text-muted" style="font-size: 0.75rem;">
+                        <asp:Label ID="lblEmailUsuario" runat="server" Text="alejandrojmm26@gmail.com"></asp:Label>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 2. BARRA DE BÚSQUEDA Y FILTROS -->
+        <section class="bg-white border-bottom py-3 px-3 px-lg-4 shadow-sm">
+            <div class="container-fluid">
+                <div class="row g-3 align-items-center">
+                    
+                    <!-- Buscador -->
+                    <div class="col-12 col-lg-4">
+                        <div class="input-group">
+                            <asp:TextBox ID="txtBuscar" runat="server" CssClass="form-control bg-light rounded-start-pill ps-3 border-end-0" placeholder="Buscar puesto, empresa..."></asp:TextBox>
+                            <asp:LinkButton ID="btnBuscar" runat="server" CssClass="btn btn-primary rounded-end-pill px-4" OnClick="btnBuscar_Click">
+                                <i class="bi bi-search"></i>
+                            </asp:LinkButton>
+                        </div>
+                    </div>
+
+                    <!-- Filtros -->
+                    <div class="col-12 col-lg-8">
+                        <div class="row g-2">
+                            <!-- Tiempo de publicación -->
+                            <div class="col-6 col-md-3">
+                                <asp:DropDownList ID="ddlTiempoPublicacion" runat="server" CssClass="form-select form-select-sm rounded-3 text-secondary" AutoPostBack="true" OnSelectedIndexChanged="Filtros_SelectedIndexChanged">
+                                    <asp:ListItem Value="" Text="Publicación"></asp:ListItem>
+                                    <asp:ListItem Value="1" Text="Últimas 24 hs"></asp:ListItem>
+                                    <asp:ListItem Value="7" Text="Última semana"></asp:ListItem>
+                                    <asp:ListItem Value="30" Text="Último mes"></asp:ListItem>
+                                </asp:DropDownList>
+                            </div>
+
+                            <!-- Ubicación -->
+                            <div class="col-6 col-md-3">
+                                <asp:DropDownList ID="ddlUbicacion" runat="server" CssClass="form-select form-select-sm rounded-3 text-secondary" AutoPostBack="true" OnSelectedIndexChanged="Filtros_SelectedIndexChanged">
+                                    <asp:ListItem Value="" Text="Ubicación"></asp:ListItem>
+                                    <asp:ListItem Value="Remoto" Text="Remoto"></asp:ListItem>
+                                    <asp:ListItem Value="CABA" Text="CABA"></asp:ListItem>
+                                    <asp:ListItem Value="GBA" Text="GBA Norte"></asp:ListItem>
+                                    <asp:ListItem Value="Interior" Text="Interior"></asp:ListItem>
+                                </asp:DropDownList>
+                            </div>
+
+                            <!-- Tamaño de la empresa -->
+                            <div class="col-6 col-md-3">
+                                <asp:DropDownList ID="ddlTamanoEmpresa" runat="server" CssClass="form-select form-select-sm rounded-3 text-secondary" AutoPostBack="true" OnSelectedIndexChanged="Filtros_SelectedIndexChanged">
+                                    <asp:ListItem Value="" Text="Tamaño empresa"></asp:ListItem>
+                                    <asp:ListItem Value="Startup" Text="Startup (1-20)"></asp:ListItem>
+                                    <asp:ListItem Value="PyME" Text="PyME (21-100)"></asp:ListItem>
+                                    <asp:ListItem Value="Mediana" Text="Mediana (101-500)"></asp:ListItem>
+                                    <asp:ListItem Value="Grande" Text="Corporación (500+)"></asp:ListItem>
+                                </asp:DropDownList>
+                            </div>
+
+                            <!-- Área de interés -->
+                            <div class="col-6 col-md-3">
+                                <asp:DropDownList ID="ddlAreaInteres" runat="server" CssClass="form-select form-select-sm rounded-3 text-secondary" AutoPostBack="true" OnSelectedIndexChanged="Filtros_SelectedIndexChanged">
+                                    <asp:ListItem Value="" Text="Área de interés"></asp:ListItem>
+                                    <asp:ListItem Value="IT" Text="Tecnología / IT"></asp:ListItem>
+                                    <asp:ListItem Value="Marketing" Text="Marketing / E-comm"></asp:ListItem>
+                                    <asp:ListItem Value="Diseno" Text="Diseño UX/UI"></asp:ListItem>
+                                    <asp:ListItem Value="Admin" Text="Administración"></asp:ListItem>
+                                </asp:DropDownList>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. LISTADO DE OFERTAS LABORALES -->
+        <main class="container py-4" style="max-width: 1140px;">
+            
+            <!-- Título y contador -->
+            <div class="d-flex flex-wrap justify-content-between align-items-end mb-4">
+                <div>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-1 small text-muted">
+                            <li class="breadcrumb-item"><a href="MisCurriculums.aspx" class="text-decoration-none text-muted">Mi espacio</a></li>
+                            <li class="breadcrumb-item active text-secondary" aria-current="page">Ofertas laborales</li>
+                        </ol>
+                    </nav>
+                    <h1 class="h3 fw-bold mb-1 text-dark">Ofertas laborales disponibles</h1>
+                    <p class="text-muted small mb-0">Explorá vacantes pensadas para tu perfil y postulate con un clic.</p>
+                </div>
+                <div class="text-muted small mt-2 mt-md-0">
+                    Mostrando <strong><asp:Label ID="lblCantidadOfertas" runat="server" Text="3"></asp:Label></strong> oportunidades
+                </div>
+            </div>
+
+            <!-- Contenedor de Ofertas (Repeater) -->
+            <asp:Repeater ID="rptOfertas" runat="server" OnItemCommand="rptOfertas_ItemCommand">
+                <ItemTemplate>
+                    <div class="card border rounded-4 p-4 mb-3 shadow-sm bg-white border-light-subtle">
+                        <div class="row align-items-center g-3">
+                            
+                            <!-- Ícono de Empresa -->
+                            <div class="col-auto">
+                                <div class="bg-primary bg-opacity-10 text-primary rounded-3 d-flex align-items-center justify-content-center" style="width: 52px; height: 52px; font-size: 1.5rem;">
+                                    <i class="bi bi-building"></i>
+                                </div>
+                            </div>
+
+                            <!-- Información de la Oferta -->
+                            <div class="col">
+                                <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+                                    <h2 class="h5 fw-bold mb-0 text-dark"><%# Eval("Titulo") %></h2>
+                                    <span class="badge bg-primary bg-opacity-10 text-primary fw-medium px-2 py-1"><%# Eval("Area") %></span>
+                                </div>
+                                
+                                <div class="text-secondary fw-semibold small mb-2">
+                                    <%# Eval("Empresa") %>
+                                </div>
+
+                                <!-- Badges de filtros -->
+                                <div class="d-flex flex-wrap gap-2">
+                                    <span class="badge bg-light text-secondary border fw-normal">
+                                        <i class="bi bi-geo-alt me-1"></i><%# Eval("Ubicacion") %>
+                                    </span>
+                                    <span class="badge bg-light text-secondary border fw-normal">
+                                        <i class="bi bi-people me-1"></i><%# Eval("TamanoEmpresa") %>
+                                    </span>
+                                    <span class="badge bg-light text-secondary border fw-normal">
+                                        <i class="bi bi-clock me-1"></i><%# Eval("TiempoPublicacion") %>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Botones -->
+                            <div class="col-12 col-md-auto text-md-end border-top border-md-0 pt-3 pt-md-0">
+                                <div class="d-flex flex-row flex-md-column gap-2 justify-content-end">
+                                    <asp:Button ID="btnPostular" runat="server" 
+                                        Text="Postularme" 
+                                        CommandName="Postular" 
+                                        CommandArgument='<%# Eval("IdOferta") %>' 
+                                        CssClass="btn btn-primary btn-sm fw-medium px-4 py-2" />
+                                    
+                                    <asp:LinkButton ID="btnVerDetalle" runat="server" 
+                                        CommandName="VerDetalle" 
+                                        CommandArgument='<%# Eval("IdOferta") %>' 
+                                        CssClass="btn btn-outline-secondary btn-sm border-0 text-muted">
+                                        Ver detalles
+                                    </asp:LinkButton>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </ItemTemplate>
+            </asp:Repeater>
+
+            <!-- Alerta sin resultados -->
+            <asp:Panel ID="pnlSinResultados" runat="server" Visible="false" class="alert alert-info border-0 bg-info bg-opacity-10 text-info d-flex align-items-center gap-2 mt-3">
+                <i class="bi bi-info-circle-fill"></i>
+                <span>No encontramos ofertas laborales que coincidan con los filtros seleccionados.</span>
+            </asp:Panel>
+
+        </main>
+    </form>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

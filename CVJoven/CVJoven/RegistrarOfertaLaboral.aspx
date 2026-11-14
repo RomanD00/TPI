@@ -1,5 +1,5 @@
 ﻿
-<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="OfertaLaboral.aspx.cs" Inherits="CVJoven.OfertaLaboral" %>
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="RegistrarOfertaLaboral.aspx.cs" Inherits="CVJoven.RegistrarOfertaLaboral" %>
 
 <!DOCTYPE html>
 

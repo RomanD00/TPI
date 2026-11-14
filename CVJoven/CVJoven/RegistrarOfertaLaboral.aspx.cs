@@ -22,13 +22,13 @@ namespace CVJoven
                 return;
             }
             // Recuperar los datos del formulario
-            string titulo = txtTituloOferta.Text;
+           /* string titulo = txtTituloOferta.Text;
             string zona = txtZona.Text;
             string tipoJornada = ddlTipoJornada.SelectedValue;
             string descripcion = txtDescripcion.Text;
 
             // Recuperar el valor booleano
-            bool aceptaDiscapacidad = chkAceptaDiscapacidad.Checked;
+            bool aceptaDiscapacidad = chkAceptaDiscapacidad.Checked;*/
 
 
             // A partir de acá se puede realizar el INSERT en SQL Server

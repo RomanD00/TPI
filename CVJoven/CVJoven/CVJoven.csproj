@@ -112,7 +112,8 @@
     <Content Include="CrearCurriculum.aspx" />
     <Content Include="Login.aspx" />
     <Content Include="MisCurriculums.aspx" />
-    <Content Include="OfertaLaboral.aspx" />
+    <Content Include="OfertasLaborales.aspx" />
+    <Content Include="RegistrarOfertaLaboral.aspx" />
     <Content Include="VerificarLogin.aspx" />
     <Content Include="Web.config" />
     <Content Include="RegistroUsuarios.aspx" />
@@ -139,12 +140,19 @@
     <Compile Include="MisCurriculums.aspx.designer.cs">
       <DependentUpon>MisCurriculums.aspx</DependentUpon>
     </Compile>
-    <Compile Include="OfertaLaboral.aspx.cs">
-      <DependentUpon>OfertaLaboral.aspx</DependentUpon>
+    <Compile Include="OfertasLaborales.aspx.cs">
+      <DependentUpon>OfertasLaborales.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="OfertaLaboral.aspx.designer.cs">
-      <DependentUpon>OfertaLaboral.aspx</DependentUpon>
+    <Compile Include="OfertasLaborales.aspx.designer.cs">
+      <DependentUpon>OfertasLaborales.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="RegistrarOfertaLaboral.aspx.cs">
+      <DependentUpon>RegistrarOfertaLaboral.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="RegistrarOfertaLaboral.aspx.designer.cs">
+      <DependentUpon>RegistrarOfertaLaboral.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegistroUsuarios.aspx.cs">
