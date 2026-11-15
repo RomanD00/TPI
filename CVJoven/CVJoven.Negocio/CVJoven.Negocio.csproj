@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CVNegocio.cs" />
     <Compile Include="EmpresaNegocio.cs" />
     <Compile Include="SeguridadPassword.cs" />
     <Compile Include="TokenDB.cs" />
