@@ -48,7 +48,7 @@ namespace CVJoven
                     Session["NombreEmpresa"] = empresa.NombreComercial;
                     Session["TipoUsuario"] = empresa.IdTipoUsuario;
 
-                    Response.Redirect("OfertaLaboral.aspx", false);
+                    Response.Redirect("OfertasLaborales.aspx", false);
                     Context.ApplicationInstance.CompleteRequest();
                     return;
                 }

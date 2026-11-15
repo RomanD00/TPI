@@ -1,5 +1,7 @@
-﻿using System;
+﻿using CVJoven.Negocio;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -19,17 +21,33 @@ namespace CVJoven
 
         private void CargarOfertas()
         {
-            // Datos de prueba simulando tu base de datos
-            var ofertas = new List<dynamic>
+            try
             {
-                new { IdOferta = 1, Titulo = "Desarrollador .NET Junior", Empresa = "TechSolutions AR", Area = "Tecnología y Sistemas", Ubicacion = "Remoto", TamanoEmpresa = "Mediana (101-500 emp.)", TiempoPublicacion = "Hace 2 horas" },
-                new { IdOferta = 2, Titulo = "Diseñador/a UX/UI Trainée", Empresa = "Estudio Creativo Sur", Area = "Diseño UX/UI y Gráfico", Ubicacion = "Buenos Aires (CABA)", TamanoEmpresa = "Startup (1-20 emp.)", TiempoPublicacion = "Hace 2 días" },
-                new { IdOferta = 3, Titulo = "Analista de E-commerce y Marketing Digital", Empresa = "TiendaNorte SRL", Area = "Marketing y E-commerce", Ubicacion = "GBA / Zona Norte", TamanoEmpresa = "PyME (21-100 emp.)", TiempoPublicacion = "Hace 5 días" }
-            };
+                OfertaLaboralNegocio negocio = new OfertaLaboralNegocio();
 
-            rptOfertas.DataSource = ofertas;
-            rptOfertas.DataBind();
-            lblCantidadOfertas.Text = ofertas.Count.ToString();
+                DataTable ofertas = negocio.ObtenerOfertas();
+
+                rptOfertas.DataSource = ofertas;
+                rptOfertas.DataBind();
+
+                lblCantidadOfertas.Text = ofertas.Rows.Count.ToString();
+
+                pnlSinResultados.Visible = ofertas.Rows.Count == 0;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+
+                lblCantidadOfertas.Text = "0";
+                pnlSinResultados.Visible = false;
+
+                ClientScript.RegisterStartupScript(
+                    this.GetType(),
+                    "errorOfertas",
+                    "alert('No se pudieron cargar las ofertas laborales.');",
+                    true
+                );
+            }
         }
 
         protected void btnBuscar_Click(object sender, EventArgs e)

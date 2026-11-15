@@ -83,11 +83,11 @@
                             </div>
 
                             <!-- Tamaño de la empresa -->
+                                   <!--  NO EXISTE LA EMPRESA de tipo STARTUP EN la BASE DE DATOS -->
                             <div class="col-6 col-md-3">
                                 <asp:DropDownList ID="ddlTamanoEmpresa" runat="server" CssClass="form-select form-select-sm rounded-3 text-secondary" AutoPostBack="true" OnSelectedIndexChanged="Filtros_SelectedIndexChanged">
                                     <asp:ListItem Value="" Text="Tamaño empresa"></asp:ListItem>
-                                    <asp:ListItem Value="Startup" Text="Startup (1-20)"></asp:ListItem>
-                                    <asp:ListItem Value="PyME" Text="PyME (21-100)"></asp:ListItem>
+                                    <asp:ListItem Value="Pyme" Text="Pyme (21-100)"></asp:ListItem>
                                     <asp:ListItem Value="Mediana" Text="Mediana (101-500)"></asp:ListItem>
                                     <asp:ListItem Value="Grande" Text="Corporación (500+)"></asp:ListItem>
                                 </asp:DropDownList>
@@ -146,13 +146,20 @@
                             <!-- Información de la Oferta -->
                             <div class="col">
                                 <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
-                                    <h2 class="h5 fw-bold mb-0 text-dark"><%# Eval("Titulo") %></h2>
-                                    <span class="badge bg-primary bg-opacity-10 text-primary fw-medium px-2 py-1"><%# Eval("Area") %></span>
+                                    <h2 class="h5 fw-bold mb-0 text-dark"><%# Eval("TituloOferta") %></h2>
+                                    <span class="badge bg-primary bg-opacity-10 text-primary fw-medium px-2 py-1"><%# Eval("Zona") %></span>
                                 </div>
                                 
                                 <div class="text-secondary fw-semibold small mb-2">
                                     <%# Eval("Empresa") %>
                                 </div>
+                                 <!-- Información de si acepta discapacidad-->
+                                <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+                                <span class="badge bg-light text-secondary border fw-normal">
+                                Acepta discapacidad:
+                                <%# Eval("AceptaDiscapacidad") %>
+                            </span>
+                                    </div>
 
                                 <!-- Badges de filtros -->
                                 <div class="d-flex flex-wrap gap-2">
@@ -162,9 +169,9 @@
                                     <span class="badge bg-light text-secondary border fw-normal">
                                         <i class="bi bi-people me-1"></i><%# Eval("TamanoEmpresa") %>
                                     </span>
-                                    <span class="badge bg-light text-secondary border fw-normal">
-                                        <i class="bi bi-clock me-1"></i><%# Eval("TiempoPublicacion") %>
-                                    </span>
+                                    <!-- NO EXISTE FECHA DE PUBLICACIÓN EN LA OFERTA. 
+                                        SOLO ESTA LA FECHA EN LA POSTULACIÓN -->
+         
                                 </div>
                             </div>
 
