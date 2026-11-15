@@ -1,10 +1,11 @@
-﻿using System;
+﻿using CVJoven.Datos;
+using CVJoven.Dominio;
+using CVJoven.Negocio;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using CVJoven.Dominio;
 using System.Net.Mail;
-using CVJoven.Datos;
-using CVJoven.Negocio;
+using System.Web;
 
 namespace CVJoven
 {
@@ -228,48 +229,49 @@ namespace CVJoven
         }
 
         ////mandar email de confirmacion de registro
- 
+
         protected void EnviarCorreoConfirmacion(bool registro, string emailDestino, string nombre)
         {
             try
             {
-                if (registro) { 
-                string tokenUnico = Guid.NewGuid().ToString();
-                DateTime creacionToken = DateTime.Now;
-                DateTime expiracionToken = creacionToken.AddHours(1); // Token válido por 24 horas
-                    string urlDominio = Request.Url.GetLeftPart(UriPartial.Authority);
-                string enlaceVerificacion = $"{urlDominio}/VerificarLogin.aspx?email={emailDestino}&token={tokenUnico}";
-
-                // Construir el mensaje del correo
-                MailMessage mensaje = new MailMessage();
-                mensaje.To.Add(emailDestino);
-                mensaje.Subject = $"Confirma tu cuenta de correo {nombre}";
-                mensaje.Body = $"<p>Haz clic para confirmar: <a href='{enlaceVerificacion}'>{enlaceVerificacion}</a></p>";
-                mensaje.IsBodyHtml = true;
-
-                using (SmtpClient clienteSmtp = new SmtpClient())
+                if (registro)
                 {
+                    string tokenUnico = Guid.NewGuid().ToString();
+                    DateTime creacionToken = DateTime.Now;
+                    DateTime expiracionToken = creacionToken.AddHours(1); // Nota: el comentario decía 24h pero sumaba 1h
+                     string urlDominio = HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority);
+                    string enlaceVerificacion = $"{urlDominio}/VerificarLogin.aspx?email={emailDestino}&token={tokenUnico}";
+
+                    // Construir el mensaje del correo
+                    MailMessage mensaje = new MailMessage();
+
+                    // ¡IMPORTANTE! Asignar el remitente (debe coincidir o ser válido para tu SMTP)
+                    mensaje.From = new MailAddress("soporte@tudominio.com");
+
+                    mensaje.To.Add(emailDestino);
+                    mensaje.Subject = $"Confirma tu cuenta de correo {nombre}";
+                    mensaje.Body = $"<p>Haz clic para confirmar: <a href='{enlaceVerificacion}'>{enlaceVerificacion}</a></p>";
+                    mensaje.IsBodyHtml = true;
+
+                    using (SmtpClient clienteSmtp = new SmtpClient())
+                    {
                         clienteSmtp.Send(mensaje);
-
-
                     }
 
                     TokenDB tokenDB = new TokenDB();
                     int res = tokenDB.insertToken(tokenUnico, emailDestino, expiracionToken, creacionToken);
-                    if (res > 0) {
-
+                    if (res > 0)
+                    {
                         ClientScript.RegisterStartupScript(this.GetType(), "alerta", "alert('¡Correo de verificacion de registro enviado con éxito!');", true);
-
                     }
-
                 }
             }
             catch (Exception ex)
             {
                 // Manejar error de envío si el servidor SMTP no está abierto
-                ClientScript.RegisterStartupScript(this.GetType(), "alert", $"alert('Error al enviar el correo: {ex.Message}');", true);
+                ClientScript.RegisterStartupScript(this.GetType(), "alert", $"alert('Error al enviar el correo: {ex.Message.Replace("'", "\\'")}');", true);
             }
         }
-
+        
     }
 }

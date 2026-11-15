@@ -2,6 +2,7 @@
 using CVJoven.Dominio;
 using CVJoven.Negocio;
 using System;
+using System.Collections.Generic;
 using System.Web.UI;
 
 namespace CVJoven
@@ -55,6 +56,7 @@ namespace CVJoven
             try
             {
                 // 1. Cabecera del CV
+               int errores = 0;
                 CV cv = new CV();
                 cv.IdUsuario = usuario.IdUsuario;
                 cv.nombreDelCV = txtNombreCV.Text.Trim();
@@ -72,6 +74,10 @@ namespace CVJoven
                     edu.NivelAlcanzado = ddlNivelEducacion.SelectedValue;
                     edu.Anio = int.TryParse(txtAnioEducacion.Text.Trim(), out int anio) ? anio : DateTime.Now.Year;
                 }
+                else {
+                    errores++;
+                
+                }
 
                 // 3. Experiencia (si completó los campos)
                 Experiencia exp = null;
@@ -88,6 +94,10 @@ namespace CVJoven
                     exp.FechaHasta = DateTime.TryParse(txtFechaHasta.Text, out DateTime fechaHasta) ? fechaHasta : DateTime.MinValue;
                     exp.Descripcion = txtDescripcion.Text.Trim();
                 }
+                else {
+                    errores++;
+                
+                }
 
                 // 4. Habilidad (si completó el campo)
                 Habilidad hab = null;
@@ -98,9 +108,18 @@ namespace CVJoven
                     hab.TipoHabilidad = bool.Parse(ddlTipoHabilidad.SelectedValue);
                 }
 
+                long idCVGenerado = 0;
+                if (errores == 0)
+                {
+
+                    CVNegocio negocio = new CVNegocio();
+                    idCVGenerado = negocio.GuardarCVCompleto(cv, edu, exp, hab);
+                }
+                else { 
+                
+                errores = 0;
+                }
                 // 5. Guardar todo en SQL Server y redirigir al CV generado
-                CVNegocio negocio = new CVNegocio();
-                long idCVGenerado = negocio.GuardarCVCompleto(cv, edu, exp, hab);
 
                 if (idCVGenerado > 0)
                 {

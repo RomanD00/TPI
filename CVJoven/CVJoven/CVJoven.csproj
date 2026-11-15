@@ -118,6 +118,7 @@
     <Content Include="VerificarLogin.aspx" />
     <Content Include="Web.config" />
     <Content Include="RegistroUsuarios.aspx" />
+    <Content Include="MiPerfil.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CrearCurriculum.aspx.cs">
@@ -176,6 +177,13 @@
     </Compile>
     <Compile Include="VerificarLogin.aspx.designer.cs">
       <DependentUpon>VerificarLogin.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="MiPerfil.aspx.cs">
+      <DependentUpon>MiPerfil.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MiPerfil.aspx.designer.cs">
+      <DependentUpon>MiPerfil.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
