@@ -107,7 +107,7 @@
                                             <asp:ListItem Text="Seleccione una opción" Value="" />
                                             <asp:ListItem Text="Part-time" Value="Part-time" />
                                             <asp:ListItem Text="Full-time" Value="Full-time" />
-                                            <asp:ListItem Text="Horario a convenir" Value="Horario a convenir" />
+                                          
 
                                         </asp:DropDownList>
 
