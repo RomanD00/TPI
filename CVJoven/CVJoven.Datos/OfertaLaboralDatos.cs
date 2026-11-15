@@ -80,5 +80,69 @@ namespace CVJoven.Datos
         }
 
 
+        public System.Data.DataTable ObtenerDetalleOferta(long idOferta)
+        {
+            AccesoDatos datos = new AccesoDatos();
+            System.Data.DataTable tabla = new System.Data.DataTable();
+
+            try
+            {
+                datos.setearConsulta(@"
+            SELECT
+                o.IdOferta,
+                o.TituloOferta,
+                o.Zona,
+                o.TipoDeJornada,
+                o.Descripcion,
+                o.AceptaDiscapacidad,
+                e.nombreComercial AS Empresa,
+                e.sector AS SectorEmpresa,
+                e.tamanioDeEmpresa AS TamanoEmpresa,
+                e.paginaWeb AS PaginaWeb
+            FROM OfertaLaboral o
+            INNER JOIN Empresa e
+                ON o.IdEmpresa = e.idEmpresa
+            WHERE o.IdOferta = @idOferta");
+
+                datos.setearParametro("@idOferta", idOferta);
+                datos.ejecutarLectura();
+
+                tabla.Load(datos.Lector);
+                return tabla;
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
+
+
+        public System.Data.DataTable ObtenerRequisitosOferta(long idOferta)
+        {
+            AccesoDatos datos = new AccesoDatos();
+            System.Data.DataTable tabla = new System.Data.DataTable();
+
+            try
+            {
+                datos.setearConsulta(@"
+            SELECT IdRequisito, Descripcion
+            FROM Requisito
+            WHERE idOferta = @idOferta
+            ORDER BY IdRequisito");
+
+                datos.setearParametro("@idOferta", idOferta);
+                datos.ejecutarLectura();
+
+                tabla.Load(datos.Lector);
+                return tabla;
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
+
+
+
     }
 }

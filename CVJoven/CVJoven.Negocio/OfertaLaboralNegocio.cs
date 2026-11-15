@@ -27,5 +27,27 @@ namespace CVJoven.Negocio
         }
 
 
+        public System.Data.DataTable ObtenerDetalleOferta(long idOferta)
+        {
+            if (idOferta <= 0)
+                throw new ArgumentException("Oferta inválida.");
+
+            OfertaLaboralDatos datos = new OfertaLaboralDatos();
+
+            return datos.ObtenerDetalleOferta(idOferta);
+        }
+
+        public System.Data.DataTable ObtenerRequisitosOferta(long idOferta)
+        {
+            if (idOferta <= 0)
+                throw new ArgumentException("Oferta inválida.");
+
+            OfertaLaboralDatos datos = new OfertaLaboralDatos();
+
+            return datos.ObtenerRequisitosOferta(idOferta);
+        }
+
+
+
     }
 }

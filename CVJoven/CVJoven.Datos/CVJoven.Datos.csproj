@@ -46,6 +46,7 @@
     <Compile Include="CvDatos.cs" />
     <Compile Include="EmpresaDatos.cs" />
     <Compile Include="OfertaLaboralDatos.cs" />
+    <Compile Include="PostulacionDatos.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UsuarioDatos.cs" />
   </ItemGroup>

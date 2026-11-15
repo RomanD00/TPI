@@ -10,6 +10,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body class="bg-light text-dark">
     <form id="form1" runat="server">
@@ -110,9 +111,92 @@
             </div>
         </section>
 
+
+
         <!-- 3. LISTADO DE OFERTAS LABORALES -->
         <main class="container py-4" style="max-width: 1140px;">
             
+                        <asp:Label ID="lblMensajePostulacion"
+                        runat="server"
+                        Visible="false"
+                        CssClass="d-block mt-3">
+                    </asp:Label>
+            <!--  Panel de OFERTA LABORAL -->
+                                        <asp:Panel ID="pnlDetalleOferta" runat="server"
+                                Visible="false"
+                                CssClass="card border-0 shadow-sm rounded-4 p-4 my-4">
+
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h3 class="h4 fw-bold">Detalle de la oferta laboral</h3>
+
+                                    <asp:Button ID="btnCerrarDetalle" runat="server"
+                                        Text="Cerrar"
+                                        CssClass="btn btn-outline-secondary btn-sm"
+                                        CausesValidation="false"
+                                        OnClick="btnCerrarDetalle_Click" />
+                                </div>
+
+                                <h4>
+                                    <asp:Label ID="lblTituloDetalle" runat="server" />
+                                </h4>
+
+                                <p class="text-primary fw-semibold">
+                                    <asp:Label ID="lblEmpresaDetalle" runat="server" />
+                                </p>
+
+                                <hr />
+
+                                <p><strong>Zona:</strong>
+                                    <asp:Label ID="lblZonaDetalle" runat="server" />
+                                </p>
+
+                                <p><strong>Jornada:</strong>
+                                    <asp:Label ID="lblJornadaDetalle" runat="server" />
+                                </p>
+
+                                <p><strong>Sector:</strong>
+                                    <asp:Label ID="lblSectorDetalle" runat="server" />
+                                </p>
+
+                                <p><strong>Tamaño de empresa:</strong>
+                                    <asp:Label ID="lblTamanoDetalle" runat="server" />
+                                </p>
+
+                                <p><strong>Acepta discapacidad:</strong>
+                                    <asp:Label ID="lblDiscapacidadDetalle" runat="server" />
+                                </p>
+
+                                <h5 class="fw-bold mt-3">Descripción del puesto</h5>
+
+                                <p class="text-secondary">
+                                    <asp:Label ID="lblDescripcionDetalle" runat="server" />
+                                </p>
+
+                                <h5 class="fw-bold mt-3">Requisitos</h5>
+
+                                <asp:Repeater ID="rptRequisitos" runat="server">
+                                    <HeaderTemplate>
+                                        <ul class="list-group list-group-flush mb-3">
+                                    </HeaderTemplate>
+
+                                    <ItemTemplate>
+                                        <li class="list-group-item">
+                                            <%#: Eval("Descripcion") %>
+                                        </li>
+                                    </ItemTemplate>
+
+                                    <FooterTemplate>
+                                        </ul>
+                                    </FooterTemplate>
+                                </asp:Repeater>
+
+                                <asp:Label ID="lblSinRequisitos" runat="server"
+                                    Text="No se especificaron requisitos para esta oferta."
+                                    CssClass="text-muted"
+                                    Visible="false" />
+
+                            </asp:Panel>
+
             <!-- Título y contador -->
             <div class="d-flex flex-wrap justify-content-between align-items-end mb-4">
                 <div>
@@ -182,7 +266,8 @@
                                         Text="Postularme" 
                                         CommandName="Postular" 
                                         CommandArgument='<%# Eval("IdOferta") %>' 
-                                        CssClass="btn btn-primary btn-sm fw-medium px-4 py-2" />
+                                        CssClass="btn btn-primary btn-sm fw-medium px-4 py-2" 
+                                        />
                                     
                                     <asp:LinkButton ID="btnVerDetalle" runat="server" 
                                         CommandName="VerDetalle" 
@@ -198,6 +283,74 @@
                 </ItemTemplate>
             </asp:Repeater>
 
+            
+<!-- MODAL DE POSTULACIÓN -->
+<div class="modal fade" id="modalPostulacion"
+     tabindex="-1" aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow rounded-4">
+
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold">
+                    Postularme a la oferta
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Cerrar">
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <p class="text-secondary">
+                    Seleccioná el currículum que querés
+                    enviar a la empresa.
+                </p>
+
+                <asp:DropDownList
+                    ID="ddlCurriculums"
+                    runat="server"
+                    CssClass="form-select">
+                </asp:DropDownList>
+
+                <asp:HiddenField
+                    ID="hfIdOferta"
+                    runat="server" />
+                <asp:Label
+    ID="lblErrorModalPostulacion"
+    runat="server"
+    Visible="false"
+    CssClass="alert alert-danger d-block mt-3">
+</asp:Label>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+
+                <asp:Button
+                    ID="btnConfirmarPostulacion"
+                    runat="server"
+                    Text="Confirmar postulación"
+                    CssClass="btn btn-primary"
+                    OnClick="btnConfirmarPostulacion_Click" />
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+       
+
             <!-- Alerta sin resultados -->
             <asp:Panel ID="pnlSinResultados" runat="server" Visible="false" class="alert alert-info border-0 bg-info bg-opacity-10 text-info d-flex align-items-center gap-2 mt-3">
                 <i class="bi bi-info-circle-fill"></i>
@@ -207,7 +360,5 @@
         </main>
     </form>
 
-    <!-- Bootstrap 5 JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

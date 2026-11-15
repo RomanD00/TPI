@@ -209,5 +209,11 @@ CREATE TABLE Postulacion (
 );
 
 
+CREATE TABLE Token (
+    Token VARCHAR(50) DEFAULT NULL,
+    Confirmacion BIT DEFAULT 0,
+    TokenExpiracion DATETIME DEFAULT NULL,
+    EmailConfirmado VARCHAR(60) DEFAULT NULL
+);
 
 

@@ -186,10 +186,10 @@ namespace CVJoven
 
                 EnviarCorreoConfirmacion(true, mail, nombre);
 
-                ///UsuarioNegocio negocio = new UsuarioNegocio();
-                ///bool registrado = negocio.RegistrarUsuario(usuario);
+                UsuarioNegocio negocio = new UsuarioNegocio();
+                bool registrado = negocio.RegistrarUsuario(usuario);
 
-                /*  if (registrado)
+                  if (registrado)
                   {
                       ClientScript.RegisterStartupScript(
                           this.GetType(),
@@ -197,7 +197,7 @@ namespace CVJoven
                           "alert('Postulante registrado correctamente');",
                           true
                       );
-                      return true;
+                      return ;
                   }
                   else
                   {
@@ -207,8 +207,8 @@ namespace CVJoven
                           "alert('No se pudo registrar el postulante (verifique que el correo o DNI no estén repetidos)');",
                           true
                       );
-                      return false;
-                  }*/
+                      return ;
+                  }
             }
             catch (Exception ex)
             {
