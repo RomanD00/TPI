@@ -1,5 +1,4 @@
-﻿
-using CVJoven.Dominio;
+﻿using CVJoven.Dominio;
 using CVJoven.Negocio;
 using System;
 using System.Collections.Generic;
@@ -13,7 +12,6 @@ namespace CVJoven
         {
             Usuario usuario = Session["Usuario"] as Usuario;
 
-            // Verificar que haya iniciado sesión
             if (usuario == null)
             {
                 Response.Redirect("~/Login.aspx", false);
@@ -21,13 +19,9 @@ namespace CVJoven
                 return;
             }
 
-            // Mostrar nombre y correo arriba
-            lblNombreUsuario.Text =
-                usuario.Nombre + " " + usuario.Apellido;
-
+            lblNombreUsuario.Text = usuario.Nombre + " " + usuario.Apellido;
             lblEmailUsuario.Text = usuario.Mail;
 
-            // Cargar datos personales al abrir la página
             if (!IsPostBack)
             {
                 txtNombre.Text = usuario.Nombre;
@@ -35,10 +29,67 @@ namespace CVJoven
                 txtEmail.Text = usuario.Mail;
                 txtCelular.Text = usuario.Celular;
                 txtLocalidad.Text = usuario.ZonaLocalidad;
+
+                // Si viene con ?id= en la URL, cargamos los datos para Editar
+                if (long.TryParse(Request.QueryString["id"], out long idCV))
+                {
+                    CargarDatosParaEdicion(idCV, usuario.IdUsuario);
+                }
             }
         }
 
-        // EVENTO DEL BOTÓN GUARDAR
+        private void CargarDatosParaEdicion(long idCV, long idUsuario)
+        {
+            CVNegocio negocio = new CVNegocio();
+            CV cv = negocio.ObtenerCVPorId(idCV);
+
+            if (cv == null || cv.IdUsuario != idUsuario)
+            {
+                Response.Redirect("MisCurriculums.aspx", false);
+                Context.ApplicationInstance.CompleteRequest();
+                return;
+            }
+
+            txtNombreCV.Text = cv.nombreDelCV;
+            ddlDisponibilidad.SelectedValue = cv.DisponibilidadHoraria;
+            btnGuardarCV.Text = "Guardar cambios";
+
+            List<Educacion> estudios = negocio.ListarEducacionPorCV(idCV);
+            if (estudios.Count > 0)
+            {
+                txtInstitucion.Text = estudios[0].Institucion;
+                txtTitulo.Text = estudios[0].Titulo;
+                ddlNivelEducacion.SelectedValue = estudios[0].NivelAlcanzado;
+                txtAnioEducacion.Text = estudios[0].Anio.ToString();
+            }
+
+            List<Experiencia> experiencias = negocio.ListarExperienciaPorCV(idCV);
+            if (experiencias.Count > 0)
+            {
+                ddlTipoExperiencia.SelectedValue = experiencias[0].TipoExperiencia;
+                txtPuesto.Text = experiencias[0].Puesto;
+                txtEmpresa.Text = experiencias[0].Empresa;
+                txtFechaDesde.Text = experiencias[0].FechaDesde.ToString("yyyy-MM-dd");
+                if (experiencias[0].FechaHasta != DateTime.MinValue)
+                {
+                    txtFechaHasta.Text = experiencias[0].FechaHasta.ToString("yyyy-MM-dd");
+                }
+                txtDescripcion.Text = experiencias[0].Descripcion;
+            }
+
+            List<Habilidad> habilidades = negocio.ListarHabilidadesPorCV(idCV);
+            if (habilidades.Count > 0)
+            {
+                List<string> descripciones = new List<string>();
+                foreach (var h in habilidades)
+                {
+                    descripciones.Add(h.Descripcion);
+                }
+                txtHabilidad.Text = string.Join(", ", descripciones);
+                ddlTipoHabilidad.SelectedValue = habilidades[0].TipoHabilidad ? "true" : "false";
+            }
+        }
+
         protected void btnGuardarCV_Click(object sender, EventArgs e)
         {
             if (!Page.IsValid)
@@ -56,13 +107,12 @@ namespace CVJoven
             try
             {
                 // 1. Cabecera del CV
-               int errores = 0;
                 CV cv = new CV();
                 cv.IdUsuario = usuario.IdUsuario;
                 cv.nombreDelCV = txtNombreCV.Text.Trim();
                 cv.DisponibilidadHoraria = ddlDisponibilidad.SelectedValue;
 
-                // 2. Educación (si completó los campos)
+                // 2. Educación
                 Educacion edu = null;
                 if (!string.IsNullOrWhiteSpace(txtInstitucion.Text) &&
                     !string.IsNullOrWhiteSpace(txtTitulo.Text) &&
@@ -74,12 +124,8 @@ namespace CVJoven
                     edu.NivelAlcanzado = ddlNivelEducacion.SelectedValue;
                     edu.Anio = int.TryParse(txtAnioEducacion.Text.Trim(), out int anio) ? anio : DateTime.Now.Year;
                 }
-                else {
-                    errores++;
-                
-                }
 
-                // 3. Experiencia (si completó los campos)
+                // 3. Experiencia
                 Experiencia exp = null;
                 if (!string.IsNullOrWhiteSpace(ddlTipoExperiencia.SelectedValue) &&
                     !string.IsNullOrWhiteSpace(txtPuesto.Text) &&
@@ -94,42 +140,50 @@ namespace CVJoven
                     exp.FechaHasta = DateTime.TryParse(txtFechaHasta.Text, out DateTime fechaHasta) ? fechaHasta : DateTime.MinValue;
                     exp.Descripcion = txtDescripcion.Text.Trim();
                 }
-                else {
-                    errores++;
-                
-                }
 
-                // 4. Habilidad (si completó el campo)
-                Habilidad hab = null;
+                // 4. Habilidades (permite varias separadas por coma)
+                List<Habilidad> listaHabilidades = new List<Habilidad>();
                 if (!string.IsNullOrWhiteSpace(txtHabilidad.Text))
                 {
-                    hab = new Habilidad();
-                    hab.Descripcion = txtHabilidad.Text.Trim();
-                    hab.TipoHabilidad = bool.Parse(ddlTipoHabilidad.SelectedValue);
+                    bool esBlanda = bool.Parse(ddlTipoHabilidad.SelectedValue);
+                    string[] items = txtHabilidad.Text.Split(new char[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    foreach (string item in items)
+                    {
+                        string limpio = item.Trim();
+                        if (!string.IsNullOrEmpty(limpio))
+                        {
+                            Habilidad hab = new Habilidad();
+                            hab.Descripcion = char.ToUpper(limpio[0]) + limpio.Substring(1);
+                            hab.TipoHabilidad = esBlanda;
+                            listaHabilidades.Add(hab);
+                        }
+                    }
                 }
 
-                long idCVGenerado = 0;
-                if (errores == 0)
+                CVNegocio negocio = new CVNegocio();
+
+                // 5. Si estamos editando un CV existente, actualizamos; si no, creamos uno nuevo
+                if (long.TryParse(Request.QueryString["id"], out long idCVExistente))
                 {
-
-                    CVNegocio negocio = new CVNegocio();
-                    idCVGenerado = negocio.GuardarCVCompleto(cv, edu, exp, hab);
-                }
-                else { 
-                
-                errores = 0;
-                }
-                // 5. Guardar todo en SQL Server y redirigir al CV generado
-
-                if (idCVGenerado > 0)
-                {
-                    Response.Redirect($"VerCV.aspx?id={idCVGenerado}", false);
+                    cv.IdCV = idCVExistente;
+                    negocio.ActualizarCVCompleto(cv, edu, exp, listaHabilidades);
+                    Response.Redirect($"VerCV.aspx?id={idCVExistente}", false);
                     Context.ApplicationInstance.CompleteRequest();
                 }
                 else
                 {
-                    lblMensaje.CssClass = "alert alert-danger d-block mb-3";
-                    lblMensaje.Text = "No se pudo guardar el currículum.";
+                    long idCVGenerado = negocio.GuardarCVCompleto(cv, edu, exp, listaHabilidades);
+                    if (idCVGenerado > 0)
+                    {
+                        Response.Redirect($"VerCV.aspx?id={idCVGenerado}", false);
+                        Context.ApplicationInstance.CompleteRequest();
+                    }
+                    else
+                    {
+                        lblMensaje.CssClass = "alert alert-danger d-block mb-3";
+                        lblMensaje.Text = "No se pudo guardar el currículum.";
+                    }
                 }
             }
             catch (Exception ex)

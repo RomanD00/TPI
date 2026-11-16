@@ -95,9 +95,8 @@
                             Mis currículums
                         </a>
 
-                        <a href="#"
+                        <a href="OfertasLaborales.aspx"
                             class="nav-link text-secondary">
-
                             <i class="bi bi-briefcase me-2"></i>
                             Ofertas laborales
                         </a>
@@ -120,9 +119,8 @@
 
                     <div class="nav flex-column gap-2">
 
-                        <a href="#"
+                        <a href="MiPerfil.aspx"
                             class="nav-link text-secondary">
-
                             <i class="bi bi-person me-2"></i>
                             Mi perfil
                         </a>

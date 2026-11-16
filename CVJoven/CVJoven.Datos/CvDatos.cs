@@ -107,15 +107,14 @@ namespace CVJoven.Datos
             try
             {
                 datos.setearConsulta(@"
-                    DELETE FROM CV
-                    WHERE IdCV = @IdCV
-                      AND IdUsuario = @IdUsuario
-                      AND NOT EXISTS
-                      (
-                          SELECT 1
-                          FROM Postulacion
-                          WHERE Postulacion.IdCV = CV.IdCV
-                      )");
+                    IF EXISTS (SELECT 1 FROM CV WHERE IdCV = @IdCV AND IdUsuario = @IdUsuario)
+                       AND NOT EXISTS (SELECT 1 FROM Postulacion WHERE IdCV = @IdCV)
+                    BEGIN
+                        DELETE FROM Habilidades WHERE idCV = @IdCV;
+                        DELETE FROM Experiencia WHERE idCV = @IdCV;
+                        DELETE FROM Educacion WHERE idCV = @IdCV;
+                        DELETE FROM CV WHERE IdCV = @IdCV AND IdUsuario = @IdUsuario;
+                    END");
 
                 datos.setearParametro("@IdCV", idCV);
                 datos.setearParametro("@IdUsuario", idUsuario);
@@ -129,7 +128,7 @@ namespace CVJoven.Datos
         }
 
         // MÉTODOS PARA GUARDAR Y VER CV COMPLETO
-      
+
 
         public long InsertarCV(CV cv)
         {
@@ -361,6 +360,50 @@ namespace CVJoven.Datos
             finally
             {
                 datos.cerrarConexion();
+            }
+        }
+
+        public void ActualizarCVCompleto(CV cv, Educacion edu, Experiencia exp, List<Habilidad> habilidades)
+        {
+            // 1. Actualizar cabecera del CV
+            ModificarCV(cv);
+
+            // 2. Limpiar secciones anteriores de ese CV para reinsertar las editadas
+            AccesoDatos datos = new AccesoDatos();
+            try
+            {
+                datos.setearConsulta(@"
+                    DELETE FROM Habilidades WHERE idCV = @idCV;
+                    DELETE FROM Experiencia WHERE idCV = @idCV;
+                    DELETE FROM Educacion WHERE idCV = @idCV;");
+                datos.setearParametro("@idCV", cv.IdCV);
+                datos.ejecutarAccion();
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+
+            // 3. Insertar los datos actualizados
+            if (edu != null)
+            {
+                edu.IdCV = cv.IdCV;
+                InsertarEducacion(edu);
+            }
+
+            if (exp != null)
+            {
+                exp.IdCV = cv.IdCV;
+                InsertarExperiencia(exp);
+            }
+
+            if (habilidades != null)
+            {
+                foreach (Habilidad hab in habilidades)
+                {
+                    hab.IdCV = cv.IdCV;
+                    InsertarHabilidad(hab);
+                }
             }
         }
     }

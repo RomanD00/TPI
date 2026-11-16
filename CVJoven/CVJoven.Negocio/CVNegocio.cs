@@ -31,7 +31,7 @@ namespace CVJoven.Negocio
         }
 
         // Métodos nuevos para guardar el formulario completo y armar la vista previa
-        public long GuardarCVCompleto(CV cv, Educacion edu, Experiencia exp, Habilidad hab)
+        public long GuardarCVCompleto(CV cv, Educacion edu, Experiencia exp, List<Habilidad> habilidades)
         {
             long idCV = cvDatos.InsertarCV(cv);
 
@@ -52,10 +52,13 @@ namespace CVJoven.Negocio
                 cvDatos.InsertarExperiencia(exp);
             }
 
-            if (hab != null)
+            if (habilidades != null)
             {
-                hab.IdCV = idCV;
-                cvDatos.InsertarHabilidad(hab);
+                foreach (Habilidad hab in habilidades)
+                {
+                    hab.IdCV = idCV;
+                    cvDatos.InsertarHabilidad(hab);
+                }
             }
 
             return idCV;
@@ -81,12 +84,17 @@ namespace CVJoven.Negocio
             return cvDatos.ListarHabilidadesPorCV(idCV);
         }
 
+        public void ActualizarCVCompleto(CV cv, Educacion edu, Experiencia exp, List<Habilidad> habilidades)
+        {
+            cvDatos.ActualizarCVCompleto(cv, edu, exp, habilidades);
+        }
+
         public string GenerarPerfilProfesional(Usuario u, CV cv, List<Educacion> estudios, List<Experiencia> experiencias, List<Habilidad> habilidades)
         {
             int edad = DateTime.Today.Year - u.FechaNacimiento.Year;
             if (u.FechaNacimiento.Date > DateTime.Today.AddYears(-edad)) edad--;
 
-            string resumen = $"Postulante de {edad} años residente en {u.ZonaLocalidad}";
+            string resumen = $"Joven profesional de {edad} años residente en {u.ZonaLocalidad}";
 
             if (estudios != null && estudios.Count > 0)
             {
@@ -107,20 +115,27 @@ namespace CVJoven.Negocio
                 }
                 else
                 {
-                    resumen += $"Cuenta con experiencia participando en iniciativas de voluntariado como {exp.Puesto} en {exp.Empresa}. ";
+                    resumen += $"Cuenta con trayectoria en proyectos de voluntariado desempeñándose como {exp.Puesto} en {exp.Empresa}. ";
                 }
             }
             else
             {
-                resumen += "En búsqueda activa de una oportunidad laboral para aportar compromiso, capacidad de aprendizaje rápido y responsabilidad. ";
+                resumen += "En búsqueda activa de una oportunidad laboral para aportar compromiso, rápido aprendizaje y vocación de servicio. ";
             }
 
             if (habilidades != null && habilidades.Count > 0)
             {
-                resumen += $"Se destaca por competencias como {habilidades[0].Descripcion.ToLower()}. ";
+                List<string> nombresHab = new List<string>();
+                foreach (var h in habilidades)
+                {
+                    nombresHab.Add(h.Descripcion.ToLower());
+                }
+
+                string listaTexto = string.Join(", ", nombresHab);
+                resumen += $"Destaca por sus competencias en {listaTexto}. ";
             }
 
-            resumen += $"Disponibilidad horaria {cv.DisponibilidadHoraria.ToLower()} e incorporación inmediata.";
+            resumen += $"Disponibilidad horaria {cv.DisponibilidadHoraria.ToLower()} para incorporación inmediata.";
 
             return resumen;
         }
