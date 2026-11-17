@@ -29,8 +29,8 @@
         <main class="container py-4 py-lg-5">
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
                 <div>
-                    <h1 class="h3 fw-bold mb-1">Crear currículum</h1>
-                    <p class="text-secondary mb-0">Completá tus datos para preparar tu CV.</p>
+                    <h1 class="h3 fw-bold mb-1"><asp:Label ID="lblTituloPagina" runat="server" Text="Crear currículum" /></h1>
+                    <p class="text-secondary mb-0">Completá tus datos para generar y personalizar tu CV profesional.</p>
                 </div>
                 <a href="MisCurriculums.aspx" class="btn btn-outline-secondary">
                     <i class="bi bi-arrow-left me-1"></i>Mis currículums
@@ -43,17 +43,18 @@
 
             <div class="row g-4">
                 <div class="col-lg-8">
+                    <!-- 1. DATOS DEL CV -->
                     <section class="card border-0 shadow-sm mb-4">
                         <div class="card-body p-4">
                             <h2 class="h5 fw-bold mb-3"><i class="bi bi-file-earmark-text text-primary me-2"></i>Datos del currículum</h2>
                             <div class="mb-3">
                                 <label for="txtNombreCV" class="form-label fw-semibold">Nombre del CV *</label>
-                                <asp:TextBox ID="txtNombreCV" runat="server" CssClass="form-control" MaxLength="100" placeholder="Ej.: CV para primer empleo" />
+                                <asp:TextBox ID="txtNombreCV" runat="server" CssClass="form-control" MaxLength="100" placeholder="Ej.: CV Administrativo / Primer Empleo" />
                                 <asp:RequiredFieldValidator ID="valNombreCV" runat="server" ControlToValidate="txtNombreCV"
                                     ErrorMessage="Ingresá el nombre del CV." Text="Ingresá el nombre del CV."
                                     CssClass="text-danger small" ValidationGroup="guardarCV" Display="Dynamic" />
                             </div>
-                            <div class="mb-3">
+                            <div class="mb-0">
                                 <label for="ddlDisponibilidad" class="form-label fw-semibold">Disponibilidad horaria *</label>
                                 <asp:DropDownList ID="ddlDisponibilidad" runat="server" CssClass="form-select">
                                     <asp:ListItem Text="Seleccioná una opción" Value="" />
@@ -67,46 +68,71 @@
                         </div>
                     </section>
 
+                    <!-- 2. INFORMACIÓN PERSONAL -->
                     <section class="card border-0 shadow-sm mb-4">
                         <div class="card-body p-4">
                             <h2 class="h5 fw-bold mb-3"><i class="bi bi-person text-primary me-2"></i>Información personal</h2>
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label class="form-label">Nombre</label>
-                                    <asp:TextBox ID="txtNombre" runat="server" CssClass="form-control" ReadOnly="true" />
+                                    <asp:TextBox ID="txtNombre" runat="server" CssClass="form-control bg-light" ReadOnly="true" />
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Apellido</label>
-                                    <asp:TextBox ID="txtApellido" runat="server" CssClass="form-control" ReadOnly="true" />
+                                    <asp:TextBox ID="txtApellido" runat="server" CssClass="form-control bg-light" ReadOnly="true" />
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Correo</label>
-                                    <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control" ReadOnly="true" />
+                                    <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control bg-light" ReadOnly="true" />
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Celular</label>
-                                    <asp:TextBox ID="txtCelular" runat="server" CssClass="form-control" ReadOnly="true" />
+                                    <asp:TextBox ID="txtCelular" runat="server" CssClass="form-control bg-light" ReadOnly="true" />
                                 </div>
                                 <div class="col-12">
-                                    <label class="form-label">Localidad</label>
-                                    <asp:TextBox ID="txtLocalidad" runat="server" CssClass="form-control" ReadOnly="true" />
+                                    <label class="form-label">Localidad / Dirección</label>
+                                    <asp:TextBox ID="txtLocalidad" runat="server" CssClass="form-control bg-light" ReadOnly="true" />
                                 </div>
                             </div>
-                            <div class="form-text mt-2">Estos datos provienen de tu cuenta.</div>
+                            <div class="form-text mt-2">Estos datos se toman automáticamente de tu cuenta.</div>
                         </div>
                     </section>
 
+                    <!-- 3. EDUCACIÓN (MÚLTIPLE) -->
                     <section class="card border-0 shadow-sm mb-4">
                         <div class="card-body p-4">
-                            <h2 class="h5 fw-bold mb-3"><i class="bi bi-mortarboard text-primary me-2"></i>Educación</h2>
-                            <div class="row g-3">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h2 class="h5 fw-bold mb-0"><i class="bi bi-mortarboard text-primary me-2"></i>Educación y formación</h2>
+                                <asp:LinkButton ID="btnAgregarEducacion" runat="server" CssClass="btn btn-sm btn-outline-primary fw-semibold"
+                                    CausesValidation="false" OnClick="btnAgregarEducacion_Click">
+                                    <i class="bi bi-plus-circle me-1"></i>Agregar otro estudio
+                                </asp:LinkButton>
+                            </div>
+
+                            <asp:Repeater ID="rptEducacionCargada" runat="server" OnItemCommand="rptEducacionCargada_ItemCommand">
+                                <ItemTemplate>
+                                    <div class="d-flex justify-content-between align-items-center bg-primary-subtle border border-primary-subtle rounded-3 p-2 px-3 mb-2">
+                                        <div>
+                                            <i class="bi bi-check2-circle text-primary me-1"></i>
+                                            <strong class="text-dark"><%# Eval("Titulo") %></strong>
+                                            <span class="text-secondary small"> — <%# Eval("Institucion") %> (<%# Eval("NivelAlcanzado") %>, <%# Eval("Anio") %>)</span>
+                                        </div>
+                                        <asp:LinkButton ID="btnQuitarEdu" runat="server" CommandName="Quitar" CommandArgument='<%# Container.ItemIndex %>'
+                                            CssClass="btn btn-sm text-danger" CausesValidation="false">
+                                            <i class="bi bi-trash"></i>
+                                        </asp:LinkButton>
+                                    </div>
+                                </ItemTemplate>
+                            </asp:Repeater>
+
+                            <div class="row g-3 mt-1">
                                 <div class="col-md-6">
                                     <label class="form-label">Institución</label>
-                                    <asp:TextBox ID="txtInstitucion" runat="server" CssClass="form-control" MaxLength="150" />
+                                    <asp:TextBox ID="txtInstitucion" runat="server" CssClass="form-control" MaxLength="150" placeholder="Ej.: UTN / Colegio Secundario" />
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">Título</label>
-                                    <asp:TextBox ID="txtTitulo" runat="server" CssClass="form-control" MaxLength="150" />
+                                    <label class="form-label">Título o Carrera</label>
+                                    <asp:TextBox ID="txtTitulo" runat="server" CssClass="form-control" MaxLength="150" placeholder="Ej.: Bachiller / Tecnicatura en Programación" />
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Nivel alcanzado</label>
@@ -121,16 +147,40 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Año</label>
-                                    <asp:TextBox ID="txtAnioEducacion" runat="server" CssClass="form-control" TextMode="Number" />
+                                    <asp:TextBox ID="txtAnioEducacion" runat="server" CssClass="form-control" TextMode="Number" placeholder="Ej.: 2025" />
                                 </div>
                             </div>
                         </div>
                     </section>
 
+                    <!-- 4. EXPERIENCIA (MÚLTIPLE) -->
                     <section class="card border-0 shadow-sm mb-4">
                         <div class="card-body p-4">
-                            <h2 class="h5 fw-bold mb-3"><i class="bi bi-briefcase text-primary me-2"></i>Experiencia</h2>
-                            <div class="row g-3">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h2 class="h5 fw-bold mb-0"><i class="bi bi-briefcase text-primary me-2"></i>Experiencia laboral y voluntariado</h2>
+                                <asp:LinkButton ID="btnAgregarExperiencia" runat="server" CssClass="btn btn-sm btn-outline-primary fw-semibold"
+                                    CausesValidation="false" OnClick="btnAgregarExperiencia_Click">
+                                    <i class="bi bi-plus-circle me-1"></i>Agregar otra experiencia
+                                </asp:LinkButton>
+                            </div>
+
+                            <asp:Repeater ID="rptExperienciaCargada" runat="server" OnItemCommand="rptExperienciaCargada_ItemCommand">
+                                <ItemTemplate>
+                                    <div class="d-flex justify-content-between align-items-center bg-primary-subtle border border-primary-subtle rounded-3 p-2 px-3 mb-2">
+                                        <div>
+                                            <i class="bi bi-check2-circle text-primary me-1"></i>
+                                            <strong class="text-dark"><%# Eval("Puesto") %></strong>
+                                            <span class="text-secondary small"> en <%# Eval("Empresa") %> (<%# Eval("TipoExperiencia") %>)</span>
+                                        </div>
+                                        <asp:LinkButton ID="btnQuitarExp" runat="server" CommandName="Quitar" CommandArgument='<%# Container.ItemIndex %>'
+                                            CssClass="btn btn-sm text-danger" CausesValidation="false">
+                                            <i class="bi bi-trash"></i>
+                                        </asp:LinkButton>
+                                    </div>
+                                </ItemTemplate>
+                            </asp:Repeater>
+
+                            <div class="row g-3 mt-1">
                                 <div class="col-md-6">
                                     <label class="form-label">Tipo</label>
                                     <asp:DropDownList ID="ddlTipoExperiencia" runat="server" CssClass="form-select">
@@ -140,44 +190,93 @@
                                     </asp:DropDownList>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">Puesto</label>
-                                    <asp:TextBox ID="txtPuesto" runat="server" CssClass="form-control" MaxLength="100" />
+                                    <label class="form-label">Puesto / Rol</label>
+                                    <asp:TextBox ID="txtPuesto" runat="server" CssClass="form-control" MaxLength="100" placeholder="Ej.: Atención al cliente / Administrativo" />
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">Empresa</label>
-                                    <asp:TextBox ID="txtEmpresa" runat="server" CssClass="form-control" MaxLength="150" />
+                                    <label class="form-label">Empresa u Organización</label>
+                                    <asp:TextBox ID="txtEmpresa" runat="server" CssClass="form-control" MaxLength="150" placeholder="Ej.: Estudio Contable / Comercio" />
                                 </div>
                                 <div class="col-md-3">
                                     <label class="form-label">Desde</label>
                                     <asp:TextBox ID="txtFechaDesde" runat="server" CssClass="form-control" TextMode="Date" />
                                 </div>
                                 <div class="col-md-3">
-                                    <label class="form-label">Hasta</label>
+                                    <label class="form-label">Hasta <span class="text-muted small">(opcional)</span></label>
                                     <asp:TextBox ID="txtFechaHasta" runat="server" CssClass="form-control" TextMode="Date" />
                                 </div>
                                 <div class="col-12">
-                                    <label class="form-label">Descripción</label>
-                                    <asp:TextBox ID="txtDescripcion" runat="server" CssClass="form-control" TextMode="MultiLine" Rows="3" MaxLength="255" />
+                                    <label class="form-label">Descripción de tareas</label>
+                                    <asp:TextBox ID="txtDescripcion" runat="server" CssClass="form-control" TextMode="MultiLine" Rows="3" MaxLength="255"
+                                        placeholder="Describí brevemente tus tareas principales..." />
                                 </div>
                             </div>
                         </div>
                     </section>
 
+                    <!-- 5. IDIOMAS -->
                     <section class="card border-0 shadow-sm mb-4">
                         <div class="card-body p-4">
-                            <h2 class="h5 fw-bold mb-3"><i class="bi bi-stars text-primary me-2"></i>Habilidad</h2>
-                            <div class="row g-3">
-                                <div class="col-md-8">
-                                    <label class="form-label">Descripción</label>
-                                    <asp:TextBox ID="txtHabilidad" runat="server" CssClass="form-control" MaxLength="150" placeholder="Ej.: Trabajo en equipo" />
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h2 class="h5 fw-bold mb-0"><i class="bi bi-translate text-primary me-2"></i>Idiomas</h2>
+                                <asp:LinkButton ID="btnAgregarIdioma" runat="server" CssClass="btn btn-sm btn-outline-primary fw-semibold"
+                                    CausesValidation="false" OnClick="btnAgregarIdioma_Click">
+                                    <i class="bi bi-plus-circle me-1"></i>Agregar otro idioma
+                                </asp:LinkButton>
+                            </div>
+
+                            <asp:Repeater ID="rptIdiomasCargados" runat="server" OnItemCommand="rptIdiomasCargados_ItemCommand">
+                                <ItemTemplate>
+                                    <div class="d-flex justify-content-between align-items-center bg-primary-subtle border border-primary-subtle rounded-3 p-2 px-3 mb-2">
+                                        <div>
+                                            <i class="bi bi-globe2 text-primary me-2"></i>
+                                            <strong class="text-dark"><%# Container.DataItem %></strong>
+                                        </div>
+                                        <asp:LinkButton ID="btnQuitarIdioma" runat="server" CommandName="Quitar" CommandArgument='<%# Container.ItemIndex %>'
+                                            CssClass="btn btn-sm text-danger" CausesValidation="false">
+                                            <i class="bi bi-trash"></i>
+                                        </asp:LinkButton>
+                                    </div>
+                                </ItemTemplate>
+                            </asp:Repeater>
+
+                            <div class="row g-3 mt-1">
+                                <div class="col-md-7">
+                                    <label class="form-label">Idioma</label>
+                                    <asp:TextBox ID="txtIdioma" runat="server" CssClass="form-control" MaxLength="60" placeholder="Ej.: Inglés / Portugués / Francés" />
                                 </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">Tipo de habilidad</label>
-                                    <asp:DropDownList ID="ddlTipoHabilidad" runat="server" CssClass="form-select">
-                                        <asp:ListItem Text="Blanda" Value="true" />
-                                        <asp:ListItem Text="Dura" Value="false" />
+                                <div class="col-md-5">
+                                    <label class="form-label">Nivel</label>
+                                    <asp:DropDownList ID="ddlNivelIdioma" runat="server" CssClass="form-select">
+                                        <asp:ListItem Text="Básico" Value="Básico" />
+                                        <asp:ListItem Text="Intermedio" Value="Intermedio" />
+                                        <asp:ListItem Text="Avanzado" Value="Avanzado" />
+                                        <asp:ListItem Text="Nativo / Bilingüe" Value="Nativo" />
                                     </asp:DropDownList>
                                 </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 6. HABILIDADES BLANDAS Y TÉCNICAS -->
+                    <section class="card border-0 shadow-sm mb-4">
+                        <div class="card-body p-4">
+                            <h2 class="h5 fw-bold mb-3"><i class="bi bi-stars text-primary me-2"></i>Habilidades y Competencias</h2>
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold">Habilidades blandas <span class="text-muted fw-normal small">(separalas con coma)</span></label>
+                                    <asp:TextBox ID="txtHabilidad" runat="server" CssClass="form-control" MaxLength="250"
+                                        placeholder="Ej.: Trabajo en equipo, Comunicación efectiva, Proactividad, Puntualidad" />
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold">Habilidades técnicas y herramientas <span class="text-muted fw-normal small">(separalas con coma)</span></label>
+                                    <asp:TextBox ID="txtHabilidadTecnica" runat="server" CssClass="form-control" MaxLength="250"
+                                        placeholder="Ej.: Excel, Word, Atención al público, Redes sociales, Programación" />
+                                </div>
+                                <asp:DropDownList ID="ddlTipoHabilidad" runat="server" Visible="false">
+                                    <asp:ListItem Text="Blanda" Value="true" />
+                                    <asp:ListItem Text="Dura" Value="false" />
+                                </asp:DropDownList>
                             </div>
                         </div>
                     </section>
@@ -185,15 +284,19 @@
                     <div class="d-flex justify-content-end gap-2 mb-4">
                         <a href="MisCurriculums.aspx" class="btn btn-outline-secondary">Cancelar</a>
                         <asp:Button ID="btnGuardarCV" runat="server" Text="Guardar currículum"
-                            CssClass="btn btn-primary" ValidationGroup="guardarCV" OnClick="btnGuardarCV_Click" />
+                            CssClass="btn btn-primary px-4" ValidationGroup="guardarCV" OnClick="btnGuardarCV_Click" />
                     </div>
                 </div>
 
                 <aside class="col-lg-4">
-                    <div class="card border-0 shadow-sm">
+                    <div class="card border-0 shadow-sm sticky-top" style="top: 24px;">
                         <div class="card-body p-4">
-                            <h2 class="h5 fw-bold">Antes de guardar</h2>
-                            <p class="text-secondary mb-0">Podés completar los datos del CV. El botón Guardar ya está conectado a un evento de WebForms para implementar el guardado desde C#.</p>
+                            <h2 class="h5 fw-bold mb-3"><i class="bi bi-lightbulb text-warning me-2"></i>Consejos para tu CV</h2>
+                            <ul class="small text-secondary ps-3 mb-0 d-flex flex-column gap-2">
+                                <li><strong>Múltiples estudios y trabajos:</strong> Escribí los datos y tocá <em>"+ Agregar otro estudio"</em> o <em>"+ Agregar otra experiencia"</em> para sumar todos los que quieras.</li>
+                                <li><strong>Idiomas destacados:</strong> Cargá tus idiomas y su nivel para que figuren en su propia sección del CV.</li>
+                                <li><strong>Habilidades separadas:</strong> Escribí tus habilidades blandas y técnicas separadas por coma para que se generen como etiquetas individuales.</li>
+                            </ul>
                         </div>
                     </div>
                 </aside>

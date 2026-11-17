@@ -123,7 +123,6 @@
                             class="nav-link text-secondary">
                             <i class="bi bi-person me-2"></i>
                             Mi perfil
-                        </a>
 
                         <a href="#"
                             class="nav-link text-secondary">

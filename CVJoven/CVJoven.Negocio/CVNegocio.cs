@@ -9,7 +9,6 @@ namespace CVJoven.Negocio
     {
         private readonly CVDatos cvDatos = new CVDatos();
 
-        // Métodos base por si los usa MisCurriculums.aspx
         public List<CV> ListarCV(long idUsuario)
         {
             return cvDatos.ListarCV(idUsuario);
@@ -30,26 +29,29 @@ namespace CVJoven.Negocio
             return cvDatos.EliminarCV(idCV, idUsuario);
         }
 
-        // Métodos nuevos para guardar el formulario completo y armar la vista previa
-        public long GuardarCVCompleto(CV cv, Educacion edu, Experiencia exp, List<Habilidad> habilidades)
+        public long GuardarCVCompleto(CV cv, List<Educacion> estudios, List<Experiencia> experiencias, List<Habilidad> habilidades)
         {
             long idCV = cvDatos.InsertarCV(cv);
 
             if (idCV <= 0)
-            {
                 return 0;
+
+            if (estudios != null)
+            {
+                foreach (Educacion edu in estudios)
+                {
+                    edu.IdCV = idCV;
+                    cvDatos.InsertarEducacion(edu);
+                }
             }
 
-            if (edu != null)
+            if (experiencias != null)
             {
-                edu.IdCV = idCV;
-                cvDatos.InsertarEducacion(edu);
-            }
-
-            if (exp != null)
-            {
-                exp.IdCV = idCV;
-                cvDatos.InsertarExperiencia(exp);
+                foreach (Experiencia exp in experiencias)
+                {
+                    exp.IdCV = idCV;
+                    cvDatos.InsertarExperiencia(exp);
+                }
             }
 
             if (habilidades != null)
@@ -62,6 +64,11 @@ namespace CVJoven.Negocio
             }
 
             return idCV;
+        }
+
+        public void ActualizarCVCompleto(CV cv, List<Educacion> estudios, List<Experiencia> experiencias, List<Habilidad> habilidades)
+        {
+            cvDatos.ActualizarCVCompleto(cv, estudios, experiencias, habilidades);
         }
 
         public CV ObtenerCVPorId(long idCV)
@@ -84,17 +91,12 @@ namespace CVJoven.Negocio
             return cvDatos.ListarHabilidadesPorCV(idCV);
         }
 
-        public void ActualizarCVCompleto(CV cv, Educacion edu, Experiencia exp, List<Habilidad> habilidades)
-        {
-            cvDatos.ActualizarCVCompleto(cv, edu, exp, habilidades);
-        }
-
         public string GenerarPerfilProfesional(Usuario u, CV cv, List<Educacion> estudios, List<Experiencia> experiencias, List<Habilidad> habilidades)
         {
             int edad = DateTime.Today.Year - u.FechaNacimiento.Year;
             if (u.FechaNacimiento.Date > DateTime.Today.AddYears(-edad)) edad--;
 
-            string resumen = $"Joven profesional de {edad} años residente en {u.ZonaLocalidad}";
+            string resumen = $"Postulante de {edad} años residente en {u.ZonaLocalidad}";
 
             if (estudios != null && estudios.Count > 0)
             {
@@ -115,7 +117,7 @@ namespace CVJoven.Negocio
                 }
                 else
                 {
-                    resumen += $"Cuenta con trayectoria en proyectos de voluntariado desempeñándose como {exp.Puesto} en {exp.Empresa}. ";
+                    resumen += $"Cuenta con experiencia en actividades de voluntariado desempeñándose como {exp.Puesto} en {exp.Empresa}. ";
                 }
             }
             else
@@ -125,14 +127,29 @@ namespace CVJoven.Negocio
 
             if (habilidades != null && habilidades.Count > 0)
             {
-                List<string> nombresHab = new List<string>();
+                List<string> blandas = new List<string>();
+                List<string> tecnicas = new List<string>();
+
                 foreach (var h in habilidades)
                 {
-                    nombresHab.Add(h.Descripcion.ToLower());
+                    if (h.TipoHabilidad)
+                        blandas.Add(h.Descripcion.ToLower());
+                    else
+                        tecnicas.Add(h.Descripcion);
                 }
 
-                string listaTexto = string.Join(", ", nombresHab);
-                resumen += $"Destaca por sus competencias en {listaTexto}. ";
+                if (tecnicas.Count > 0 && blandas.Count > 0)
+                {
+                    resumen += $"Posee conocimientos en {string.Join(", ", tecnicas)} y se destaca por competencias como {string.Join(", ", blandas)}. ";
+                }
+                else if (tecnicas.Count > 0)
+                {
+                    resumen += $"Posee conocimientos técnicos y herramientas en {string.Join(", ", tecnicas)}. ";
+                }
+                else if (blandas.Count > 0)
+                {
+                    resumen += $"Destaca por sus competencias en {string.Join(", ", blandas)}. ";
+                }
             }
 
             resumen += $"Disponibilidad horaria {cv.DisponibilidadHoraria.ToLower()} para incorporación inmediata.";

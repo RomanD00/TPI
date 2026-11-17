@@ -363,12 +363,10 @@ namespace CVJoven.Datos
             }
         }
 
-        public void ActualizarCVCompleto(CV cv, Educacion edu, Experiencia exp, List<Habilidad> habilidades)
+        public void ActualizarCVCompleto(CV cv, List<Educacion> estudios, List<Experiencia> experiencias, List<Habilidad> habilidades)
         {
-            // 1. Actualizar cabecera del CV
             ModificarCV(cv);
 
-            // 2. Limpiar secciones anteriores de ese CV para reinsertar las editadas
             AccesoDatos datos = new AccesoDatos();
             try
             {
@@ -384,17 +382,22 @@ namespace CVJoven.Datos
                 datos.cerrarConexion();
             }
 
-            // 3. Insertar los datos actualizados
-            if (edu != null)
+            if (estudios != null)
             {
-                edu.IdCV = cv.IdCV;
-                InsertarEducacion(edu);
+                foreach (Educacion edu in estudios)
+                {
+                    edu.IdCV = cv.IdCV;
+                    InsertarEducacion(edu);
+                }
             }
 
-            if (exp != null)
+            if (experiencias != null)
             {
-                exp.IdCV = cv.IdCV;
-                InsertarExperiencia(exp);
+                foreach (Experiencia exp in experiencias)
+                {
+                    exp.IdCV = cv.IdCV;
+                    InsertarExperiencia(exp);
+                }
             }
 
             if (habilidades != null)

@@ -60,9 +60,27 @@
 
         List<Educacion> estudios = negocio.ListarEducacionPorCV(idCV);
         List<Experiencia> experiencias = negocio.ListarExperienciaPorCV(idCV);
-        List<Habilidad> habilidades = negocio.ListarHabilidadesPorCV(idCV);
+        List<Habilidad> todasHabilidades = negocio.ListarHabilidadesPorCV(idCV);
 
-        // Normalizar textos para presentación prolija
+        List<Habilidad> habilidadesFiltradas = new List<Habilidad>();
+        List<string> idiomas = new List<string>();
+
+        if (todasHabilidades != null)
+        {
+            foreach (var hab in todasHabilidades)
+            {
+                if (hab.Descripcion != null && hab.Descripcion.StartsWith("Idioma:", StringComparison.OrdinalIgnoreCase))
+                {
+                    idiomas.Add(hab.Descripcion.Substring(7).Trim());
+                }
+                else
+                {
+                    hab.Descripcion = FormatearOracion(hab.Descripcion);
+                    habilidadesFiltradas.Add(hab);
+                }
+            }
+        }
+
         if (estudios != null)
         {
             foreach (var edu in estudios)
@@ -82,21 +100,12 @@
             }
         }
 
-        if (habilidades != null)
-        {
-            foreach (var hab in habilidades)
-            {
-                hab.Descripcion = FormatearOracion(hab.Descripcion);
-            }
-        }
-
-        // Iniciales para el avatar
         string inicialNombre = !string.IsNullOrWhiteSpace(usuario.Nombre) ? usuario.Nombre.Trim()[0].ToString().ToUpper() : "U";
         string inicialApellido = !string.IsNullOrWhiteSpace(usuario.Apellido) ? usuario.Apellido.Trim()[0].ToString().ToUpper() : "";
         lblIniciales.Text = inicialNombre + inicialApellido;
 
-        // Cabecera y datos personales
         lblTituloDocumento.Text = FormatearOracion(cv.nombreDelCV);
+        lnkEditarCV.NavigateUrl = $"CrearCurriculum.aspx?id={idCV}";
         lblNombreCompleto.Text = FormatearTitulo(usuario.Nombre + " " + usuario.Apellido);
         lblDisponibilidad.Text = cv.DisponibilidadHoraria;
         lblLocalidad.Text = FormatearTitulo(usuario.ZonaLocalidad);
@@ -104,10 +113,13 @@
         lblEmail.Text = usuario.Mail.ToLower();
         lblDni.Text = usuario.DNI;
 
-        // Perfil profesional generado automáticamente
-        lblPerfilProfesional.Text = negocio.GenerarPerfilProfesional(usuario, cv, estudios, experiencias, habilidades);
+        string perfil = negocio.GenerarPerfilProfesional(usuario, cv, estudios, experiencias, habilidadesFiltradas);
+        if (idiomas.Count > 0)
+        {
+            perfil += $" Manejo de idiomas: {string.Join(", ", idiomas)}.";
+        }
+        lblPerfilProfesional.Text = perfil;
 
-        // Educación
         if (estudios != null && estudios.Count > 0)
         {
             repEducacion.DataSource = estudios;
@@ -118,7 +130,6 @@
             lblSinEducacion.Visible = true;
         }
 
-        // Experiencia
         if (experiencias != null && experiencias.Count > 0)
         {
             repExperiencia.DataSource = experiencias;
@@ -129,15 +140,21 @@
             lblSinExperiencia.Visible = true;
         }
 
-        // Habilidades
-        if (habilidades != null && habilidades.Count > 0)
+        if (habilidadesFiltradas.Count > 0)
         {
-            repHabilidades.DataSource = habilidades;
+            repHabilidades.DataSource = habilidadesFiltradas;
             repHabilidades.DataBind();
         }
         else
         {
             lblSinHabilidades.Visible = true;
+        }
+
+        if (idiomas.Count > 0)
+        {
+            pnlIdiomas.Visible = true;
+            repIdiomas.DataSource = idiomas;
+            repIdiomas.DataBind();
         }
     }
 </script>
@@ -276,6 +293,9 @@
                     <a href="MisCurriculums.aspx" class="btn btn-outline-secondary btn-sm px-3">
                         <i class="bi bi-arrow-left me-1"></i>Volver a Mis CVs
                     </a>
+                    <asp:HyperLink ID="lnkEditarCV" runat="server" CssClass="btn btn-outline-primary btn-sm px-3">
+                        <i class="bi bi-pencil me-1"></i>Editar CV
+                    </asp:HyperLink>
                     <button type="button" class="btn btn-primary btn-sm fw-semibold px-3" onclick="window.print();">
                         <i class="bi bi-file-earmark-pdf me-1"></i>Descargar PDF / Imprimir
                     </button>
@@ -316,7 +336,7 @@
                     </div>
                 </div>
 
-                <div>
+                <div class="mb-4 pb-2">
                     <h6 class="titulo-lateral">Habilidades y Competencias</h6>
                     <asp:Repeater ID="repHabilidades" runat="server">
                         <ItemTemplate>
@@ -330,6 +350,17 @@
                     </asp:Repeater>
                     <asp:Label ID="lblSinHabilidades" runat="server" CssClass="small text-secondary" Visible="false" Text="Sin habilidades registradas." />
                 </div>
+
+                <asp:Panel ID="pnlIdiomas" runat="server" Visible="false">
+                    <h6 class="titulo-lateral">Idiomas</h6>
+                    <asp:Repeater ID="repIdiomas" runat="server">
+                        <ItemTemplate>
+                            <div class="chip-habilidad">
+                                <span><i class="bi bi-translate text-info me-2"></i><%# Container.DataItem %></span>
+                            </div>
+                        </ItemTemplate>
+                    </asp:Repeater>
+                </asp:Panel>
             </div>
 
             <!-- Columna Derecha -->

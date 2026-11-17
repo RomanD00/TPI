@@ -42,6 +42,15 @@ namespace CVJoven
         protected global::System.Web.UI.WebControls.Label lblEmailUsuario;
 
         /// <summary>
+        /// Control lblTituloPagina.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblTituloPagina;
+
+        /// <summary>
         /// Control resumenErrores.
         /// </summary>
         /// <remarks>
@@ -141,6 +150,24 @@ namespace CVJoven
         protected global::System.Web.UI.WebControls.TextBox txtLocalidad;
 
         /// <summary>
+        /// Control btnAgregarEducacion.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnAgregarEducacion;
+
+        /// <summary>
+        /// Control rptEducacionCargada.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptEducacionCargada;
+
+        /// <summary>
         /// Control txtInstitucion.
         /// </summary>
         /// <remarks>
@@ -175,6 +202,24 @@ namespace CVJoven
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtAnioEducacion;
+
+        /// <summary>
+        /// Control btnAgregarExperiencia.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnAgregarExperiencia;
+
+        /// <summary>
+        /// Control rptExperienciaCargada.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptExperienciaCargada;
 
         /// <summary>
         /// Control ddlTipoExperiencia.
@@ -231,6 +276,42 @@ namespace CVJoven
         protected global::System.Web.UI.WebControls.TextBox txtDescripcion;
 
         /// <summary>
+        /// Control btnAgregarIdioma.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnAgregarIdioma;
+
+        /// <summary>
+        /// Control rptIdiomasCargados.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptIdiomasCargados;
+
+        /// <summary>
+        /// Control txtIdioma.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtIdioma;
+
+        /// <summary>
+        /// Control ddlNivelIdioma.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlNivelIdioma;
+
+        /// <summary>
         /// Control txtHabilidad.
         /// </summary>
         /// <remarks>
@@ -238,6 +319,15 @@ namespace CVJoven
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtHabilidad;
+
+        /// <summary>
+        /// Control txtHabilidadTecnica.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtHabilidadTecnica;
 
         /// <summary>
         /// Control ddlTipoHabilidad.
