@@ -57,7 +57,7 @@ namespace CVJoven
                 UsuarioNegocio usuarioNegocio = new UsuarioNegocio();
                 Usuario usuario = usuarioNegocio.IniciarSesion(mail, password);
 
-                if (usuario != null)
+                if (usuario != null )
                 {
                     Session["Usuario"] = usuario;
 

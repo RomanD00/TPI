@@ -143,7 +143,7 @@ namespace CVJoven
 
             if (pnlPostulante.Visible)
             {
-                registrarPostulante(2);
+                registrarPostulante(1);
             }
         }
 
@@ -184,7 +184,7 @@ namespace CVJoven
 
                 Session["usuarioPorRegistrar"] = usuario;
 
-                EnviarCorreoConfirmacion(true, mail, nombre);
+               // EnviarCorreoConfirmacion(true, mail, nombre);
 
                 UsuarioNegocio negocio = new UsuarioNegocio();
                 bool registrado = negocio.RegistrarUsuario(usuario);
@@ -230,6 +230,7 @@ namespace CVJoven
 
         ////mandar email de confirmacion de registro
 
+        /*
         protected void EnviarCorreoConfirmacion(bool registro, string emailDestino, string nombre)
         {
             try
@@ -272,6 +273,7 @@ namespace CVJoven
                 ClientScript.RegisterStartupScript(this.GetType(), "alert", $"alert('Error al enviar el correo: {ex.Message.Replace("'", "\\'")}');", true);
             }
         }
+        */
         
     }
 }

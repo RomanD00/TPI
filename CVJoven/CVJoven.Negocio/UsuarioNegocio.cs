@@ -41,6 +41,8 @@ namespace CVJoven.Negocio
             {
                 return null;
             }
+            // No devolver el hash a la capa de presentación
+           // usuario.Password = null;
 
             return usuario;
         }
