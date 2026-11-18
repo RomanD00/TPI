@@ -217,3 +217,15 @@ CREATE TABLE Token (
 );
 
 
+ALTER TABLE OfertaLaboral
+ADD EstadoOferta VARCHAR(20) NOT NULL
+DEFAULT 'Activa'
+CONSTRAINT CK_OfertaLaboral_Estado
+CHECK (EstadoOferta IN ('Activa', 'Cerrada', 'Cancelada'));
+
+
+ALTER TABLE OfertaLaboral
+ADD FechaPublicacion DATETIME NOT NULL
+DEFAULT GETDATE();
+
+
