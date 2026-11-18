@@ -287,7 +287,65 @@ namespace CVJoven.Datos
             }
         }
 
+        public DataTable ObtenerPostulacionesPorUsuario(long idUsuario)
+        {
+            AccesoDatos datos = new AccesoDatos();
+            DataTable tabla = new DataTable();
 
+            try
+            {
+                datos.setearConsulta(@"
+                    SELECT
+                        p.IdPostulacion,
+                        p.IdOferta,
+                        p.IdCV,
+                        o.TituloOferta,
+                        o.EstadoOferta,
+                        c.nombreDelCV,
+                        p.FechaPostulacion,
+                        p.EstadoPostulacion
+                    FROM Postulacion p
+                    INNER JOIN OfertaLaboral o
+                        ON p.IdOferta = o.IdOferta
+                    INNER JOIN CV c
+                        ON p.IdCV = c.IdCV
+                    WHERE p.IdUsuario = @idUsuario
+                    ORDER BY p.FechaPostulacion DESC");
+
+                datos.setearParametro("@idUsuario", idUsuario);
+                datos.ejecutarLectura();
+
+                tabla.Load(datos.Lector);
+                return tabla;
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
+
+        public int CancelarPostulacion(long idPostulacion, long idUsuario)
+        {
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.setearConsulta(@"
+                    DELETE FROM Postulacion
+                    WHERE IdPostulacion = @idPostulacion
+                    AND IdUsuario = @idUsuario
+                    AND EstadoPostulacion = 'Pendiente'");
+
+                datos.setearParametro("@idPostulacion", idPostulacion);
+                datos.setearParametro("@idUsuario", idUsuario);
+
+                return datos.ejecutarAccion();
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
 
 
     }

@@ -116,7 +116,23 @@ namespace CVJoven.Negocio
         }
 
 
+        public DataTable ObtenerPostulacionesPorUsuario(long idUsuario)
+        {
+            if (idUsuario <= 0)
+                throw new ArgumentException("Usuario inválido.");
 
+            PostulacionDatos datos = new PostulacionDatos();
+            return datos.ObtenerPostulacionesPorUsuario(idUsuario);
+        }
+
+        public bool CancelarPostulacion(long idPostulacion, long idUsuario)
+        {
+            if (idPostulacion <= 0 || idUsuario <= 0)
+                throw new ArgumentException("Datos inválidos.");
+
+            PostulacionDatos datos = new PostulacionDatos();
+            return datos.CancelarPostulacion(idPostulacion, idUsuario) > 0;
+        }
 
 
     }

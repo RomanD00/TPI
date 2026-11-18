@@ -114,6 +114,7 @@
     <Content Include="Login.aspx" />
     <Content Include="MiEmpresa.aspx" />
     <Content Include="MisCurriculums.aspx" />
+    <Content Include="MisPostulaciones.aspx" />
     <Content Include="OfertasLaborales.aspx" />
     <Content Include="RegistrarOfertaLaboral.aspx" />
     <Content Include="VerCV.aspx" />
@@ -157,6 +158,13 @@
     </Compile>
     <Compile Include="MisCurriculums.aspx.designer.cs">
       <DependentUpon>MisCurriculums.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="MisPostulaciones.aspx.cs">
+      <DependentUpon>MisPostulaciones.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MisPostulaciones.aspx.designer.cs">
+      <DependentUpon>MisPostulaciones.aspx</DependentUpon>
     </Compile>
     <Compile Include="OfertasLaborales.aspx.cs">
       <DependentUpon>OfertasLaborales.aspx</DependentUpon>

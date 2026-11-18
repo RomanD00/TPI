@@ -101,11 +101,9 @@
                             Ofertas laborales
                         </a>
 
-                        <a href="#"
-                            class="nav-link text-secondary">
-
-                            <i class="bi bi-send me-2"></i>
-                            Mis postulaciones
+                        <a href="MisPostulaciones.aspx" class="nav-link text-secondary">
+                             <i class="bi bi-send me-2"></i>
+                             Mis postulaciones
                         </a>
 
                     </div>
