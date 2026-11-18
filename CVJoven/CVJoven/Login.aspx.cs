@@ -44,11 +44,13 @@ namespace CVJoven
 
                 if (empresa != null)
                 {
+                    Session.Clear();
+
                     Session["IdEmpresa"] = empresa.IdEmpresa;
                     Session["NombreEmpresa"] = empresa.NombreComercial;
                     Session["TipoUsuario"] = empresa.IdTipoUsuario;
 
-                    Response.Redirect("OfertasLaborales.aspx", false);
+                    Response.Redirect("MiEmpresa.aspx", false);
                     Context.ApplicationInstance.CompleteRequest();
                     return;
                 }

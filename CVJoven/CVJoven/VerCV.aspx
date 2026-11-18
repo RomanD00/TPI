@@ -4,9 +4,10 @@
 <%@ Import Namespace="System.Globalization" %>
 <%@ Import Namespace="CVJoven.Dominio" %>
 <%@ Import Namespace="CVJoven.Negocio" %>
+<%@ Import Namespace="System.Data" %>
 
 <script runat="server">
-    protected void Page_Load(object sender, EventArgs e)
+   /* protected void Page_Load(object sender, EventArgs e)
     {
         Usuario usuario = Session["Usuario"] as Usuario;
 
@@ -30,7 +31,107 @@
                 Context.ApplicationInstance.CompleteRequest();
             }
         }
+    }*/
+   private void CargarCVComoEmpresa()
+{
+    long idPostulacion;
+
+    if (!long.TryParse(
+        Request.QueryString["idPostulacion"],
+        out idPostulacion) || idPostulacion <= 0)
+    {
+        Response.Redirect("MiEmpresa.aspx");
+        return;
     }
+
+    long idEmpresa =
+        Convert.ToInt64(Session["IdEmpresa"]);
+
+    PostulacionNegocio negocio =
+        new PostulacionNegocio();
+
+    DataTable tabla =
+        negocio.ObtenerCandidatoPorPostulacion(
+            idPostulacion, idEmpresa);
+
+    if (tabla.Rows.Count == 0)
+    {
+        Response.Redirect("MiEmpresa.aspx");
+        return;
+    }
+
+    DataRow fila = tabla.Rows[0];
+
+    Usuario candidato = new Usuario();
+
+    candidato.IdUsuario =
+        Convert.ToInt64(fila["IdUsuario"]);
+
+    candidato.Nombre = fila["Nombre"].ToString();
+    candidato.Apellido = fila["Apellido"].ToString();
+    candidato.ZonaLocalidad = fila["ZonaLocalidad"].ToString();
+
+    candidato.FechaNacimiento =
+        Convert.ToDateTime(fila["FechaNacimiento"]);
+
+    candidato.Mail = fila["Mail"].ToString();
+    candidato.Celular = fila["Celular"].ToString();
+    candidato.DNI = "";
+
+    long idCV = Convert.ToInt64(fila["IdCV"]);
+    long idOferta = Convert.ToInt64(fila["IdOferta"]);
+
+    CargarVistaPreviaCV(idCV, candidato);
+
+lnkEditarCV.Visible = false;
+
+pnlDni.Visible = false;
+
+pnlCelular.Visible = true;
+pnlEmail.Visible = true;
+
+    lnkVolver.NavigateUrl =
+        "Candidatos.aspx?idOferta=" + idOferta;
+
+    lnkVolver.Text = "Volver a candidatos";
+}
+
+
+
+    protected void Page_Load(object sender, EventArgs e)
+{
+    Usuario usuario = Session["Usuario"] as Usuario;
+
+    if (usuario == null && Session["IdEmpresa"] == null)
+    {
+        Response.Redirect("~/Login.aspx", false);
+        Context.ApplicationInstance.CompleteRequest();
+        return;
+    }
+
+    if (!IsPostBack)
+    {
+        if (Session["IdEmpresa"] != null)
+        {
+            CargarCVComoEmpresa();
+        }
+        else
+        {
+            long idCV;
+
+            if (long.TryParse(
+                Request.QueryString["id"], out idCV))
+            {
+                CargarVistaPreviaCV(idCV, usuario);
+            }
+            else
+            {
+                Response.Redirect("MisCurriculums.aspx", false);
+                Context.ApplicationInstance.CompleteRequest();
+            }
+        }
+    }
+}
 
     private string FormatearTitulo(string texto)
     {
@@ -290,9 +391,16 @@
                     <asp:Label ID="lblTituloDocumento" runat="server" CssClass="fw-bold text-dark fs-6" />
                 </div>
                 <div class="d-flex gap-2">
+                    <!--
                     <a href="MisCurriculums.aspx" class="btn btn-outline-secondary btn-sm px-3">
                         <i class="bi bi-arrow-left me-1"></i>Volver a Mis CVs
                     </a>
+                    -->
+                                    <asp:HyperLink ID="lnkVolver"
+                    runat="server"
+                    NavigateUrl="MisCurriculums.aspx"
+                    Text="Volver a Mis CVs"
+                    CssClass="btn btn-outline-secondary btn-sm px-3" />
                     <asp:HyperLink ID="lnkEditarCV" runat="server" CssClass="btn btn-outline-primary btn-sm px-3">
                         <i class="bi bi-pencil me-1"></i>Editar CV
                     </asp:HyperLink>
@@ -318,22 +426,56 @@
 
                 <div class="mb-4 pb-2">
                     <h6 class="titulo-lateral">Datos de Contacto</h6>
+                    <!--
                     <div class="item-contacto">
                         <i class="bi bi-geo-alt-fill"></i>
                         <span><asp:Label ID="lblLocalidad" runat="server" /></span>
                     </div>
                     <div class="item-contacto">
                         <i class="bi bi-telephone-fill"></i>
-                        <span><asp:Label ID="lblCelular" runat="server" /></span>
+                        <span><asp:Label ID="lblCelular0000" runat="server" /></span>
                     </div>
                     <div class="item-contacto text-break">
                         <i class="bi bi-envelope-fill"></i>
-                        <span><asp:Label ID="lblEmail" runat="server" /></span>
+                        <span><asp:Label ID="lblEmail0000" runat="server" /></span>
                     </div>
                     <div class="item-contacto mb-0">
                         <i class="bi bi-person-vcard-fill"></i>
-                        <span>DNI: <asp:Label ID="lblDni" runat="server" /></span>
+                        <span>DNI: <asp:Label ID="lblDni0000" runat="server" /></span>
                     </div>
+                    -->
+                    <div id="pnlCelular" runat="server"
+    class="item-contacto">
+
+    <i class="bi bi-telephone-fill"></i>
+
+    <span>
+        <asp:Label ID="lblCelular" runat="server" />
+    </span>
+
+</div>
+
+<div id="pnlEmail" runat="server"
+    class="item-contacto text-break">
+
+    <i class="bi bi-envelope-fill"></i>
+
+    <span>
+        <asp:Label ID="lblEmail" runat="server" />
+    </span>
+
+</div>
+
+<div id="pnlDni" runat="server"
+    class="item-contacto mb-0">
+
+    <i class="bi bi-person-vcard-fill"></i>
+
+    <span>
+        DNI: <asp:Label ID="lblDni" runat="server" />
+    </span>
+
+</div>
                 </div>
 
                 <div class="mb-4 pb-2">

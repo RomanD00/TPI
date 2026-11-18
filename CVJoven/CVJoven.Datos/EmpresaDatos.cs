@@ -99,6 +99,112 @@ namespace CVJoven.Datos
         }
 
 
+        public Empresa BuscarPorId(long idEmpresa)
+        {
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.setearConsulta(@"
+            SELECT idEmpresa, idTipoUsuario, mail,
+                   nombreLegal, nombreComercial,
+                   CUIT, sector, tamanioDeEmpresa,
+                   paginaWeb, correoRRHH
+            FROM Empresa
+            WHERE idEmpresa = @idEmpresa");
+
+                datos.setearParametro("@idEmpresa", idEmpresa);
+
+                datos.ejecutarLectura();
+
+                if (datos.Lector.Read())
+                {
+                    Empresa empresa = new Empresa();
+
+                    empresa.IdEmpresa =
+                        Convert.ToInt64(datos.Lector["idEmpresa"]);
+
+                    empresa.IdTipoUsuario =
+                        Convert.ToInt32(datos.Lector["idTipoUsuario"]);
+
+                    empresa.Mail =
+                        datos.Lector["mail"].ToString();
+
+                    empresa.NombreLegal =
+                        datos.Lector["nombreLegal"].ToString();
+
+                    empresa.NombreComercial =
+                        datos.Lector["nombreComercial"].ToString();
+
+                    empresa.CUIT =
+                        datos.Lector["CUIT"].ToString();
+
+                    empresa.sector =
+                        datos.Lector["sector"].ToString();
+
+                    empresa.TamanioDeEmpresa =
+                        datos.Lector["tamanioDeEmpresa"].ToString();
+
+                    empresa.PaginaWeb =
+                        datos.Lector["paginaWeb"] == DBNull.Value
+                        ? null
+                        : datos.Lector["paginaWeb"].ToString();
+
+                    empresa.CorreoRRHH =
+                        datos.Lector["correoRRHH"].ToString();
+
+                    return empresa;
+                }
+
+                return null;
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
+
+        public int ActualizarEmpresa(Empresa empresa)
+        {
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.setearConsulta(@"
+            UPDATE Empresa
+            SET nombreLegal = @nombreLegal,
+                nombreComercial = @nombreComercial,
+                CUIT = @cuit,
+                sector = @sector,
+                tamanioDeEmpresa = @tamanio,
+                paginaWeb = @paginaWeb,
+                correoRRHH = @correoRRHH,
+                mail = @mail
+            WHERE idEmpresa = @idEmpresa");
+
+                datos.setearParametro("@nombreLegal", empresa.NombreLegal);
+                datos.setearParametro("@nombreComercial", empresa.NombreComercial);
+                datos.setearParametro("@cuit", empresa.CUIT);
+                datos.setearParametro("@sector", empresa.sector);
+                datos.setearParametro("@tamanio", empresa.TamanioDeEmpresa);
+                datos.setearParametro("@correoRRHH", empresa.CorreoRRHH);
+                datos.setearParametro("@mail", empresa.Mail);
+                datos.setearParametro("@idEmpresa", empresa.IdEmpresa);
+
+                datos.setearParametro("@paginaWeb",
+                    string.IsNullOrWhiteSpace(empresa.PaginaWeb)
+                        ? (object)DBNull.Value
+                        : empresa.PaginaWeb);
+
+                return datos.ejecutarAccion();
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
+
+
 
 
     }

@@ -35,5 +35,89 @@ namespace CVJoven.Negocio
             return filas > 0;
         }
 
+        public DataTable ObtenerCandidatosPorOferta(
+    long idOferta, long idEmpresa)
+        {
+            if (idOferta <= 0 || idEmpresa <= 0)
+            {
+                throw new ArgumentException(
+                    "Oferta o empresa no válida.");
+            }
+
+            PostulacionDatos datos = new PostulacionDatos();
+
+            return datos.ObtenerCandidatosPorOferta(
+                idOferta, idEmpresa);
+        }
+
+        public DataTable ObtenerOfertaPorEmpresa(
+    long idOferta, long idEmpresa)
+        {
+            if (idOferta <= 0 || idEmpresa <= 0)
+            {
+                throw new ArgumentException(
+                    "Oferta o empresa no válida.");
+            }
+
+            OfertaLaboralDatos datos = new OfertaLaboralDatos();
+
+            return datos.ObtenerOfertaPorEmpresa(
+                idOferta, idEmpresa);
+        }
+
+        public DataTable ObtenerCandidatoPorPostulacion(
+    long idPostulacion, long idEmpresa)
+        {
+            if (idPostulacion <= 0 || idEmpresa <= 0)
+            {
+                throw new ArgumentException(
+                    "Postulación o empresa no válida.");
+            }
+
+            PostulacionDatos datos = new PostulacionDatos();
+
+            return datos.ObtenerCandidatoPorPostulacion(
+                idPostulacion, idEmpresa);
+        }
+
+        public bool SeleccionarCandidato(long idPostulacion,
+    long idOferta, long idEmpresa)
+        {
+            if (idPostulacion <= 0 || idOferta <= 0 || idEmpresa <= 0)
+            {
+                throw new ArgumentException(
+                    "Los datos ingresados no son válidos.");
+            }
+
+            PostulacionDatos postulacionDatos = new PostulacionDatos();
+            OfertaLaboralDatos ofertaDatos = new OfertaLaboralDatos();
+
+            int ofertaCerrada = ofertaDatos.CerrarOferta(
+                idOferta, idEmpresa, idPostulacion);
+
+            if (ofertaCerrada != 1)
+            {
+                return false;
+            }
+
+            int candidatoAceptado = postulacionDatos.AceptarCandidato(
+                idPostulacion, idOferta, idEmpresa);
+
+            if (candidatoAceptado != 1)
+            {
+                throw new InvalidOperationException(
+                    "No se pudo aceptar al candidato.");
+            }
+
+            postulacionDatos.RechazarOtrosCandidatos(
+                idPostulacion, idOferta, idEmpresa);
+
+            return true;
+        }
+
+
+
+
+
     }
 }
