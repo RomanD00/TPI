@@ -82,6 +82,18 @@ namespace CVJoven
             // Registrar empresa en SQL Server
             try
             {
+                UsuarioNegocio usuarioNegocio = new UsuarioNegocio();
+                if (usuarioNegocio.ExisteMailEnSistema(mail))
+                {
+                    ClientScript.RegisterStartupScript(
+                        this.GetType(),
+                        "mailRepetidoEmpresa",
+                        "alert('Ese correo electrónico ya está registrado en el sistema. Usá otro correo o iniciá sesión.');",
+                        true
+                    );
+                    return;
+                }
+
                 EmpresaNegocio negocio = new EmpresaNegocio();
 
                 bool registrado = negocio.RegistrarEmpresa(empresa);
@@ -187,6 +199,18 @@ namespace CVJoven
                // EnviarCorreoConfirmacion(true, mail, nombre);
 
                 UsuarioNegocio negocio = new UsuarioNegocio();
+
+                if (negocio.ExisteMailEnSistema(mail))
+                {
+                    ClientScript.RegisterStartupScript(
+                        this.GetType(),
+                        "mailRepetidoPostulante",
+                        "alert('Ese correo electrónico ya está registrado en el sistema. Usá otro correo o iniciá sesión.');",
+                        true
+                    );
+                    return;
+                }
+
                 bool registrado = negocio.RegistrarUsuario(usuario);
 
                   if (registrado)

@@ -93,10 +93,19 @@
                                 ValidationGroup="Postulante" />
                                 </div>
 
-                                   <!-- Direccion -->
+                                   <!-- Localidad -->
                                 <div class="col-md-6">
-                                   <label for="<%= txtDireccion.ClientID %>" class="form-label text-secondary fw-semibold">Dirección</label>
-                                   <asp:TextBox ID="txtDireccion" runat="server" CssClass="form-control" placeholder="Provincia, Localidad, Calle"></asp:TextBox>
+                                    <label for="<%= txtDireccion.ClientID %>" class="form-label text-secondary fw-semibold">Localidad</label>
+                                    <asp:TextBox ID="txtDireccion" runat="server" CssClass="form-control" placeholder="Ej: Caseros, Buenos Aires"></asp:TextBox>
+                                    <asp:RequiredFieldValidator
+                                        ID="RequiredFieldValidator1"
+                                        runat="server"
+                                        ControlToValidate="txtDireccion"
+                                        ErrorMessage="La localidad es obligatoria."
+                                        CssClass="text-danger small"
+                                        Display="Dynamic"
+                                        ValidationGroup="Postulante" />
+                                </div>
                                
 
                             <asp:RequiredFieldValidator

@@ -8,6 +8,16 @@ namespace CVJoven.Negocio
     {
         private UsuarioDatos usuarioDatos = new UsuarioDatos();
 
+        public bool ExisteMailEnSistema(string mail, long idUsuarioExcluir = 0)
+        {
+            if (string.IsNullOrWhiteSpace(mail))
+            {
+                return false;
+            }
+
+            return usuarioDatos.ExisteMailEnSistema(mail.Trim(), idUsuarioExcluir);
+        }
+
         public bool RegistrarUsuario(Usuario usuario)
         {
             if (usuario == null)
@@ -15,15 +25,28 @@ namespace CVJoven.Negocio
                 return false;
             }
 
-            // Verificar que no exista otro postulante con el mismo mail
-            Usuario existente = usuarioDatos.BuscarPorMail(usuario.Mail);
-            if (existente != null)
+            if (usuarioDatos.ExisteMailEnSistema(usuario.Mail.Trim()))
             {
                 return false;
             }
 
             int filasAfectadas = usuarioDatos.InsertarUsuario(usuario);
             return filasAfectadas > 0;
+        }
+
+        public bool ActualizarUsuario(Usuario usuario)
+        {
+            if (usuario == null || usuario.IdUsuario <= 0)
+            {
+                return false;
+            }
+
+            if (usuarioDatos.ExisteMailEnSistema(usuario.Mail.Trim(), usuario.IdUsuario))
+            {
+                return false;
+            }
+
+            return usuarioDatos.ActualizarUsuario(usuario) > 0;
         }
 
         public Usuario IniciarSesion(string mail, string password)
@@ -41,8 +64,6 @@ namespace CVJoven.Negocio
             {
                 return null;
             }
-            // No devolver el hash a la capa de presentación
-           // usuario.Password = null;
 
             return usuario;
         }
