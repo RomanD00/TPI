@@ -26,6 +26,8 @@ namespace CVJoven
 
         private void CargarDatosPerfil(Usuario usuario)
         {
+            lblNombreUsuario.Text = usuario.Nombre + " " + usuario.Apellido;
+            lblEmailUsuario.Text = usuario.Mail;
             lblNombreCompleto.Text = usuario.Nombre + " " + usuario.Apellido;
             lblEmailResumen.Text = usuario.Mail;
             lblDniResumen.Text = usuario.DNI;

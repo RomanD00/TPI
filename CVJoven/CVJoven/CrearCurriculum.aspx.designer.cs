@@ -312,6 +312,24 @@ namespace CVJoven
         protected global::System.Web.UI.WebControls.DropDownList ddlNivelIdioma;
 
         /// <summary>
+        /// Control btnAgregarHabilidad.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnAgregarHabilidad;
+
+        /// <summary>
+        /// Control rptHabilidadesCargadas.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptHabilidadesCargadas;
+
+        /// <summary>
         /// Control txtHabilidad.
         /// </summary>
         /// <remarks>
@@ -319,15 +337,6 @@ namespace CVJoven
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtHabilidad;
-
-        /// <summary>
-        /// Control txtHabilidadTecnica.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtHabilidadTecnica;
 
         /// <summary>
         /// Control ddlTipoHabilidad.

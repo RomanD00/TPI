@@ -42,6 +42,17 @@ namespace CVJoven
             set { Session["ListaIdiomasTemp"] = value; }
         }
 
+        private List<Habilidad> ListaHabilidadesTemp
+        {
+            get
+            {
+                if (Session["ListaHabilidadesTemp"] == null)
+                    Session["ListaHabilidadesTemp"] = new List<Habilidad>();
+                return (List<Habilidad>)Session["ListaHabilidadesTemp"];
+            }
+            set { Session["ListaHabilidadesTemp"] = value; }
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             Usuario usuario = Session["Usuario"] as Usuario;
@@ -61,6 +72,7 @@ namespace CVJoven
                 ListaEducacionTemp = new List<Educacion>();
                 ListaExperienciaTemp = new List<Experiencia>();
                 ListaIdiomasTemp = new List<string>();
+                ListaHabilidadesTemp = new List<Habilidad>();
 
                 txtNombre.Text = usuario.Nombre;
                 txtApellido.Text = usuario.Apellido;
@@ -124,29 +136,19 @@ namespace CVJoven
             }
 
             List<Habilidad> habilidades = negocio.ListarHabilidadesPorCV(idCV);
-            if (habilidades.Count > 0)
+            if (habilidades != null && habilidades.Count > 0)
             {
-                List<string> blandas = new List<string>();
-                List<string> tecnicas = new List<string>();
-
                 foreach (var h in habilidades)
                 {
-                    if (h.Descripcion.StartsWith("Idioma:", StringComparison.OrdinalIgnoreCase))
+                    if (h.Descripcion != null && h.Descripcion.StartsWith("Idioma:", StringComparison.OrdinalIgnoreCase))
                     {
                         ListaIdiomasTemp.Add(h.Descripcion.Substring(7).Trim());
                     }
-                    else if (h.TipoHabilidad)
-                    {
-                        blandas.Add(h.Descripcion);
-                    }
                     else
                     {
-                        tecnicas.Add(h.Descripcion);
+                        ListaHabilidadesTemp.Add(h);
                     }
                 }
-
-                txtHabilidad.Text = string.Join(", ", blandas);
-                txtHabilidadTecnica.Text = string.Join(", ", tecnicas);
             }
 
             BindListasTemporales();
@@ -162,6 +164,9 @@ namespace CVJoven
 
             rptIdiomasCargados.DataSource = ListaIdiomasTemp;
             rptIdiomasCargados.DataBind();
+
+            rptHabilidadesCargadas.DataSource = ListaHabilidadesTemp;
+            rptHabilidadesCargadas.DataBind();
         }
 
         private Educacion LeerEducacionDeCampos()
@@ -190,6 +195,18 @@ namespace CVJoven
             exp.FechaHasta = DateTime.TryParse(txtFechaHasta.Text, out DateTime fechaHasta) ? fechaHasta : DateTime.MinValue;
             exp.Descripcion = txtDescripcion.Text.Trim();
             return exp;
+        }
+
+        private Habilidad LeerHabilidadDeCampos()
+        {
+            if (string.IsNullOrWhiteSpace(txtHabilidad.Text))
+                return null;
+
+            string limpio = txtHabilidad.Text.Trim();
+            Habilidad hab = new Habilidad();
+            hab.Descripcion = char.ToUpper(limpio[0]) + limpio.Substring(1);
+            hab.TipoHabilidad = ddlTipoHabilidad.SelectedValue == "true";
+            return hab;
         }
 
         protected void btnAgregarEducacion_Click(object sender, EventArgs e)
@@ -271,20 +288,26 @@ namespace CVJoven
             }
         }
 
-        private void AgregarHabilidadesDesdeTexto(string texto, bool esBlanda, List<Habilidad> destino)
+        protected void btnAgregarHabilidad_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(texto)) return;
-
-            string[] items = texto.Split(new char[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
-            foreach (string item in items)
+            Habilidad hab = LeerHabilidadDeCampos();
+            if (hab != null)
             {
-                string limpio = item.Trim();
-                if (!string.IsNullOrEmpty(limpio))
+                ListaHabilidadesTemp.Add(hab);
+                txtHabilidad.Text = "";
+                ddlTipoHabilidad.SelectedIndex = 0;
+                BindListasTemporales();
+            }
+        }
+
+        protected void rptHabilidadesCargadas_ItemCommand(object source, RepeaterCommandEventArgs e)
+        {
+            if (e.CommandName == "Quitar" && int.TryParse(e.CommandArgument.ToString(), out int index))
+            {
+                if (index >= 0 && index < ListaHabilidadesTemp.Count)
                 {
-                    Habilidad hab = new Habilidad();
-                    hab.Descripcion = char.ToUpper(limpio[0]) + limpio.Substring(1);
-                    hab.TipoHabilidad = esBlanda;
-                    destino.Add(hab);
+                    ListaHabilidadesTemp.RemoveAt(index);
+                    BindListasTemporales();
                 }
             }
         }
@@ -322,11 +345,13 @@ namespace CVJoven
                 if (expActual != null)
                     experiencias.Add(expActual);
 
-                // Habilidades blandas, técnicas e idiomas
-                List<Habilidad> listaHabilidades = new List<Habilidad>();
-                AgregarHabilidadesDesdeTexto(txtHabilidad.Text, true, listaHabilidades);
-                AgregarHabilidadesDesdeTexto(txtHabilidadTecnica.Text, false, listaHabilidades);
+                // Habilidades blandas y técnicas
+                List<Habilidad> listaHabilidades = new List<Habilidad>(ListaHabilidadesTemp);
+                Habilidad habActual = LeerHabilidadDeCampos();
+                if (habActual != null)
+                    listaHabilidades.Add(habActual);
 
+                // Idiomas
                 List<string> idiomasFinales = new List<string>(ListaIdiomasTemp);
                 if (!string.IsNullOrWhiteSpace(txtIdioma.Text))
                 {

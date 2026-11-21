@@ -110,11 +110,14 @@
 
                     <div class="nav flex-column gap-2">
 
-                        <a href="MiPerfil.aspx"
-                            class="nav-link text-secondary">
-                            <i class="bi bi-person me-2"></i>
-                            Mi perfil
-                        </a>
+                        <a href="MiPerfil.aspx" class="nav-link text-secondary">
+    <i class="bi bi-person me-2"></i>
+    Mi perfil
+</a>
+<a href="Logout.aspx" class="nav-link text-danger">
+    <i class="bi bi-box-arrow-right me-2"></i>
+    Cerrar sesión
+</a>
 
                     </div>
 

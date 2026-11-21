@@ -15,6 +15,14 @@ namespace CVJoven
         protected void Page_Load(object sender, EventArgs e)
         {
             Usuario usuario = Session["Usuario"] as Usuario;
+
+            if (usuario == null)
+            {
+                Response.Redirect("~/Login.aspx", false);
+                Context.ApplicationInstance.CompleteRequest();
+                return;
+            }
+
             // Mostrar los datos del usuario que inició sesión
             lblNombreUsuario.Text = usuario.Nombre + " " + usuario.Apellido;
             lblEmailUsuario.Text = usuario.Mail;

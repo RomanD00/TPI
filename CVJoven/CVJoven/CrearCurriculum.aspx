@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="CrearCurriculum.aspx.cs" Inherits="CVJoven.CrearCurriculum" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="CrearCurriculum.aspx.cs" Inherits="CVJoven.CrearCurriculum" MaintainScrollPositionOnPostback="true" %>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -258,31 +258,56 @@
                         </div>
                     </section>
 
-                    <!-- 6. HABILIDADES BLANDAS Y TÉCNICAS -->
+                    <!-- 6. HABILIDADES BLANDAS Y TÉCNICAS (MÚLTIPLE) -->
                     <section class="card border-0 shadow-sm mb-4">
                         <div class="card-body p-4">
-                            <h2 class="h5 fw-bold mb-3"><i class="bi bi-stars text-primary me-2"></i>Habilidades y Competencias</h2>
-                            <div class="row g-3">
-                                <div class="col-12">
-                                    <label class="form-label fw-semibold">Habilidades blandas <span class="text-muted fw-normal small">(separalas con coma)</span></label>
-                                    <asp:TextBox ID="txtHabilidad" runat="server" CssClass="form-control" MaxLength="250"
-                                        placeholder="Ej.: Trabajo en equipo, Comunicación efectiva, Proactividad, Puntualidad" />
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h2 class="h5 fw-bold mb-0"><i class="bi bi-stars text-primary me-2"></i>Habilidades y Competencias</h2>
+                                <asp:LinkButton ID="btnAgregarHabilidad" runat="server" CssClass="btn btn-sm btn-outline-primary fw-semibold"
+                                    CausesValidation="false" OnClick="btnAgregarHabilidad_Click">
+                                    <i class="bi bi-plus-circle me-1"></i>Agregar otra habilidad
+                                </asp:LinkButton>
+                            </div>
+
+                            <asp:Repeater ID="rptHabilidadesCargadas" runat="server" OnItemCommand="rptHabilidadesCargadas_ItemCommand">
+                                <ItemTemplate>
+                                    <div class="d-flex justify-content-between align-items-center bg-primary-subtle border border-primary-subtle rounded-3 p-2 px-3 mb-2">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <i class="bi bi-check2-circle text-primary"></i>
+                                            <strong class="text-dark"><%# Eval("Descripcion") %></strong>
+                                            <span class='badge <%# Convert.ToBoolean(Eval("TipoHabilidad")) ? "bg-info text-dark" : "bg-primary" %>'>
+                                                <%# Convert.ToBoolean(Eval("TipoHabilidad")) ? "Blanda" : "Técnica" %>
+                                            </span>
+                                        </div>
+                                        <asp:LinkButton ID="btnQuitarHabilidad" runat="server" CommandName="Quitar" CommandArgument='<%# Container.ItemIndex %>'
+                                            CssClass="btn btn-sm text-danger" CausesValidation="false">
+                                            <i class="bi bi-trash"></i>
+                                        </asp:LinkButton>
+                                    </div>
+                                </ItemTemplate>
+                            </asp:Repeater>
+
+                            <div class="row g-3 mt-1">
+                                <div class="col-md-7">
+                                    <label class="form-label">Habilidad</label>
+                                    <asp:TextBox ID="txtHabilidad" runat="server" CssClass="form-control" MaxLength="100"
+                                        placeholder="Ej.: Trabajo en equipo / Excel / Atención al público" />
                                 </div>
-                                <div class="col-12">
-                                    <label class="form-label fw-semibold">Habilidades técnicas y herramientas <span class="text-muted fw-normal small">(separalas con coma)</span></label>
-                                    <asp:TextBox ID="txtHabilidadTecnica" runat="server" CssClass="form-control" MaxLength="250"
-                                        placeholder="Ej.: Excel, Word, Atención al público, Redes sociales, Programación" />
+                                <div class="col-md-5">
+                                    <label class="form-label">Tipo</label>
+                                    <asp:DropDownList ID="ddlTipoHabilidad" runat="server" CssClass="form-select">
+                                        <asp:ListItem Text="Blanda" Value="true" />
+                                        <asp:ListItem Text="Técnica" Value="false" />
+                                    </asp:DropDownList>
                                 </div>
-                                <asp:DropDownList ID="ddlTipoHabilidad" runat="server" Visible="false">
-                                    <asp:ListItem Text="Blanda" Value="true" />
-                                    <asp:ListItem Text="Dura" Value="false" />
-                                </asp:DropDownList>
                             </div>
                         </div>
                     </section>
 
                     <div class="d-flex justify-content-end gap-2 mb-4">
                         <a href="MisCurriculums.aspx" class="btn btn-outline-secondary">Cancelar</a>
+
+
                         <asp:Button ID="btnGuardarCV" runat="server" Text="Guardar currículum"
                             CssClass="btn btn-primary px-4" ValidationGroup="guardarCV" OnClick="btnGuardarCV_Click" />
                     </div>
@@ -295,7 +320,7 @@
                             <ul class="small text-secondary ps-3 mb-0 d-flex flex-column gap-2">
                                 <li><strong>Múltiples estudios y trabajos:</strong> Escribí los datos y tocá <em>"+ Agregar otro estudio"</em> o <em>"+ Agregar otra experiencia"</em> para sumar todos los que quieras.</li>
                                 <li><strong>Idiomas destacados:</strong> Cargá tus idiomas y su nivel para que figuren en su propia sección del CV.</li>
-                                <li><strong>Habilidades separadas:</strong> Escribí tus habilidades blandas y técnicas separadas por coma para que se generen como etiquetas individuales.</li>
+                                <li><strong>Habilidades clasificadas:</strong> Cargá tus habilidades una por una, elegí si es blanda o técnica y tocá <em>"+ Agregar otra habilidad"</em>.</li>
                             </ul>
                         </div>
                     </div>
