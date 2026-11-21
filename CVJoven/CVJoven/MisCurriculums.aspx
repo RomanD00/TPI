@@ -81,13 +81,6 @@
 
                     <div class="nav flex-column nav-pills gap-2">
 
-                        <a href="#"
-                            class="nav-link text-secondary">
-
-                            <i class="bi bi-house me-2"></i>
-                            Inicio
-                        </a>
-
                         <a href="MisCurriculums.aspx"
                             class="nav-link active">
 
@@ -121,12 +114,6 @@
                             class="nav-link text-secondary">
                             <i class="bi bi-person me-2"></i>
                             Mi perfil
-
-                        <a href="#"
-                            class="nav-link text-secondary">
-
-                            <i class="bi bi-gear me-2"></i>
-                            Configuración
                         </a>
 
                     </div>

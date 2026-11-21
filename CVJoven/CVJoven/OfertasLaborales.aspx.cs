@@ -1,4 +1,5 @@
-﻿using CVJoven.Negocio;
+﻿using CVJoven.Dominio;
+using CVJoven.Negocio;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -13,6 +14,10 @@ namespace CVJoven
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            Usuario usuario = Session["Usuario"] as Usuario;
+            // Mostrar los datos del usuario que inició sesión
+            lblNombreUsuario.Text = usuario.Nombre + " " + usuario.Apellido;
+            lblEmailUsuario.Text = usuario.Mail;
             if (!IsPostBack)
             {
                 CargarOfertas();

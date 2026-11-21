@@ -22,10 +22,8 @@
                     <i class="bi bi-file-earmark-person-fill"></i>
                     <span>CVJoven</span>
                 </a>
-                <span class="text-muted d-none d-md-inline">|</span>
-                <a href="MisCurriculums.aspx" class="btn btn-sm btn-light text-secondary d-none d-md-inline-flex align-items-center gap-1">
-                    <i class="bi bi-arrow-left"></i> Volver a Mi espacio
-                </a>
+               
+
             </div>
 
             <!-- Perfil de Usuario -->
@@ -33,16 +31,100 @@
                 <div class="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center fw-semibold" style="width: 38px; height: 38px;">
                     <i class="bi bi-person-fill fs-5"></i>
                 </div>
-                <div class="lh-sm text-end d-none d-sm-block">
-                    <div class="fw-semibold small">
-                        <asp:Label ID="lblNombreUsuario" runat="server" Text="ale Maza"></asp:Label>
+                     <div class="d-flex flex-column">
+
+                        <asp:Label
+                            ID="lblNombreUsuario"
+                            runat="server"
+                            CssClass="fw-bold text-dark" />
+
+                        <asp:Label
+                            ID="lblEmailUsuario"
+                            runat="server"
+                            CssClass="text-secondary small" />
+
                     </div>
-                    <div class="text-muted" style="font-size: 0.75rem;">
-                        <asp:Label ID="lblEmailUsuario" runat="server" Text="alejandrojmm26@gmail.com"></asp:Label>
-                    </div>
-                </div>
+
             </div>
         </header>
+
+         <div class="container-fluid">
+
+            <div class="row">
+        <!-- MENÚ LATERAL -->
+<aside class="col-12 col-lg-2 bg-white border-end p-4"
+       style="min-height: calc(100vh - 70px);">
+
+    <p class="text-secondary small fw-bold mb-3">
+        MENÚ PRINCIPAL
+    </p>
+
+    <div class="nav flex-column nav-pills gap-2">
+
+        <a href="MisCurriculums.aspx"
+           class="nav-link text-secondary">
+
+            <i class="bi bi-file-earmark-text me-2"></i>
+            Mis currículums
+        </a>
+
+        <a href="OfertasLaborales.aspx"
+           class="nav-link active"
+           aria-current="page">
+
+            <i class="bi bi-briefcase me-2"></i>
+            Ofertas laborales
+        </a>
+
+        <a href="MisPostulaciones.aspx"
+           class="nav-link text-secondary">
+
+            <i class="bi bi-send me-2"></i>
+            Mis postulaciones
+        </a>
+
+    </div>
+
+    <hr class="my-4" />
+
+    <p class="text-secondary small fw-bold">
+        MI CUENTA
+    </p>
+
+    <div class="nav flex-column gap-2">
+
+        <a href="MiPerfil.aspx"
+           class="nav-link text-secondary">
+
+            <i class="bi bi-person me-2"></i>
+            Mi perfil
+        </a>
+
+    </div>
+
+    <div class="card bg-primary-subtle border-0 mt-5">
+
+        <div class="card-body">
+
+            <h6 class="fw-bold text-primary">
+                Tu futuro empieza acá
+            </h6>
+
+            <p class="small text-secondary mb-0">
+                Creá tu currículum profesional
+                y preparate para tu próxima
+                oportunidad laboral.
+            </p>
+
+        </div>
+
+    </div>
+
+</aside>
+
+<!-- CONTENIDO PRINCIPAL -->
+<div class="col-12 col-lg-10">
+
 
         <!-- 2. BARRA DE BÚSQUEDA Y FILTROS -->
         <section class="bg-white border-bottom py-3 px-3 px-lg-4 shadow-sm">
@@ -114,7 +196,7 @@
 
 
         <!-- 3. LISTADO DE OFERTAS LABORALES -->
-        <main class="container py-4" style="max-width: 1140px;">
+        <main class="container-fluid py-4 px-3 px-lg-4">
             
                         <asp:Label ID="lblMensajePostulacion"
                         runat="server"
@@ -358,6 +440,9 @@
             </asp:Panel>
 
         </main>
+    </div> <!-- Fin de la columna derecha -->
+    </div> <!-- Fin de la fila -->
+    </div> <!-- Fin del contenedor general -->
     </form>
 
 </body>

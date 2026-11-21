@@ -7,6 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>CV Joven - Iniciar Sesión</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+      rel="stylesheet" />
 </head>
 <body class="bg-light d-flex align-items-center" style="min-height: 100vh;">
     <form id="form1" runat="server" class="w-100">
@@ -15,8 +17,28 @@
                 <div class="col-md-5 col-lg-4">
                     <div class="card shadow-sm border-0 rounded-3">
                         <div class="card-body p-4">
-                            <h3 class="text-center fw-bold mb-1">CV Joven</h3>
-                            <p class="text-center text-muted mb-4">Ingresá a tu cuenta</p>
+
+                              <!-- LOGO CVJOVEN -->
+                            <div class="text-center mb-4">
+
+                                <a href="Login.aspx"
+                                   class="text-primary text-decoration-none fw-bold d-flex flex-column align-items-center">
+
+                                    <!-- Ícono arriba -->
+                                    <i class="bi bi-file-earmark-person-fill"
+                                       style="font-size: 65px;"></i>
+
+                                    <!-- Nombre debajo -->
+                                    <span style="font-size: 48px;">
+                                        CVJoven
+                                    </span>
+
+                                </a>
+
+                            </div>
+
+
+                            <p class="text-center text-muted mb-4" style="font-size: 18px";>Ingresá a tu cuenta</p>
 
                             <div class="mb-3">
                                 <label class="form-label fw-semibold">Correo electrónico</label>
