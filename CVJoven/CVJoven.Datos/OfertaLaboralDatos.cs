@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data;
+using System.Configuration;
+using System.Data.SqlClient;
 
 namespace CVJoven.Datos
 {
@@ -50,10 +52,12 @@ namespace CVJoven.Datos
             try
             {
                 datos.setearConsulta(@"
-            SELECT
+                SELECT
                 o.IdOferta,
                 o.TituloOferta,
                 o.Zona,
+                o.TipoDeJornada,
+                o.Descripcion,
                 e.nombreComercial AS Empresa,
                 o.Zona AS Ubicacion,
                 e.tamanioDeEmpresa AS TamanoEmpresa,
@@ -382,6 +386,93 @@ namespace CVJoven.Datos
             finally
             {
                 datos.cerrarConexion();
+            }
+        }
+
+        public bool InsertarOfertaConRequisitos(OfertaLaboral oferta)
+        {
+            string cadenaConexion =
+                ConfigurationManager.ConnectionStrings["CadenaConexion"] != null
+                    ? ConfigurationManager.ConnectionStrings["CadenaConexion"].ConnectionString
+                    : "server=.\\SQLEXPRESS; database=CV_Joven; integrated security=true;";
+
+            using (SqlConnection conexion = new SqlConnection(cadenaConexion))
+            {
+                conexion.Open();
+
+                using (SqlTransaction transaccion = conexion.BeginTransaction())
+                {
+                    try
+                    {
+                        // Registrar la oferta y obtener el ID generado.
+                        string consultaOferta = @"
+                    INSERT INTO OfertaLaboral
+                    (IdEmpresa, TituloOferta, Zona, TipoDeJornada,
+                     Descripcion, AceptaDiscapacidad)
+                    OUTPUT INSERTED.IdOferta
+                    VALUES
+                    (@idEmpresa, @titulo, @zona, @jornada,
+                     @descripcion, @discapacidad);";
+
+                        long idOferta;
+
+                        using (SqlCommand comando = new SqlCommand(
+                            consultaOferta, conexion, transaccion))
+                        {
+                            comando.Parameters.Add("@idEmpresa", SqlDbType.BigInt)
+                                .Value = oferta.IdEmpresa;
+
+                            comando.Parameters.Add("@titulo", SqlDbType.VarChar, 150)
+                                .Value = oferta.TituloOferta;
+
+                            comando.Parameters.Add("@zona", SqlDbType.VarChar, 100)
+                                .Value = oferta.Zona;
+
+                            comando.Parameters.Add("@jornada", SqlDbType.VarChar, 50)
+                                .Value = oferta.TipoDeJornada;
+
+                            comando.Parameters.Add("@descripcion", SqlDbType.VarChar, -1)
+                                .Value = oferta.Descripcion;
+
+                            comando.Parameters.Add("@discapacidad", SqlDbType.Bit)
+                                .Value = oferta.AceptaDiscapacidad;
+
+                            idOferta = Convert.ToInt64(comando.ExecuteScalar());
+                        }
+
+                        // Registrar los requisitos de esa oferta.
+                        if (oferta.Requisitos != null)
+                        {
+                            foreach (string requisito in oferta.Requisitos)
+                            {
+                                using (SqlCommand comando = new SqlCommand(
+                                    @"INSERT INTO Requisito (idOferta, Descripcion)
+                              VALUES (@idOferta, @descripcion)",
+                                    conexion, transaccion))
+                                {
+                                    comando.Parameters.Add("@idOferta", SqlDbType.BigInt)
+                                        .Value = idOferta;
+
+                                    comando.Parameters.Add("@descripcion", SqlDbType.VarChar, 255)
+                                        .Value = requisito;
+
+                                    comando.ExecuteNonQuery();
+                                }
+                            }
+                        }
+
+                        transaccion.Commit();
+
+                        oferta.IdOferta = idOferta;
+
+                        return true;
+                    }
+                    catch
+                    {
+                        transaccion.Rollback();
+                        throw;
+                    }
+                }
             }
         }
 

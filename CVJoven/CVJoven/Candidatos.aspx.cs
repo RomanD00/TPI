@@ -1,4 +1,5 @@
-﻿using CVJoven.Negocio;
+﻿using CVJoven.Dominio;
+using CVJoven.Negocio;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -14,11 +15,15 @@ namespace CVJoven
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            Empresa usuario = Session["Usuario"] as Empresa;
             if (Session["IdEmpresa"] == null)
             {
                 Response.Redirect("~/Login.aspx");
                 return;
             }
+
+            lblNombreComercialNavbar.Text = usuario.NombreComercial;
+            lblEmailUsuario.Text = usuario.Mail;
 
             if (!IsPostBack)
             {

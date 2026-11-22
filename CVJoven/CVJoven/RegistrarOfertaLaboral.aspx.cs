@@ -17,15 +17,22 @@ namespace CVJoven
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            Empresa usuario = Session["Usuario"] as Empresa;
             // Impedir el acceso sin una sesión de empresa.
             if (Session["IdEmpresa"] == null ||
                 Session["TipoUsuario"] == null ||
-                Convert.ToInt32(Session["TipoUsuario"]) != 2)
+                Convert.ToInt32(Session["TipoUsuario"]) != 2 ||
+            usuario == null)
             {
                 Response.Redirect("Login.aspx", false);
                 Context.ApplicationInstance.CompleteRequest();
                 return;
             }
+            lblNombreComercialNavbar.Text =
+                Server.HtmlEncode(usuario.NombreComercial);
+
+            lblEmailUsuario.Text =
+                Server.HtmlEncode(usuario.Mail);
         }
 
         protected void btnRegistrarOferta_Click(object sender, EventArgs e)
@@ -77,6 +84,27 @@ namespace CVJoven
                 oferta.TipoDeJornada = tipoJornada;
                 oferta.Descripcion = descripcion;
                 oferta.AceptaDiscapacidad = aceptaDiscapacidad;
+                // Recuperar todos los requisitos ingresados.
+                string[] requisitos = Request.Form.GetValues("requisitos");
+
+                if (requisitos != null)
+                {
+                    foreach (string requisito in requisitos)
+                    {
+                        string texto = requisito.Trim();
+
+                        if (texto.Length > 255)
+                        {
+                            MostrarMensaje("Cada requisito debe tener como máximo 255 caracteres.");
+                            return;
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(texto))
+                        {
+                            oferta.Requisitos.Add(texto);
+                        }
+                    }
+                }
 
                 OfertaLaboralNegocio negocio =
                     new OfertaLaboralNegocio();

@@ -14,11 +14,28 @@ namespace CVJoven.Negocio
 
         public bool RegistrarOferta(OfertaLaboral oferta)
         {
+            if (oferta == null)
+                throw new ArgumentException("La oferta no puede ser nula.");
+
+            if (oferta.IdEmpresa <= 0)
+                throw new ArgumentException("Empresa no válida.");
+
+            if (oferta.Requisitos != null)
+            {
+                foreach (string requisito in oferta.Requisitos)
+                {
+                    if (string.IsNullOrWhiteSpace(requisito) ||
+                        requisito.Length > 255)
+                    {
+                        throw new ArgumentException(
+                            "Los requisitos deben tener entre 1 y 255 caracteres.");
+                    }
+                }
+            }
+
             OfertaLaboralDatos datos = new OfertaLaboralDatos();
 
-            int filasAfectadas = datos.InsertarOferta(oferta);
-
-            return filasAfectadas == 1;
+            return datos.InsertarOfertaConRequisitos(oferta);
         }
 
         public System.Data.DataTable ObtenerOfertas()

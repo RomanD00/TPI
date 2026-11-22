@@ -46,6 +46,7 @@ namespace CVJoven
                 {
                     Session.Clear();
 
+                    Session["Usuario"] = empresa;
                     Session["IdEmpresa"] = empresa.IdEmpresa;
                     Session["NombreEmpresa"] = empresa.NombreComercial;
                     Session["TipoUsuario"] = empresa.IdTipoUsuario;

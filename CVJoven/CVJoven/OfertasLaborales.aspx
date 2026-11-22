@@ -11,6 +11,19 @@
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+    .descripcion-oferta {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 6;
+        line-clamp: 6;
+        overflow: hidden;
+        white-space: pre-line;
+        overflow-wrap: anywhere;
+    }
+</style>
+
 </head>
 <body class="bg-light text-dark">
     <form id="form1" runat="server">
@@ -321,6 +334,17 @@
                                 <div class="text-secondary fw-semibold small mb-2">
                                     <%# Eval("Empresa") %>
                                 </div>
+                                <!-- Tipo de jornada -->
+                                <div class="mb-2">
+                                    <span class="badge bg-primary-subtle text-primary border fw-normal">
+                                        <i class="bi bi-clock me-1"></i>
+                                        <%#: Eval("TipoDeJornada") %>
+                                    </span>
+                                </div>
+                                <!-- Descripción de la oferta (máximo 3 líneas) -->
+                                <p class="text-secondary small mb-2 descripcion-oferta">
+                                    <%#: Eval("Descripcion") %>
+                                </p>
                                  <!-- Información de si acepta discapacidad-->
                                 <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
                                 <span class="badge bg-light text-secondary border fw-normal">

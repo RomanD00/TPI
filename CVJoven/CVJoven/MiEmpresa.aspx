@@ -20,21 +20,29 @@
 
     <form id="form1" runat="server">
 
-        <!-- BARRA DE NAVEGACION -->
-        <nav class="navbar navbar-dark bg-primary shadow-sm">
-            <div class="container">
-                <a class="navbar-brand fw-bold"
-                    href="OfertasLaborales.aspx">
-                    CVJoven
+        <!-- BARRA SUPERIOR -->
+        <nav class="navbar navbar-expand-lg bg-white border-bottom shadow-sm">
+            <div class="container-fluid px-4">
+                <a class="navbar-brand fw-bold text-primary fs-4" href="MiEmpresa.aspx">
+                    <i class="bi bi-file-earmark-person-fill me-2"></i>CVJoven
                 </a>
-
-                <span class="navbar-text text-white">
-                    Mi empresa
-                </span>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center"
+                        style="width: 45px; height: 45px;">
+                        <i class="bi bi-person-fill fs-4"></i>
+                    </div>
+                    <div class="d-flex flex-column">
+                        <asp:Label ID="lblNombreComercialNavbar" runat="server" CssClass="fw-bold text-dark" />
+                        <asp:Label ID="lblEmailUsuario" runat="server" CssClass="text-secondary small" />
+                        <a href="Logout.aspx" class="nav-link text-danger">
+                        <i class="bi bi-box-arrow-right me-2"></i>
+                        Cerrar sesión
+                    </a>
+                    </div>
+                </div>
             </div>
         </nav>
-
-        <main class="container py-5"
+               <main class="container py-5"
             style="max-width: 1140px;">
 
             <h1 class="fw-bold">Mi empresa</h1>
@@ -49,6 +57,9 @@
                 Visible="false"
                 CssClass="alert alert-danger d-block">
             </asp:Label>
+
+        <div class="container-fluid">
+            <div class="row">
 
             <!-- PERFIL DE LA EMPRESA -->
             <div class="card border-0 shadow-sm rounded-4 mb-4">

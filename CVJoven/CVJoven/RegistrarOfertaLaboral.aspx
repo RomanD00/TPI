@@ -17,6 +17,46 @@
 
     <form id="form1" runat="server" class="w-100">
 
+        <!-- BARRA SUPERIOR -->
+<nav class="navbar navbar-expand-lg bg-white border-bottom shadow-sm">
+    <div class="container-fluid px-4">
+        <a class="navbar-brand fw-bold text-primary fs-4" href="MiEmpresa.aspx">
+            <i class="bi bi-file-earmark-person-fill me-2"></i>CVJoven
+        </a>
+        <div class="d-flex align-items-center gap-3">
+            <div class="bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center"
+                style="width: 45px; height: 45px;">
+                <i class="bi bi-person-fill fs-4"></i>
+            </div>
+            <div class="d-flex flex-column">
+                <asp:Label ID="lblNombreComercialNavbar" runat="server" CssClass="fw-bold text-dark" />
+                <asp:Label ID="lblEmailUsuario" runat="server" CssClass="text-secondary small" />
+                <a href="Logout.aspx" class="nav-link text-danger">
+                <i class="bi bi-box-arrow-right me-2"></i>
+                Cerrar sesión
+            </a>
+            </div>
+        </div>
+    </div>
+</nav>
+       <main class="container py-5"
+    style="max-width: 1140px;">
+
+    <h1 class="fw-bold">Mi empresa</h1>
+
+    <p class="text-secondary mb-4">
+        Administrá tu perfil empresarial
+        y tus ofertas laborales.
+    </p>
+
+    <asp:Label ID="lblMensaje"
+        runat="server"
+        Visible="false"
+        CssClass="alert alert-danger d-block">
+    </asp:Label>
+           </main>
+
+
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-8 col-md-10">
@@ -193,9 +233,37 @@
                                             ValidationGroup="Oferta" />
                                     </div>
 
-                                </div>
+                                    <!-- Requisitos de la oferta -->
+                                        <div class="col-12">
+                                            <label class="form-label text-secondary fw-semibold">
+                                                Requisitos del puesto
+                                            </label>
 
+                                            <div id="contenedorRequisitos">
+                                                <div class="input-group mb-2 requisito-item">
+                                                    <input type="text"
+                                                           name="requisitos"
+                                                           class="form-control"
+                                                           maxlength="255"
+                                                           placeholder="Ej: Experiencia mínima de 1 año" />
+                                                </div>
+                                            </div>
+
+                                            <button type="button"
+                                                    class="btn btn-outline-primary btn-sm mt-2"
+                                                    onclick="agregarRequisito()">
+                                                + Agregar otro requisito
+                                            </button>
+
+                                            <p class="text-muted small mt-2">
+                                                Podés agregar tantos requisitos como necesites.
+                                            </p>
+                                        </div>
+                                </div>
                             </asp:Panel>
+
+
+
 
                         </div>
                     </div>
@@ -205,6 +273,36 @@
         </div>
 
     </form>
+                <script>
+                function agregarRequisito() {
+                    const contenedor = document.getElementById("contenedorRequisitos");
+
+                    const div = document.createElement("div");
+                    div.className = "input-group mb-2 requisito-item";
+
+                    const input = document.createElement("input");
+                    input.type = "text";
+                    input.name = "requisitos";
+                    input.className = "form-control";
+                    input.maxLength = 255;
+                    input.placeholder = "Escribí otro requisito";
+
+                    const boton = document.createElement("button");
+                    boton.type = "button";
+                    boton.className = "btn btn-outline-danger";
+                    boton.textContent = "Eliminar";
+
+                    boton.addEventListener("click", function () {
+                        div.remove();
+                    });
+
+                    div.appendChild(input);
+                    div.appendChild(boton);
+                    contenedor.appendChild(div);
+
+                    input.focus();
+                }
+            </script>
 
 </body>
 </html>

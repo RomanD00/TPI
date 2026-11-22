@@ -16,5 +16,7 @@ namespace CVJoven.Dominio
         public string TipoDeJornada { get; set; }
         public string Descripcion { get; set; }
         public bool AceptaDiscapacidad { get; set; }
+
+        public List<string> Requisitos { get; set; } = new List<string>();
     }
 }
