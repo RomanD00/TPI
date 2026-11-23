@@ -53,24 +53,25 @@ namespace CVJoven.Datos
             {
                 datos.setearConsulta(@"
                 SELECT
-                o.IdOferta,
-                o.TituloOferta,
-                o.Zona,
-                o.TipoDeJornada,
-                o.Descripcion,
-                e.nombreComercial AS Empresa,
-                o.Zona AS Ubicacion,
-                e.tamanioDeEmpresa AS TamanoEmpresa,
-                CASE
-                    WHEN o.AceptaDiscapacidad = 1 THEN 'Sí'
-                    ELSE 'No'
-                END AS AceptaDiscapacidad
-            FROM OfertaLaboral o
-            INNER JOIN Empresa e
-                ON o.IdEmpresa = e.idEmpresa
-            WHERE o.EstadoOferta = 'Activa'
-            ORDER BY o.IdOferta DESC;
-            ");
+                    o.IdOferta,
+                    o.TituloOferta,
+                    o.Zona,
+                    o.TipoDeJornada,
+                    o.Descripcion,
+                    o.FechaPublicacion,
+                    e.nombreComercial AS Empresa,
+                    e.sector AS SectorEmpresa,
+                    o.Zona AS Ubicacion,
+                    e.tamanioDeEmpresa AS TamanoEmpresa,
+                    CASE
+                        WHEN o.AceptaDiscapacidad = 1 THEN 'Sí'
+                        ELSE 'No'
+                    END AS AceptaDiscapacidad
+                FROM OfertaLaboral o
+                INNER JOIN Empresa e
+                    ON o.IdEmpresa = e.idEmpresa
+                WHERE o.EstadoOferta = 'Activa'
+                ORDER BY o.IdOferta DESC;");
 
                 datos.ejecutarLectura();
 
@@ -144,6 +145,43 @@ namespace CVJoven.Datos
 
                 tabla.Load(datos.Lector);
                 return tabla;
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
+
+        public Dictionary<long, List<string>> ObtenerRequisitosDeOfertasActivas()
+        {
+            AccesoDatos datos = new AccesoDatos();
+            Dictionary<long, List<string>> mapa = new Dictionary<long, List<string>>();
+
+            try
+            {
+                datos.setearConsulta(@"
+                    SELECT r.idOferta, r.Descripcion
+                    FROM Requisito r
+                    INNER JOIN OfertaLaboral o ON r.idOferta = o.IdOferta
+                    WHERE o.EstadoOferta = 'Activa'
+                    ORDER BY r.IdRequisito");
+
+                datos.ejecutarLectura();
+
+                while (datos.Lector.Read())
+                {
+                    long idOferta = Convert.ToInt64(datos.Lector["idOferta"]);
+                    string descripcion = datos.Lector["Descripcion"].ToString();
+
+                    if (!mapa.ContainsKey(idOferta))
+                    {
+                        mapa[idOferta] = new List<string>();
+                    }
+
+                    mapa[idOferta].Add(descripcion);
+                }
+
+                return mapa;
             }
             finally
             {
@@ -476,7 +514,34 @@ namespace CVJoven.Datos
             }
         }
 
+        public HashSet<long> ObtenerIdsOfertasPostuladas(long idUsuario)
+        {
+            AccesoDatos datos = new AccesoDatos();
+            HashSet<long> ids = new HashSet<long>();
 
+            try
+            {
+                datos.setearConsulta(@"
+                    SELECT DISTINCT p.IdOferta
+                    FROM Postulacion p
+                    INNER JOIN CV c ON p.IdCV = c.IdCV
+                    WHERE c.IdUsuario = @idUsuario");
+
+                datos.setearParametro("@idUsuario", idUsuario);
+                datos.ejecutarLectura();
+
+                while (datos.Lector.Read())
+                {
+                    ids.Add(Convert.ToInt64(datos.Lector["IdOferta"]));
+                }
+
+                return ids;
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
 
 
 

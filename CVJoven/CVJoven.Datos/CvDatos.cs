@@ -409,5 +409,39 @@ namespace CVJoven.Datos
                 }
             }
         }
+
+        public List<Habilidad> ListarHabilidadesPorUsuario(long idUsuario)
+        {
+            List<Habilidad> lista = new List<Habilidad>();
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.setearConsulta(@"
+                    SELECT h.idHabilidad, h.idCV, h.Descripcion, h.TipoHabilidad
+                    FROM Habilidades h
+                    INNER JOIN CV c ON h.idCV = c.IdCV
+                    WHERE c.IdUsuario = @idUsuario");
+
+                datos.setearParametro("@idUsuario", idUsuario);
+                datos.ejecutarLectura();
+
+                while (datos.Lector.Read())
+                {
+                    Habilidad hab = new Habilidad();
+                    hab.IdHabilidad = Convert.ToInt64(datos.Lector["idHabilidad"]);
+                    hab.IdCV = Convert.ToInt64(datos.Lector["idCV"]);
+                    hab.Descripcion = datos.Lector["Descripcion"].ToString();
+                    hab.TipoHabilidad = Convert.ToBoolean(datos.Lector["TipoHabilidad"]);
+                    lista.Add(hab);
+                }
+
+                return lista;
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
     }
 }

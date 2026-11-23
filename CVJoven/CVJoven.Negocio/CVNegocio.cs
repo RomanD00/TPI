@@ -91,6 +91,11 @@ namespace CVJoven.Negocio
             return cvDatos.ListarHabilidadesPorCV(idCV);
         }
 
+        public List<Habilidad> ListarHabilidadesPorUsuario(long idUsuario)
+        {
+            return cvDatos.ListarHabilidadesPorUsuario(idUsuario);
+        }
+
         public string GenerarPerfilProfesional(Usuario u, CV cv, List<Educacion> estudios, List<Experiencia> experiencias, List<Habilidad> habilidades)
         {
             int edad = DateTime.Today.Year - u.FechaNacimiento.Year;

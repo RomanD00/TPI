@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CVJoven.Datos;
 using CVJoven.Dominio;
 using System.Data;
+using System.Globalization;
 
 namespace CVJoven.Negocio
 {
@@ -179,7 +180,221 @@ namespace CVJoven.Negocio
         }
 
 
+        public DataTable ObtenerOfertasParaPostulante(
+            long idUsuario,
+            string busqueda,
+            string diasPublicacion,
+            string ubicacion,
+            string tamanoEmpresa,
+            string sector,
+            bool soloRecomendadas,
+            out int totalRecomendadas,
+            out bool usuarioTieneHabilidades)
+        {
+            OfertaLaboralDatos ofertaDatos = new OfertaLaboralDatos();
+            CVDatos cvDatos = new CVDatos();
 
+            DataTable tablaBase = ofertaDatos.ListarOfertas();
+            Dictionary<long, List<string>> requisitosPorOferta = ofertaDatos.ObtenerRequisitosDeOfertasActivas();
+            HashSet<long> ofertasPostuladas = ofertaDatos.ObtenerIdsOfertasPostuladas(idUsuario);
+
+            // Habilidades blandas y duras del postulante (excluye idiomas)
+            List<Habilidad> habilidadesUsuario = cvDatos.ListarHabilidadesPorUsuario(idUsuario)
+                .Where(h => !string.IsNullOrWhiteSpace(h.Descripcion) &&
+                            !h.Descripcion.Trim().StartsWith("Idioma:", StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            usuarioTieneHabilidades = habilidadesUsuario.Count > 0;
+
+            // Columnas calculadas para mostrar recomendaciones y fechas
+            tablaBase.Columns.Add("EsRecomendada", typeof(bool));
+            tablaBase.Columns.Add("CantidadCoincidencias", typeof(int));
+            tablaBase.Columns.Add("HabilidadesCoincidentes", typeof(string));
+            tablaBase.Columns.Add("FechaPublicacionTexto", typeof(string));
+            tablaBase.Columns.Add("YaPostulado", typeof(bool));
+
+            string busquedaNorm = NormalizarTexto(busqueda);
+            string ubicacionNorm = NormalizarTexto(ubicacion);
+            string tamanoNorm = NormalizarTexto(tamanoEmpresa);
+            string sectorNorm = NormalizarTexto(sector);
+
+            int diasFiltro = 0;
+            bool filtrarPorFecha = int.TryParse(diasPublicacion, out diasFiltro) && diasFiltro > 0;
+            DateTime fechaLimite = DateTime.Today.AddDays(-diasFiltro);
+
+            DataTable tablaResultado = tablaBase.Clone();
+            List<DataRow> filasValidas = new List<DataRow>();
+            totalRecomendadas = 0;
+
+            foreach (DataRow fila in tablaBase.Rows)
+            {
+                long idOferta = Convert.ToInt64(fila["IdOferta"]);
+                string titulo = fila["TituloOferta"].ToString();
+                string empresa = fila["Empresa"].ToString();
+                string zona = fila["Zona"].ToString();
+                string descripcion = fila["Descripcion"].ToString();
+                string sectorOferta = fila["SectorEmpresa"] != DBNull.Value ? fila["SectorEmpresa"].ToString() : "";
+                string tamanoOferta = fila["TamanoEmpresa"] != DBNull.Value ? fila["TamanoEmpresa"].ToString() : "";
+
+                List<string> requisitos = requisitosPorOferta.ContainsKey(idOferta)
+                    ? requisitosPorOferta[idOferta]
+                    : new List<string>();
+
+                // 1. Filtro por fecha de publicación
+                DateTime fechaPub = DateTime.MinValue;
+                if (fila["FechaPublicacion"] != DBNull.Value)
+                {
+                    fechaPub = Convert.ToDateTime(fila["FechaPublicacion"]);
+                    fila["FechaPublicacionTexto"] = fechaPub.ToString("dd/MM/yyyy");
+                }
+                else
+                {
+                    fila["FechaPublicacionTexto"] = "";
+                }
+
+                if (filtrarPorFecha && (fechaPub == DateTime.MinValue || fechaPub.Date < fechaLimite))
+                {
+                    continue;
+                }
+
+                // 2. Filtro por ubicación
+                if (!string.IsNullOrEmpty(ubicacionNorm) &&
+                    !NormalizarTexto(zona).Contains(ubicacionNorm))
+                {
+                    continue;
+                }
+
+                // 3. Filtro por tamaño de empresa
+                if (!string.IsNullOrEmpty(tamanoNorm) &&
+                    NormalizarTexto(tamanoOferta) != tamanoNorm)
+                {
+                    continue;
+                }
+
+                // 4. Filtro por sector / área
+                if (!string.IsNullOrEmpty(sectorNorm) &&
+                    !NormalizarTexto(sectorOferta).Contains(sectorNorm))
+                {
+                    continue;
+                }
+
+                // 5. Filtro por buscador de texto (busca en título, empresa, zona, sector, descripción y requisitos)
+                if (!string.IsNullOrEmpty(busquedaNorm))
+                {
+                    string textoCompleto = NormalizarTexto(
+                        titulo + " " + empresa + " " + zona + " " + sectorOferta + " " + descripcion + " " + string.Join(" ", requisitos)
+                    );
+
+                    if (!textoCompleto.Contains(busquedaNorm))
+                    {
+                        continue;
+                    }
+                }
+
+                // 6. Match de habilidades blandas y duras contra requisitos de la oferta
+                List<string> coincidencias = new List<string>();
+                HashSet<string> yaAgregadas = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+                foreach (Habilidad hab in habilidadesUsuario)
+                {
+                    foreach (string req in requisitos)
+                    {
+                        if (CoincideHabilidadConRequisito(hab.Descripcion, req))
+                        {
+                            string clave = NormalizarTexto(hab.Descripcion);
+                            if (yaAgregadas.Add(clave))
+                            {
+                                string etiquetaTipo = hab.TipoHabilidad ? "Blanda" : "Técnica";
+                                coincidencias.Add($"{hab.Descripcion} ({etiquetaTipo})");
+                            }
+                            break;
+                        }
+                    }
+                }
+
+                bool esRecomendada = coincidencias.Count > 0;
+                fila["EsRecomendada"] = esRecomendada;
+                fila["CantidadCoincidencias"] = coincidencias.Count;
+                fila["HabilidadesCoincidentes"] = string.Join(", ", coincidencias);
+                fila["YaPostulado"] = ofertasPostuladas.Contains(idOferta);
+
+                if (esRecomendada)
+                {
+                    totalRecomendadas++;
+                }
+
+                if (soloRecomendadas && !esRecomendada)
+                {
+                    continue;
+                }
+
+                filasValidas.Add(fila);
+            }
+
+            // Ordenar: primero las que más habilidades matchean, luego las más recientes
+            foreach (DataRow fila in filasValidas
+                .OrderByDescending(r => Convert.ToInt32(r["CantidadCoincidencias"]))
+                .ThenByDescending(r => Convert.ToInt64(r["IdOferta"])))
+            {
+                tablaResultado.ImportRow(fila);
+            }
+
+            return tablaResultado;
+        }
+
+        private bool CoincideHabilidadConRequisito(string habilidad, string requisito)
+        {
+            string habNorm = NormalizarTexto(habilidad);
+            string reqNorm = NormalizarTexto(requisito);
+
+            if (string.IsNullOrEmpty(habNorm) || string.IsNullOrEmpty(reqNorm))
+                return false;
+
+            if (habNorm == reqNorm)
+                return true;
+
+            if (habNorm.Length >= 2 && ContienePalabraExacta(reqNorm, habNorm))
+                return true;
+
+            if (reqNorm.Length >= 2 && ContienePalabraExacta(habNorm, reqNorm))
+                return true;
+
+            if (habNorm.Length >= 5 && reqNorm.Contains(habNorm))
+                return true;
+
+            if (reqNorm.Length >= 5 && habNorm.Contains(reqNorm))
+                return true;
+
+            return false;
+        }
+
+        private bool ContienePalabraExacta(string texto, string palabra)
+        {
+            string[] tokens = texto.Split(
+                new char[] { ' ', ',', ';', '.', '/', '-', '(', ')', ':', '¡', '!', '¿', '?' },
+                StringSplitOptions.RemoveEmptyEntries);
+
+            return tokens.Any(t => t == palabra);
+        }
+
+        private string NormalizarTexto(string texto)
+        {
+            if (string.IsNullOrWhiteSpace(texto))
+                return string.Empty;
+
+            string descompuesto = texto.Trim().ToLowerInvariant().Normalize(NormalizationForm.FormD);
+            StringBuilder sb = new StringBuilder();
+
+            foreach (char c in descompuesto)
+            {
+                if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
+                {
+                    sb.Append(c);
+                }
+            }
+
+            return sb.ToString().Normalize(NormalizationForm.FormC);
+        }
 
 
 
