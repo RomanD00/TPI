@@ -224,14 +224,7 @@
                                     CssClass="alert alert-danger mt-3"
                                     ValidationGroup="Oferta"
                                     DisplayMode="BulletList" />
-                                    <!-- Botón Registrar -->
-                                    <div class="col-12 mt-4">
-                                        <asp:Button ID="btnRegistrarOferta" runat="server"
-                                            Text="Registrar Oferta"
-                                            CssClass="btn btn-primary w-100 py-2 fw-semibold"
-                                            OnClick="btnRegistrarOferta_Click"
-                                            ValidationGroup="Oferta" />
-                                    </div>
+
 
                                     <!-- Requisitos de la oferta -->
                                         <div class="col-12">
@@ -259,6 +252,15 @@
                                                 Podés agregar tantos requisitos como necesites.
                                             </p>
                                         </div>
+
+                                    <!-- Botón Registrar -->
+                                    <div class="col-12 mt-4">
+                                        <asp:Button ID="btnRegistrarOferta" runat="server"
+                                            Text="Registrar Oferta"
+                                            CssClass="btn btn-primary w-100 py-2 fw-semibold"
+                                            OnClick="btnRegistrarOferta_Click"
+                                            ValidationGroup="Oferta" />
+                                    </div>
                                 </div>
                             </asp:Panel>
 

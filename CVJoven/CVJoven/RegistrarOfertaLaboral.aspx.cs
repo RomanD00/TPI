@@ -113,7 +113,17 @@ namespace CVJoven
 
                 if (registrada)
                 {
-                    MostrarMensaje("Oferta laboral registrada correctamente.");
+                                string script = @"
+                    alert('Oferta laboral registrada correctamente.');
+                    window.location.href = 'MiEmpresa.aspx';
+                ";
+
+                    ClientScript.RegisterStartupScript(
+                        this.GetType(),
+                        "registroExitoso",
+                        script,
+                        true
+                    );
                 }
                 else
                 {
