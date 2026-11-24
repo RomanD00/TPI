@@ -2,6 +2,7 @@
 using CVJoven.Negocio;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -9,6 +10,10 @@ namespace CVJoven
 {
     public partial class CrearCurriculum : System.Web.UI.Page
     {
+        private const int MaxHabilidades = 12;
+        private const int MinHabilidadesRecomendadas = 3;
+        private const int MaxIdiomas = 5;
+
         private List<Educacion> ListaEducacionTemp
         {
             get
@@ -83,6 +88,10 @@ namespace CVJoven
                 if (long.TryParse(Request.QueryString["id"], out long idCV))
                 {
                     CargarDatosParaEdicion(idCV, usuario.IdUsuario);
+                }
+                else
+                {
+                    BindListasTemporales();
                 }
             }
         }
@@ -167,6 +176,49 @@ namespace CVJoven
 
             rptHabilidadesCargadas.DataSource = ListaHabilidadesTemp;
             rptHabilidadesCargadas.DataBind();
+
+            ActualizarIndicadoresLimites();
+        }
+
+        private void ActualizarIndicadoresLimites()
+        {
+            // Habilidades
+            int cantHab = ListaHabilidadesTemp.Count;
+            lblContadorHabilidades.Text = $"{cantHab} / {MaxHabilidades}";
+            btnAgregarHabilidad.Enabled = cantHab < MaxHabilidades;
+            txtHabilidad.Enabled = cantHab < MaxHabilidades;
+
+            if (cantHab >= MaxHabilidades)
+            {
+                lblRecomendacionHabilidades.CssClass = "alert alert-info py-2 px-3 small d-block mb-3";
+                lblRecomendacionHabilidades.Text = $"Alcanzaste el límite de {MaxHabilidades} habilidades para mantener tu CV limpio y legible en una sola hoja.";
+            }
+            else if (cantHab < MinHabilidadesRecomendadas)
+            {
+                lblRecomendacionHabilidades.CssClass = "alert alert-warning py-2 px-3 small d-block mb-3";
+                lblRecomendacionHabilidades.Text = $"Recomendación: cargá al menos {MinHabilidadesRecomendadas} habilidades (blandas o técnicas) para destacar tu perfil y recibir mejores ofertas recomendadas.";
+            }
+            else
+            {
+                lblRecomendacionHabilidades.CssClass = "alert alert-success py-2 px-3 small d-block mb-3";
+                lblRecomendacionHabilidades.Text = $"¡Muy bien! Ya cargaste {cantHab} habilidades. Esto mejora la coincidencia con ofertas laborales.";
+            }
+
+            // Idiomas
+            int cantIdiomas = ListaIdiomasTemp.Count;
+            lblContadorIdiomas.Text = $"{cantIdiomas} / {MaxIdiomas}";
+            btnAgregarIdioma.Enabled = cantIdiomas < MaxIdiomas;
+            txtIdioma.Enabled = cantIdiomas < MaxIdiomas;
+
+            if (cantIdiomas >= MaxIdiomas)
+            {
+                lblAvisoIdiomas.Visible = true;
+                lblAvisoIdiomas.Text = $"Alcanzaste el máximo de {MaxIdiomas} idiomas permitidos.";
+            }
+            else
+            {
+                lblAvisoIdiomas.Visible = false;
+            }
         }
 
         private Educacion LeerEducacionDeCampos()
@@ -265,10 +317,28 @@ namespace CVJoven
 
         protected void btnAgregarIdioma_Click(object sender, EventArgs e)
         {
+            if (ListaIdiomasTemp.Count >= MaxIdiomas)
+            {
+                ActualizarIndicadoresLimites();
+                return;
+            }
+
             if (!string.IsNullOrWhiteSpace(txtIdioma.Text))
             {
                 string limpio = txtIdioma.Text.Trim();
-                string idiomaFormateado = char.ToUpper(limpio[0]) + limpio.Substring(1) + " (" + ddlNivelIdioma.SelectedValue + ")";
+                string nombreIdioma = char.ToUpper(limpio[0]) + limpio.Substring(1);
+                string idiomaFormateado = nombreIdioma + " (" + ddlNivelIdioma.SelectedValue + ")";
+
+                bool yaExiste = ListaIdiomasTemp.Any(i =>
+                    i.StartsWith(nombreIdioma + " (", StringComparison.OrdinalIgnoreCase));
+
+                if (yaExiste)
+                {
+                    lblAvisoIdiomas.Visible = true;
+                    lblAvisoIdiomas.Text = $"Ya agregaste el idioma \"{nombreIdioma}\".";
+                    return;
+                }
+
                 ListaIdiomasTemp.Add(idiomaFormateado);
                 txtIdioma.Text = "";
                 ddlNivelIdioma.SelectedIndex = 0;
@@ -290,9 +360,25 @@ namespace CVJoven
 
         protected void btnAgregarHabilidad_Click(object sender, EventArgs e)
         {
+            if (ListaHabilidadesTemp.Count >= MaxHabilidades)
+            {
+                ActualizarIndicadoresLimites();
+                return;
+            }
+
             Habilidad hab = LeerHabilidadDeCampos();
             if (hab != null)
             {
+                bool yaExiste = ListaHabilidadesTemp.Any(h =>
+                    h.Descripcion.Equals(hab.Descripcion, StringComparison.OrdinalIgnoreCase));
+
+                if (yaExiste)
+                {
+                    lblRecomendacionHabilidades.CssClass = "alert alert-warning py-2 px-3 small d-block mb-3";
+                    lblRecomendacionHabilidades.Text = $"La habilidad \"{hab.Descripcion}\" ya está en tu lista.";
+                    return;
+                }
+
                 ListaHabilidadesTemp.Add(hab);
                 txtHabilidad.Text = "";
                 ddlTipoHabilidad.SelectedIndex = 0;
@@ -345,18 +431,26 @@ namespace CVJoven
                 if (expActual != null)
                     experiencias.Add(expActual);
 
-                // Habilidades blandas y técnicas
+                // Habilidades blandas y técnicas (respetando tope y sin duplicados)
                 List<Habilidad> listaHabilidades = new List<Habilidad>(ListaHabilidadesTemp);
                 Habilidad habActual = LeerHabilidadDeCampos();
-                if (habActual != null)
+                if (habActual != null &&
+                    listaHabilidades.Count < MaxHabilidades &&
+                    !listaHabilidades.Any(h => h.Descripcion.Equals(habActual.Descripcion, StringComparison.OrdinalIgnoreCase)))
+                {
                     listaHabilidades.Add(habActual);
+                }
 
-                // Idiomas
+                // Idiomas (respetando tope y sin duplicados)
                 List<string> idiomasFinales = new List<string>(ListaIdiomasTemp);
-                if (!string.IsNullOrWhiteSpace(txtIdioma.Text))
+                if (!string.IsNullOrWhiteSpace(txtIdioma.Text) && idiomasFinales.Count < MaxIdiomas)
                 {
                     string limpio = txtIdioma.Text.Trim();
-                    idiomasFinales.Add(char.ToUpper(limpio[0]) + limpio.Substring(1) + " (" + ddlNivelIdioma.SelectedValue + ")");
+                    string nombreIdioma = char.ToUpper(limpio[0]) + limpio.Substring(1);
+                    if (!idiomasFinales.Any(i => i.StartsWith(nombreIdioma + " (", StringComparison.OrdinalIgnoreCase)))
+                    {
+                        idiomasFinales.Add(nombreIdioma + " (" + ddlNivelIdioma.SelectedValue + ")");
+                    }
                 }
 
                 foreach (string idioma in idiomasFinales)

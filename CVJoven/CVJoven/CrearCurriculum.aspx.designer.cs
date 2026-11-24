@@ -276,6 +276,15 @@ namespace CVJoven
         protected global::System.Web.UI.WebControls.TextBox txtDescripcion;
 
         /// <summary>
+        /// Control lblContadorIdiomas.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblContadorIdiomas;
+
+        /// <summary>
         /// Control btnAgregarIdioma.
         /// </summary>
         /// <remarks>
@@ -283,6 +292,15 @@ namespace CVJoven
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton btnAgregarIdioma;
+
+        /// <summary>
+        /// Control lblAvisoIdiomas.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblAvisoIdiomas;
 
         /// <summary>
         /// Control rptIdiomasCargados.
@@ -312,6 +330,15 @@ namespace CVJoven
         protected global::System.Web.UI.WebControls.DropDownList ddlNivelIdioma;
 
         /// <summary>
+        /// Control lblContadorHabilidades.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblContadorHabilidades;
+
+        /// <summary>
         /// Control btnAgregarHabilidad.
         /// </summary>
         /// <remarks>
@@ -319,6 +346,15 @@ namespace CVJoven
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton btnAgregarHabilidad;
+
+        /// <summary>
+        /// Control lblRecomendacionHabilidades.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblRecomendacionHabilidades;
 
         /// <summary>
         /// Control rptHabilidadesCargadas.

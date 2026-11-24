@@ -101,12 +101,14 @@ namespace CVJoven.Negocio
             int edad = DateTime.Today.Year - u.FechaNacimiento.Year;
             if (u.FechaNacimiento.Date > DateTime.Today.AddYears(-edad)) edad--;
 
-            string resumen = $"Postulante de {edad} años residente en {u.ZonaLocalidad}";
+            string resumen = !string.IsNullOrWhiteSpace(u.ZonaLocalidad)
+                ? $"Tengo {edad} años y resido en {u.ZonaLocalidad.Trim()}"
+                : $"Tengo {edad} años";
 
             if (estudios != null && estudios.Count > 0)
             {
                 Educacion edu = estudios[0];
-                resumen += $", con formación de nivel {edu.NivelAlcanzado.ToLower()} en {edu.Titulo} ({edu.Institucion}). ";
+                resumen += $". Cuento con formación de nivel {edu.NivelAlcanzado.ToLower()} en {edu.Titulo} ({edu.Institucion}). ";
             }
             else
             {
@@ -118,16 +120,16 @@ namespace CVJoven.Negocio
                 Experiencia exp = experiencias[0];
                 if (exp.TipoExperiencia == "Laboral")
                 {
-                    resumen += $"Cuenta con experiencia laboral previa desempeñándose como {exp.Puesto} en {exp.Empresa}. ";
+                    resumen += $"Cuento con experiencia laboral previa como {exp.Puesto} en {exp.Empresa}. ";
                 }
                 else
                 {
-                    resumen += $"Cuenta con experiencia en actividades de voluntariado desempeñándose como {exp.Puesto} en {exp.Empresa}. ";
+                    resumen += $"Cuento con experiencia en voluntariado como {exp.Puesto} en {exp.Empresa}. ";
                 }
             }
             else
             {
-                resumen += "En búsqueda activa de una oportunidad laboral para aportar compromiso, rápido aprendizaje y vocación de servicio. ";
+                resumen += "Me encuentro en búsqueda activa de una oportunidad laboral para aportar compromiso, rápido aprendizaje y vocación de servicio. ";
             }
 
             if (habilidades != null && habilidades.Count > 0)
@@ -137,27 +139,37 @@ namespace CVJoven.Negocio
 
                 foreach (var h in habilidades)
                 {
+                    if (string.IsNullOrWhiteSpace(h.Descripcion) ||
+                        h.Descripcion.Trim().StartsWith("Idioma:", StringComparison.OrdinalIgnoreCase))
+                        continue;
+
                     if (h.TipoHabilidad)
-                        blandas.Add(h.Descripcion.ToLower());
+                    {
+                        if (blandas.Count < 4)
+                            blandas.Add(h.Descripcion.ToLower());
+                    }
                     else
-                        tecnicas.Add(h.Descripcion);
+                    {
+                        if (tecnicas.Count < 5)
+                            tecnicas.Add(h.Descripcion);
+                    }
                 }
 
                 if (tecnicas.Count > 0 && blandas.Count > 0)
                 {
-                    resumen += $"Posee conocimientos en {string.Join(", ", tecnicas)} y se destaca por competencias como {string.Join(", ", blandas)}. ";
+                    resumen += $"Manejo herramientas y conocimientos en {string.Join(", ", tecnicas)} y me destaco por competencias como {string.Join(", ", blandas)}. ";
                 }
                 else if (tecnicas.Count > 0)
                 {
-                    resumen += $"Posee conocimientos técnicos y herramientas en {string.Join(", ", tecnicas)}. ";
+                    resumen += $"Manejo herramientas y conocimientos técnicos en {string.Join(", ", tecnicas)}. ";
                 }
                 else if (blandas.Count > 0)
                 {
-                    resumen += $"Destaca por sus competencias en {string.Join(", ", blandas)}. ";
+                    resumen += $"Me destaco por competencias como {string.Join(", ", blandas)}. ";
                 }
             }
 
-            resumen += $"Disponibilidad horaria {cv.DisponibilidadHoraria.ToLower()} para incorporación inmediata.";
+            resumen += $"Cuento con disponibilidad horaria {cv.DisponibilidadHoraria.ToLower()} para incorporación inmediata.";
 
             return resumen;
         }

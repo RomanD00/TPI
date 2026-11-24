@@ -94,7 +94,7 @@
                                     <asp:TextBox ID="txtLocalidad" runat="server" CssClass="form-control bg-light" ReadOnly="true" />
                                 </div>
                             </div>
-                            <div class="form-text mt-2">Estos datos se toman automáticamente de tu cuenta.</div>
+                            <div class="form-text mt-2">Estos datos se toman automáticamente de tu cuenta. Podés modificarlos desde <a href="MiPerfil.aspx">Mi perfil</a>.</div>
                         </div>
                     </section>
 
@@ -114,8 +114,8 @@
                                     <div class="d-flex justify-content-between align-items-center bg-primary-subtle border border-primary-subtle rounded-3 p-2 px-3 mb-2">
                                         <div>
                                             <i class="bi bi-check2-circle text-primary me-1"></i>
-                                            <strong class="text-dark"><%# Eval("Titulo") %></strong>
-                                            <span class="text-secondary small"> — <%# Eval("Institucion") %> (<%# Eval("NivelAlcanzado") %>, <%# Eval("Anio") %>)</span>
+                                            <strong class="text-dark"><%#: Eval("Titulo") %></strong>
+                                            <span class="text-secondary small"> — <%#: Eval("Institucion") %> (<%#: Eval("NivelAlcanzado") %>, <%# Eval("Anio") %>)</span>
                                         </div>
                                         <asp:LinkButton ID="btnQuitarEdu" runat="server" CommandName="Quitar" CommandArgument='<%# Container.ItemIndex %>'
                                             CssClass="btn btn-sm text-danger" CausesValidation="false">
@@ -169,8 +169,8 @@
                                     <div class="d-flex justify-content-between align-items-center bg-primary-subtle border border-primary-subtle rounded-3 p-2 px-3 mb-2">
                                         <div>
                                             <i class="bi bi-check2-circle text-primary me-1"></i>
-                                            <strong class="text-dark"><%# Eval("Puesto") %></strong>
-                                            <span class="text-secondary small"> en <%# Eval("Empresa") %> (<%# Eval("TipoExperiencia") %>)</span>
+                                            <strong class="text-dark"><%#: Eval("Puesto") %></strong>
+                                            <span class="text-secondary small"> en <%#: Eval("Empresa") %> (<%#: Eval("TipoExperiencia") %>)</span>
                                         </div>
                                         <asp:LinkButton ID="btnQuitarExp" runat="server" CommandName="Quitar" CommandArgument='<%# Container.ItemIndex %>'
                                             CssClass="btn btn-sm text-danger" CausesValidation="false">
@@ -214,23 +214,28 @@
                         </div>
                     </section>
 
-                    <!-- 5. IDIOMAS -->
+                    <!-- 5. IDIOMAS (MÁXIMO 5) -->
                     <section class="card border-0 shadow-sm mb-4">
                         <div class="card-body p-4">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h2 class="h5 fw-bold mb-0"><i class="bi bi-translate text-primary me-2"></i>Idiomas</h2>
+                            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <h2 class="h5 fw-bold mb-0"><i class="bi bi-translate text-primary me-2"></i>Idiomas</h2>
+                                    <asp:Label ID="lblContadorIdiomas" runat="server" CssClass="badge bg-light text-secondary border" Text="0 / 5" />
+                                </div>
                                 <asp:LinkButton ID="btnAgregarIdioma" runat="server" CssClass="btn btn-sm btn-outline-primary fw-semibold"
                                     CausesValidation="false" OnClick="btnAgregarIdioma_Click">
-                                    <i class="bi bi-plus-circle me-1"></i>Agregar otro idioma
+                                    <i class="bi bi-plus-circle me-1"></i>Agregar idioma
                                 </asp:LinkButton>
                             </div>
+
+                            <asp:Label ID="lblAvisoIdiomas" runat="server" Visible="false" CssClass="alert alert-warning py-2 px-3 small d-block mb-3" />
 
                             <asp:Repeater ID="rptIdiomasCargados" runat="server" OnItemCommand="rptIdiomasCargados_ItemCommand">
                                 <ItemTemplate>
                                     <div class="d-flex justify-content-between align-items-center bg-primary-subtle border border-primary-subtle rounded-3 p-2 px-3 mb-2">
                                         <div>
                                             <i class="bi bi-globe2 text-primary me-2"></i>
-                                            <strong class="text-dark"><%# Container.DataItem %></strong>
+                                            <strong class="text-dark"><%#: Container.DataItem %></strong>
                                         </div>
                                         <asp:LinkButton ID="btnQuitarIdioma" runat="server" CommandName="Quitar" CommandArgument='<%# Container.ItemIndex %>'
                                             CssClass="btn btn-sm text-danger" CausesValidation="false">
@@ -243,7 +248,7 @@
                             <div class="row g-3 mt-1">
                                 <div class="col-md-7">
                                     <label class="form-label">Idioma</label>
-                                    <asp:TextBox ID="txtIdioma" runat="server" CssClass="form-control" MaxLength="60" placeholder="Ej.: Inglés / Portugués / Francés" />
+                                    <asp:TextBox ID="txtIdioma" runat="server" CssClass="form-control" MaxLength="40" placeholder="Ej.: Inglés / Portugués / Francés" />
                                 </div>
                                 <div class="col-md-5">
                                     <label class="form-label">Nivel</label>
@@ -258,23 +263,29 @@
                         </div>
                     </section>
 
-                    <!-- 6. HABILIDADES BLANDAS Y TÉCNICAS (MÚLTIPLE) -->
+                    <!-- 6. HABILIDADES BLANDAS Y TÉCNICAS (RECOMENDADO 3+, MÁXIMO 12) -->
                     <section class="card border-0 shadow-sm mb-4">
                         <div class="card-body p-4">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h2 class="h5 fw-bold mb-0"><i class="bi bi-stars text-primary me-2"></i>Habilidades y Competencias</h2>
+                            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <h2 class="h5 fw-bold mb-0"><i class="bi bi-stars text-primary me-2"></i>Habilidades y Competencias</h2>
+                                    <asp:Label ID="lblContadorHabilidades" runat="server" CssClass="badge bg-light text-secondary border" Text="0 / 12" />
+                                </div>
                                 <asp:LinkButton ID="btnAgregarHabilidad" runat="server" CssClass="btn btn-sm btn-outline-primary fw-semibold"
                                     CausesValidation="false" OnClick="btnAgregarHabilidad_Click">
-                                    <i class="bi bi-plus-circle me-1"></i>Agregar otra habilidad
+                                    <i class="bi bi-plus-circle me-1"></i>Agregar habilidad
                                 </asp:LinkButton>
                             </div>
+
+                            <!-- Recomendación dinámica de cantidad de habilidades -->
+                            <asp:Label ID="lblRecomendacionHabilidades" runat="server" CssClass="alert alert-warning py-2 px-3 small d-block mb-3" />
 
                             <asp:Repeater ID="rptHabilidadesCargadas" runat="server" OnItemCommand="rptHabilidadesCargadas_ItemCommand">
                                 <ItemTemplate>
                                     <div class="d-flex justify-content-between align-items-center bg-primary-subtle border border-primary-subtle rounded-3 p-2 px-3 mb-2">
                                         <div class="d-flex align-items-center gap-2">
                                             <i class="bi bi-check2-circle text-primary"></i>
-                                            <strong class="text-dark"><%# Eval("Descripcion") %></strong>
+                                            <strong class="text-dark"><%#: Eval("Descripcion") %></strong>
                                             <span class='badge <%# Convert.ToBoolean(Eval("TipoHabilidad")) ? "bg-info text-dark" : "bg-primary" %>'>
                                                 <%# Convert.ToBoolean(Eval("TipoHabilidad")) ? "Blanda" : "Técnica" %>
                                             </span>
@@ -290,7 +301,7 @@
                             <div class="row g-3 mt-1">
                                 <div class="col-md-7">
                                     <label class="form-label">Habilidad</label>
-                                    <asp:TextBox ID="txtHabilidad" runat="server" CssClass="form-control" MaxLength="100"
+                                    <asp:TextBox ID="txtHabilidad" runat="server" CssClass="form-control" MaxLength="60"
                                         placeholder="Ej.: Trabajo en equipo / Excel / Atención al público" />
                                 </div>
                                 <div class="col-md-5">
@@ -307,7 +318,6 @@
                     <div class="d-flex justify-content-end gap-2 mb-4">
                         <a href="MisCurriculums.aspx" class="btn btn-outline-secondary">Cancelar</a>
 
-
                         <asp:Button ID="btnGuardarCV" runat="server" Text="Guardar currículum"
                             CssClass="btn btn-primary px-4" ValidationGroup="guardarCV" OnClick="btnGuardarCV_Click" />
                     </div>
@@ -318,9 +328,9 @@
                         <div class="card-body p-4">
                             <h2 class="h5 fw-bold mb-3"><i class="bi bi-lightbulb text-warning me-2"></i>Consejos para tu CV</h2>
                             <ul class="small text-secondary ps-3 mb-0 d-flex flex-column gap-2">
-                                <li><strong>Múltiples estudios y trabajos:</strong> Escribí los datos y tocá <em>"+ Agregar otro estudio"</em> o <em>"+ Agregar otra experiencia"</em> para sumar todos los que quieras.</li>
-                                <li><strong>Idiomas destacados:</strong> Cargá tus idiomas y su nivel para que figuren en su propia sección del CV.</li>
-                                <li><strong>Habilidades clasificadas:</strong> Cargá tus habilidades una por una, elegí si es blanda o técnica y tocá <em>"+ Agregar otra habilidad"</em>.</li>
+                                <li><strong>Cargá al menos 3 habilidades:</strong> Combinar habilidades técnicas y blandas mejora tus recomendaciones de ofertas laborales.</li>
+                                <li><strong>Mantenelo conciso:</strong> Podés cargar hasta 12 habilidades y 5 idiomas para que tu CV entre prolijo en una página.</li>
+                                <li><strong>Dos formatos disponibles:</strong> Al guardar, vas a poder descargarlo en <em>Diseño Moderno</em> o en <em>Formato ATS</em> para postulaciones en portales.</li>
                             </ul>
                         </div>
                     </div>
