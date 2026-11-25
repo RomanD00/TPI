@@ -2,6 +2,7 @@
 using CVJoven.Negocio;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -85,6 +86,8 @@ namespace CVJoven
                 txtCelular.Text = usuario.Celular;
                 txtLocalidad.Text = usuario.ZonaLocalidad;
 
+                CargarTiposDiscapacidad();
+
                 if (long.TryParse(Request.QueryString["id"], out long idCV))
                 {
                     CargarDatosParaEdicion(idCV, usuario.IdUsuario);
@@ -160,7 +163,63 @@ namespace CVJoven
                 }
             }
 
+            List<long> discapacidades = negocio.ListarIdsDiscapacidadPorCV(idCV);
+            foreach (ListItem item in cblDiscapacidad.Items)
+            {
+                if (long.TryParse(item.Value, out long idDisc) && discapacidades.Contains(idDisc))
+                {
+                    item.Selected = true;
+                }
+            }
+
             BindListasTemporales();
+        }
+
+        private void CargarTiposDiscapacidad()
+        {
+            CVNegocio negocio = new CVNegocio();
+            DataTable tipos = negocio.ListarTiposDiscapacidad();
+
+            cblDiscapacidad.Items.Clear();
+
+            if (tipos != null && tipos.Rows.Count > 0)
+            {
+                foreach (DataRow fila in tipos.Rows)
+                {
+                    ListItem item = new ListItem(
+                        fila["Nombre"].ToString(),
+                        fila["IdDiscapacidad"].ToString()
+                    );
+
+                    if (fila["Descripcion"] != DBNull.Value && !string.IsNullOrWhiteSpace(fila["Descripcion"].ToString()))
+                    {
+                        item.Attributes["title"] = fila["Descripcion"].ToString();
+                    }
+
+                    cblDiscapacidad.Items.Add(item);
+                }
+
+                lblSinTiposDiscapacidad.Visible = false;
+            }
+            else
+            {
+                lblSinTiposDiscapacidad.Visible = true;
+            }
+        }
+
+        private List<long> ObtenerIdsDiscapacidadSeleccionadas()
+        {
+            List<long> ids = new List<long>();
+
+            foreach (ListItem item in cblDiscapacidad.Items)
+            {
+                if (item.Selected && long.TryParse(item.Value, out long idDisc))
+                {
+                    ids.Add(idDisc);
+                }
+            }
+
+            return ids;
         }
 
         private void BindListasTemporales()
@@ -461,18 +520,19 @@ namespace CVJoven
                     listaHabilidades.Add(habIdioma);
                 }
 
+                List<long> idsDiscapacidad = ObtenerIdsDiscapacidadSeleccionadas();
                 CVNegocio negocio = new CVNegocio();
 
                 if (long.TryParse(Request.QueryString["id"], out long idCVExistente))
                 {
                     cv.IdCV = idCVExistente;
-                    negocio.ActualizarCVCompleto(cv, estudios, experiencias, listaHabilidades);
+                    negocio.ActualizarCVCompleto(cv, estudios, experiencias, listaHabilidades, idsDiscapacidad);
                     Response.Redirect($"VerCV.aspx?id={idCVExistente}", false);
                     Context.ApplicationInstance.CompleteRequest();
                 }
                 else
                 {
-                    long idCVGenerado = negocio.GuardarCVCompleto(cv, estudios, experiencias, listaHabilidades);
+                    long idCVGenerado = negocio.GuardarCVCompleto(cv, estudios, experiencias, listaHabilidades, idsDiscapacidad);
                     if (idCVGenerado > 0)
                     {
                         Response.Redirect($"VerCV.aspx?id={idCVGenerado}", false);

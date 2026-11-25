@@ -111,7 +111,6 @@ namespace CVJoven
             );
         }
 
-
         protected void btnEditarPerfil_Click(object sender, EventArgs e)
         {
             try
@@ -150,7 +149,6 @@ namespace CVJoven
                 MostrarError("No se pudieron cargar los datos.");
             }
         }
-
 
         protected void btnGuardarCambios_Click(object sender, EventArgs e)
         {
@@ -294,7 +292,6 @@ namespace CVJoven
             }
         }
 
-
         private void AbrirModalEditarOferta()
         {
             string script = @"
@@ -314,7 +311,7 @@ namespace CVJoven
         }
 
         protected void rptMisOfertas_ItemCommand(
-     object source, RepeaterCommandEventArgs e)
+            object source, RepeaterCommandEventArgs e)
         {
             if (e.CommandName == "EditarOferta")
             {
@@ -351,7 +348,6 @@ namespace CVJoven
             }
         }
 
-
         private void AbrirModalCancelarOferta()
         {
             string script = @"
@@ -373,9 +369,8 @@ namespace CVJoven
             );
         }
 
-
         protected void btnConfirmarCancelacion_Click(
-    object sender, EventArgs e)
+            object sender, EventArgs e)
         {
             try
             {
@@ -446,6 +441,26 @@ namespace CVJoven
             AbrirModalCancelarOferta();
         }
 
+        private List<string> RequisitosEditar
+        {
+            get
+            {
+                if (ViewState["RequisitosEditar"] == null)
+                    ViewState["RequisitosEditar"] = new List<string>();
+                return (List<string>)ViewState["RequisitosEditar"];
+            }
+            set { ViewState["RequisitosEditar"] = value; }
+        }
+
+        private void BindRequisitosEditar()
+        {
+            List<string> lista = RequisitosEditar;
+            rptEditarRequisitos.DataSource = lista;
+            rptEditarRequisitos.DataBind();
+            rptEditarRequisitos.Visible = lista.Count > 0;
+            lblSinRequisitosEditar.Visible = lista.Count == 0;
+        }
+
         private void CargarOfertaParaEditar(long idOferta)
         {
             long idEmpresa =
@@ -480,6 +495,22 @@ namespace CVJoven
             chkEditarDiscapacidad.Checked =
                 Convert.ToBoolean(oferta["AceptaDiscapacidad"]);
 
+            DataTable dtRequisitos = negocio.ObtenerRequisitosOferta(idOferta);
+            List<string> listaRequisitos = new List<string>();
+
+            foreach (DataRow filaReq in dtRequisitos.Rows)
+            {
+                string desc = filaReq["Descripcion"].ToString().Trim();
+                if (!string.IsNullOrEmpty(desc))
+                {
+                    listaRequisitos.Add(desc);
+                }
+            }
+
+            RequisitosEditar = listaRequisitos;
+            txtNuevoRequisito.Text = "";
+            BindRequisitosEditar();
+
             ViewState["IdOfertaEditar"] = idOferta;
 
             lblErrorEditarOferta.Visible = false;
@@ -488,6 +519,53 @@ namespace CVJoven
             AbrirModalEditarOferta();
         }
 
+        protected void btnAgregarRequisito_Click(object sender, EventArgs e)
+        {
+            lblErrorEditarOferta.Visible = false;
+            string nuevo = txtNuevoRequisito.Text.Trim();
+
+            if (string.IsNullOrWhiteSpace(nuevo))
+            {
+                MostrarErrorEditarOferta("Ingresá un requisito antes de agregarlo.");
+                return;
+            }
+
+            if (nuevo.Length > 255)
+            {
+                MostrarErrorEditarOferta("El requisito no puede superar los 255 caracteres.");
+                return;
+            }
+
+            List<string> lista = RequisitosEditar;
+            if (lista.Any(r => r.Equals(nuevo, StringComparison.OrdinalIgnoreCase)))
+            {
+                MostrarErrorEditarOferta("Ese requisito ya está cargado en la oferta.");
+                return;
+            }
+
+            lista.Add(nuevo);
+            RequisitosEditar = lista;
+            txtNuevoRequisito.Text = "";
+            BindRequisitosEditar();
+            AbrirModalEditarOferta();
+        }
+
+        protected void rptEditarRequisitos_ItemCommand(object source, RepeaterCommandEventArgs e)
+        {
+            if (e.CommandName == "Quitar" && int.TryParse(e.CommandArgument.ToString(), out int index))
+            {
+                List<string> lista = RequisitosEditar;
+                if (index >= 0 && index < lista.Count)
+                {
+                    lista.RemoveAt(index);
+                    RequisitosEditar = lista;
+                }
+
+                lblErrorEditarOferta.Visible = false;
+                BindRequisitosEditar();
+                AbrirModalEditarOferta();
+            }
+        }
 
         protected void btnGuardarOferta_Click(object sender, EventArgs e)
         {
@@ -507,6 +585,14 @@ namespace CVJoven
                 long idOferta =
                     Convert.ToInt64(ViewState["IdOfertaEditar"]);
 
+                List<string> requisitosFinales = new List<string>(RequisitosEditar);
+                string pendiente = txtNuevoRequisito.Text.Trim();
+                if (!string.IsNullOrWhiteSpace(pendiente) &&
+                    !requisitosFinales.Any(r => r.Equals(pendiente, StringComparison.OrdinalIgnoreCase)))
+                {
+                    requisitosFinales.Add(pendiente);
+                }
+
                 OfertaLaboralNegocio negocio =
                     new OfertaLaboralNegocio();
 
@@ -517,12 +603,15 @@ namespace CVJoven
                     txtEditarZona.Text.Trim(),
                     ddlEditarJornada.SelectedValue,
                     txtEditarDescripcion.Text.Trim(),
-                    chkEditarDiscapacidad.Checked
+                    chkEditarDiscapacidad.Checked,
+                    requisitosFinales
                 );
 
                 if (actualizado)
                 {
                     ViewState.Remove("IdOfertaEditar");
+                    ViewState.Remove("RequisitosEditar");
+                    txtNuevoRequisito.Text = "";
 
                     lblMensaje.Text =
                         "La oferta laboral se actualizó correctamente.";
@@ -569,11 +658,5 @@ namespace CVJoven
 
             AbrirModalEditarOferta();
         }
-
-
-
-
-
-
     }
 }

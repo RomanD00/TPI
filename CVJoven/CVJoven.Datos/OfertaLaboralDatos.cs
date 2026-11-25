@@ -543,7 +543,57 @@ namespace CVJoven.Datos
             }
         }
 
+        public void ReemplazarRequisitosOferta(long idOferta, long idEmpresa, List<string> requisitos)
+        {
+            AccesoDatos datos = new AccesoDatos();
 
+            try
+            {
+                datos.setearConsulta(@"
+                    DELETE r
+                    FROM Requisito r
+                    INNER JOIN OfertaLaboral o ON r.idOferta = o.IdOferta
+                    WHERE r.idOferta = @idOferta
+                      AND o.IdEmpresa = @idEmpresa
+                      AND o.EstadoOferta = 'Activa'");
+
+                datos.setearParametro("@idOferta", idOferta);
+                datos.setearParametro("@idEmpresa", idEmpresa);
+                datos.ejecutarAccion();
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+
+            if (requisitos != null)
+            {
+                foreach (string requisito in requisitos)
+                {
+                    AccesoDatos datosInsert = new AccesoDatos();
+
+                    try
+                    {
+                        datosInsert.setearConsulta(@"
+                            INSERT INTO Requisito (idOferta, Descripcion)
+                            SELECT IdOferta, @descripcion
+                            FROM OfertaLaboral
+                            WHERE IdOferta = @idOferta
+                              AND IdEmpresa = @idEmpresa
+                              AND EstadoOferta = 'Activa'");
+
+                        datosInsert.setearParametro("@idOferta", idOferta);
+                        datosInsert.setearParametro("@idEmpresa", idEmpresa);
+                        datosInsert.setearParametro("@descripcion", requisito);
+                        datosInsert.ejecutarAccion();
+                    }
+                    finally
+                    {
+                        datosInsert.cerrarConexion();
+                    }
+                }
+            }
+        }
 
     }
 }

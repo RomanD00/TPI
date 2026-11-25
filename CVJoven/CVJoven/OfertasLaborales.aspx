@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="OfertasLaborales.aspx.cs" Inherits="CVJoven.OfertasLaborales" MaintainScrollPositionOnPostback="true" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="OfertasLaborales.aspx.cs" Inherits="CVJoven.OfertasLaborales" %>
 <%@ Register Src="~/Controles/Accesibilidad.ascx"
     TagPrefix="uc"
     TagName="Accesibilidad" %>
@@ -270,11 +270,18 @@
                                                 <span class="text-muted fw-normal"> · <%#: Eval("SectorEmpresa") %></span>
                                             </div>
 
-                                            <!-- Habilidades que coincidieron con los requisitos -->
-                                            <asp:PlaceHolder ID="phCoincidencias" runat="server" Visible='<%# Convert.ToBoolean(Eval("EsRecomendada")) %>'>
-                                                <div class="small text-success-emphasis bg-success bg-opacity-10 rounded-3 px-2 py-1 mb-2 d-inline-block">
+                                            <!-- Coincidencias de habilidades y/o discapacidad -->
+                                            <asp:PlaceHolder ID="phCoincidencias" runat="server" Visible='<%# !string.IsNullOrEmpty(Eval("HabilidadesCoincidentes").ToString()) %>'>
+                                                <div class="small text-success-emphasis bg-success bg-opacity-10 rounded-3 px-2 py-1 mb-2 me-1 d-inline-block">
                                                     <i class="bi bi-check-circle-fill text-success me-1"></i>
                                                     <strong>Coincide con tus habilidades:</strong> <%#: Eval("HabilidadesCoincidentes") %>
+                                                </div>
+                                            </asp:PlaceHolder>
+
+                                            <asp:PlaceHolder ID="phCoincideDiscapacidad" runat="server" Visible='<%# Convert.ToBoolean(Eval("CoincideDiscapacidad")) %>'>
+                                                <div class="small text-primary-emphasis bg-primary bg-opacity-10 rounded-3 px-2 py-1 mb-2 d-inline-block">
+                                                    <i class="bi bi-universal-access text-primary me-1"></i>
+                                                    <strong>Oferta inclusiva:</strong> acepta discapacidad y coincide con tu perfil
                                                 </div>
                                             </asp:PlaceHolder>
 

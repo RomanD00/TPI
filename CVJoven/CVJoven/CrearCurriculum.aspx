@@ -10,6 +10,16 @@
     <title>Crear currículum | CVJoven</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <style>
+        .lista-discapacidad label {
+            margin-left: 0.45rem;
+            cursor: pointer;
+        }
+        .lista-discapacidad input[type="checkbox"] {
+            cursor: pointer;
+            transform: scale(1.1);
+        }
+    </style>
 </head>
 <body class="bg-light">
     <form id="form1" runat="server">
@@ -211,7 +221,7 @@
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label">Descripción de tareas</label>
-                                    <asp:TextBox ID="txtDescripcion" runat="server" CssClass="form-control" TextMode="MultiLine" Rows="3" MaxLength="255"
+                                    <asp:TextBox ID="txtDescripcion" runat="server" CssClass="form-control" TextMode="MultiLine" Rows="4" MaxLength="500"
                                         placeholder="Describí brevemente tus tareas principales..." />
                                 </div>
                             </div>
@@ -319,11 +329,34 @@
                         </div>
                     </section>
 
+                    <!-- 7. DISCAPACIDAD (OPCIONAL) -->
+                    <section class="card border-0 shadow-sm mb-4">
+                        <div class="card-body p-4">
+                            <h2 class="h5 fw-bold mb-2">
+                                <i class="bi bi-universal-access text-primary me-2"></i>Discapacidad <span class="text-muted fw-normal small">(opcional)</span>
+                            </h2>
+                            <p class="text-secondary small mb-3">
+                                Si contás con Certificado Único de Discapacidad (CUD) o deseás indicarlo en tu CV, marcá una o más opciones. Esto también mejora tus recomendaciones con ofertas inclusivas. Si no aplica, dejá todo sin marcar.
+                            </p>
+
+                            <asp:CheckBoxList ID="cblDiscapacidad" runat="server"
+                                RepeatLayout="Table" RepeatColumns="2" RepeatDirection="Horizontal"
+                                CellPadding="6" CssClass="w-100 lista-discapacidad" />
+
+                            <asp:Label ID="lblSinTiposDiscapacidad" runat="server" Visible="false"
+                                CssClass="text-muted small"
+                                Text="No hay tipos de discapacidad cargados en la base de datos." />
+                        </div>
+                    </section>
+
                     <div class="d-flex justify-content-end gap-2 mb-4">
                         <a href="MisCurriculums.aspx" class="btn btn-outline-secondary">Cancelar</a>
 
                         <asp:Button ID="btnGuardarCV" runat="server" Text="Guardar currículum"
-                            CssClass="btn btn-primary px-4" ValidationGroup="guardarCV" OnClick="btnGuardarCV_Click" />
+                            CssClass="btn btn-primary px-4" ValidationGroup="guardarCV"
+                            UseSubmitBehavior="false"
+                            OnClientClick="if (typeof(Page_ClientValidate) === 'function' && !Page_ClientValidate('guardarCV')) { return false; } this.disabled = true; this.value = 'Guardando...';"
+                            OnClick="btnGuardarCV_Click" />
                     </div>
                 </div>
 

@@ -120,6 +120,7 @@
         List<Educacion> estudios = negocio.ListarEducacionPorCV(idCV);
         List<Experiencia> experiencias = negocio.ListarExperienciaPorCV(idCV);
         List<Habilidad> todasHabilidades = negocio.ListarHabilidadesPorCV(idCV);
+        List<string> discapacidades = negocio.ListarNombresDiscapacidadPorCV(idCV);
 
         List<Habilidad> habilidadesFiltradas = new List<Habilidad>();
         List<string> habilidadesTecnicas = new List<string>();
@@ -265,6 +266,17 @@
 
             pnlIdiomasATS.Visible = true;
             lblIdiomasATS.Text = Server.HtmlEncode(string.Join("  •  ", idiomas));
+        }
+
+        // Discapacidad (oculta si no se seleccionó ninguna)
+        if (discapacidades != null && discapacidades.Count > 0)
+        {
+            pnlDiscapacidadModerna.Visible = true;
+            repDiscapacidadModerna.DataSource = discapacidades;
+            repDiscapacidadModerna.DataBind();
+
+            pnlDiscapacidadATS.Visible = true;
+            lblDiscapacidadATS.Text = Server.HtmlEncode(string.Join("  •  ", discapacidades));
         }
     }
 </script>
@@ -566,6 +578,18 @@
                         </asp:Repeater>
                     </div>
                 </asp:Panel>
+
+                <!-- Discapacidad en chips compactos (se oculta si no seleccionó) -->
+                <asp:Panel ID="pnlDiscapacidadModerna" runat="server" Visible="false" CssClass="mt-4">
+                    <h6 class="titulo-lateral">Discapacidad</h6>
+                    <div class="d-flex flex-wrap gap-2">
+                        <asp:Repeater ID="repDiscapacidadModerna" runat="server">
+                            <ItemTemplate>
+                                <span class="chip-compacto"><i class="bi bi-universal-access text-info me-1"></i><%#: Container.DataItem %></span>
+                            </ItemTemplate>
+                        </asp:Repeater>
+                    </div>
+                </asp:Panel>
             </div>
 
             <!-- Columna Derecha -->
@@ -674,9 +698,14 @@
                 </asp:Panel>
             </asp:Panel>
 
-            <asp:Panel ID="pnlIdiomasATS" runat="server" Visible="false" CssClass="ats-seccion mb-0">
+            <asp:Panel ID="pnlIdiomasATS" runat="server" Visible="false" CssClass="ats-seccion">
                 <h2 class="ats-titulo">Idiomas</h2>
                 <p class="ats-texto"><asp:Label ID="lblIdiomasATS" runat="server" /></p>
+            </asp:Panel>
+
+            <asp:Panel ID="pnlDiscapacidadATS" runat="server" Visible="false" CssClass="ats-seccion mb-0">
+                <h2 class="ats-titulo">Discapacidad</h2>
+                <p class="ats-texto"><asp:Label ID="lblDiscapacidadATS" runat="server" /></p>
             </asp:Panel>
         </div>
     </form>

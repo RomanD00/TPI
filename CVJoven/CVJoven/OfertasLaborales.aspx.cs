@@ -132,13 +132,7 @@ namespace CVJoven
 
                 lblCantidadOfertas.Text = "0";
                 pnlSinResultados.Visible = false;
-
-                ClientScript.RegisterStartupScript(
-                    this.GetType(),
-                    "errorOfertas",
-                    "alert('No se pudieron cargar las ofertas laborales.');",
-                    true
-                );
+                MostrarMensaje("Ocurrió un error al cargar las ofertas laborales.", false);
             }
         }
 
@@ -226,7 +220,7 @@ namespace CVJoven
                     ClientScript.RegisterStartupScript(
                         this.GetType(),
                         "scrollDetalle",
-                        "window.scrollTo({ top: 0, behavior: 'instant' });",
+                        "setTimeout(function() { window.scrollTo({ top: 0, behavior: 'smooth' }); }, 150);",
                         true
                     );
                 }
@@ -246,12 +240,7 @@ namespace CVJoven
                 modal.show();
             ";
 
-            ClientScript.RegisterStartupScript(
-                this.GetType(),
-                "abrirModal",
-                script,
-                true
-            );
+            ClientScript.RegisterStartupScript(this.GetType(), "abrirModal", script, true);
         }
 
         protected void btnCerrarDetalle_Click(object sender, EventArgs e)
@@ -296,7 +285,7 @@ namespace CVJoven
                     ClientScript.RegisterStartupScript(
                         this.GetType(),
                         "scrollArriba",
-                        "window.scrollTo({ top: 0, behavior: 'instant' });",
+                        "setTimeout(function() { window.scrollTo({ top: 0, behavior: 'smooth' }); }, 150);",
                         true
                     );
                 }

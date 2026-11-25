@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using CVJoven.Datos;
 using CVJoven.Dominio;
+using System.Data;
 
 namespace CVJoven.Negocio
 {
@@ -29,46 +30,72 @@ namespace CVJoven.Negocio
             return cvDatos.EliminarCV(idCV, idUsuario);
         }
 
-        public long GuardarCVCompleto(CV cv, List<Educacion> estudios, List<Experiencia> experiencias, List<Habilidad> habilidades)
+        public long GuardarCVCompleto(
+            CV cv,
+            List<Educacion> estudios,
+            List<Experiencia> experiencias,
+            List<Habilidad> habilidades,
+            List<long> idsDiscapacidad = null)
         {
             long idCV = cvDatos.InsertarCV(cv);
 
             if (idCV <= 0)
                 return 0;
 
-            if (estudios != null)
+            try
             {
-                foreach (Educacion edu in estudios)
+                if (estudios != null)
                 {
-                    edu.IdCV = idCV;
-                    cvDatos.InsertarEducacion(edu);
+                    foreach (Educacion edu in estudios)
+                    {
+                        edu.IdCV = idCV;
+                        cvDatos.InsertarEducacion(edu);
+                    }
                 }
-            }
 
-            if (experiencias != null)
+                if (experiencias != null)
+                {
+                    foreach (Experiencia exp in experiencias)
+                    {
+                        exp.IdCV = idCV;
+                        cvDatos.InsertarExperiencia(exp);
+                    }
+                }
+
+                if (habilidades != null)
+                {
+                    foreach (Habilidad hab in habilidades)
+                    {
+                        hab.IdCV = idCV;
+                        cvDatos.InsertarHabilidad(hab);
+                    }
+                }
+
+                if (idsDiscapacidad != null)
+                {
+                    foreach (long idDisc in idsDiscapacidad)
+                    {
+                        cvDatos.InsertarDiscapacidad(idCV, idDisc);
+                    }
+                }
+
+                return idCV;
+            }
+            catch
             {
-                foreach (Experiencia exp in experiencias)
-                {
-                    exp.IdCV = idCV;
-                    cvDatos.InsertarExperiencia(exp);
-                }
+                try { cvDatos.EliminarCV(idCV, cv.IdUsuario); } catch { }
+                throw;
             }
-
-            if (habilidades != null)
-            {
-                foreach (Habilidad hab in habilidades)
-                {
-                    hab.IdCV = idCV;
-                    cvDatos.InsertarHabilidad(hab);
-                }
-            }
-
-            return idCV;
         }
 
-        public void ActualizarCVCompleto(CV cv, List<Educacion> estudios, List<Experiencia> experiencias, List<Habilidad> habilidades)
+        public void ActualizarCVCompleto(
+            CV cv,
+            List<Educacion> estudios,
+            List<Experiencia> experiencias,
+            List<Habilidad> habilidades,
+            List<long> idsDiscapacidad = null)
         {
-            cvDatos.ActualizarCVCompleto(cv, estudios, experiencias, habilidades);
+            cvDatos.ActualizarCVCompleto(cv, estudios, experiencias, habilidades, idsDiscapacidad);
         }
 
         public CV ObtenerCVPorId(long idCV)
@@ -146,32 +173,49 @@ namespace CVJoven.Negocio
                     if (h.TipoHabilidad)
                     {
                         if (blandas.Count < 4)
-                            blandas.Add(h.Descripcion.ToLower());
+                            blandas.Add(h.Descripcion.Trim());
                     }
                     else
                     {
                         if (tecnicas.Count < 5)
-                            tecnicas.Add(h.Descripcion);
+                            tecnicas.Add(h.Descripcion.Trim());
                     }
                 }
 
-                if (tecnicas.Count > 0 && blandas.Count > 0)
+                if (tecnicas.Count > 0)
                 {
-                    resumen += $"Manejo herramientas y conocimientos en {string.Join(", ", tecnicas)} y me destaco por competencias como {string.Join(", ", blandas)}. ";
+                    resumen += $"Mis habilidades técnicas son: {string.Join(", ", tecnicas)}. ";
                 }
-                else if (tecnicas.Count > 0)
+
+                if (blandas.Count > 0)
                 {
-                    resumen += $"Manejo herramientas y conocimientos técnicos en {string.Join(", ", tecnicas)}. ";
-                }
-                else if (blandas.Count > 0)
-                {
-                    resumen += $"Me destaco por competencias como {string.Join(", ", blandas)}. ";
+                    resumen += $"Mis habilidades blandas son: {string.Join(", ", blandas)}. ";
                 }
             }
 
             resumen += $"Cuento con disponibilidad horaria {cv.DisponibilidadHoraria.ToLower()} para incorporación inmediata.";
 
             return resumen;
+        }
+
+        public DataTable ListarTiposDiscapacidad()
+        {
+            return cvDatos.ListarTiposDiscapacidad();
+        }
+
+        public List<long> ListarIdsDiscapacidadPorCV(long idCV)
+        {
+            return cvDatos.ListarIdsDiscapacidadPorCV(idCV);
+        }
+
+        public List<string> ListarNombresDiscapacidadPorCV(long idCV)
+        {
+            return cvDatos.ListarNombresDiscapacidadPorCV(idCV);
+        }
+
+        public bool UsuarioTieneDiscapacidad(long idUsuario)
+        {
+            return cvDatos.UsuarioTieneDiscapacidad(idUsuario);
         }
     }
 }

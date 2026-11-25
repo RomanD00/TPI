@@ -109,13 +109,14 @@ namespace CVJoven.Negocio
 
 
         public bool ActualizarOferta(
-    long idOferta,
-    long idEmpresa,
-    string titulo,
-    string zona,
-    string jornada,
-    string descripcion,
-    bool aceptaDiscapacidad)
+            long idOferta,
+            long idEmpresa,
+            string titulo,
+            string zona,
+            string jornada,
+            string descripcion,
+            bool aceptaDiscapacidad,
+            List<string> requisitos = null)
         {
             if (idOferta <= 0 || idEmpresa <= 0)
             {
@@ -142,6 +143,27 @@ namespace CVJoven.Negocio
                     "El tipo de jornada no es válido.");
             }
 
+            List<string> requisitosLimpios = null;
+
+            if (requisitos != null)
+            {
+                requisitosLimpios = new List<string>();
+                foreach (string req in requisitos)
+                {
+                    string texto = (req ?? "").Trim();
+                    if (string.IsNullOrWhiteSpace(texto))
+                        continue;
+
+                    if (texto.Length > 255)
+                    {
+                        throw new ArgumentException(
+                            "Los requisitos deben tener como máximo 255 caracteres.");
+                    }
+
+                    requisitosLimpios.Add(texto);
+                }
+            }
+
             OfertaLaboralDatos datos = new OfertaLaboralDatos();
 
             int filasAfectadas = datos.ActualizarOferta(
@@ -154,7 +176,17 @@ namespace CVJoven.Negocio
                 aceptaDiscapacidad
             );
 
-            return filasAfectadas == 1;
+            if (filasAfectadas == 1)
+            {
+                if (requisitosLimpios != null)
+                {
+                    datos.ReemplazarRequisitosOferta(idOferta, idEmpresa, requisitosLimpios);
+                }
+
+                return true;
+            }
+
+            return false;
         }
 
 
@@ -206,12 +238,16 @@ namespace CVJoven.Negocio
 
             usuarioTieneHabilidades = habilidadesUsuario.Count > 0;
 
+            bool usuarioTieneDiscapacidad = cvDatos.UsuarioTieneDiscapacidad(idUsuario);
+
             // Columnas calculadas para mostrar recomendaciones y fechas
             tablaBase.Columns.Add("EsRecomendada", typeof(bool));
             tablaBase.Columns.Add("CantidadCoincidencias", typeof(int));
             tablaBase.Columns.Add("HabilidadesCoincidentes", typeof(string));
+            tablaBase.Columns.Add("CoincideDiscapacidad", typeof(bool));
             tablaBase.Columns.Add("FechaPublicacionTexto", typeof(string));
             tablaBase.Columns.Add("YaPostulado", typeof(bool));
+
 
             string busquedaNorm = NormalizarTexto(busqueda);
             string ubicacionNorm = NormalizarTexto(ubicacion);
@@ -312,10 +348,18 @@ namespace CVJoven.Negocio
                     }
                 }
 
-                bool esRecomendada = coincidencias.Count > 0;
+                bool aceptaDiscapacidad = string.Equals(
+                    fila["AceptaDiscapacidad"].ToString().Trim(),
+                    "Sí",
+                    StringComparison.OrdinalIgnoreCase);
+
+                bool coincideDiscapacidad = usuarioTieneDiscapacidad && aceptaDiscapacidad;
+                bool esRecomendada = coincidencias.Count > 0 || coincideDiscapacidad;
+
                 fila["EsRecomendada"] = esRecomendada;
-                fila["CantidadCoincidencias"] = coincidencias.Count;
+                fila["CantidadCoincidencias"] = coincidencias.Count + (coincideDiscapacidad ? 1 : 0);
                 fila["HabilidadesCoincidentes"] = string.Join(", ", coincidencias);
+                fila["CoincideDiscapacidad"] = coincideDiscapacidad;
                 fila["YaPostulado"] = ofertasPostuladas.Contains(idOferta);
 
                 if (esRecomendada)

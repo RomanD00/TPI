@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using CVJoven.Dominio;
+using System.Data;
 
 namespace CVJoven.Datos
 {
@@ -108,8 +109,15 @@ namespace CVJoven.Datos
             {
                 datos.setearConsulta(@"
                     IF EXISTS (SELECT 1 FROM CV WHERE IdCV = @IdCV AND IdUsuario = @IdUsuario)
-                       AND NOT EXISTS (SELECT 1 FROM Postulacion WHERE IdCV = @IdCV)
+                       AND NOT EXISTS (
+                           SELECT 1
+                           FROM Postulacion
+                           WHERE IdCV = @IdCV
+                             AND EstadoPostulacion <> 'Rechazado'
+                       )
                     BEGIN
+                        DELETE FROM Postulacion WHERE IdCV = @IdCV AND EstadoPostulacion = 'Rechazado';
+                        DELETE FROM Discapacidad WHERE IdCV = @IdCV;
                         DELETE FROM Habilidades WHERE idCV = @IdCV;
                         DELETE FROM Experiencia WHERE idCV = @IdCV;
                         DELETE FROM Educacion WHERE idCV = @IdCV;
@@ -363,7 +371,12 @@ namespace CVJoven.Datos
             }
         }
 
-        public void ActualizarCVCompleto(CV cv, List<Educacion> estudios, List<Experiencia> experiencias, List<Habilidad> habilidades)
+        public void ActualizarCVCompleto(
+            CV cv,
+            List<Educacion> estudios,
+            List<Experiencia> experiencias,
+            List<Habilidad> habilidades,
+            List<long> idsDiscapacidad = null)
         {
             ModificarCV(cv);
 
@@ -371,6 +384,7 @@ namespace CVJoven.Datos
             try
             {
                 datos.setearConsulta(@"
+                    DELETE FROM Discapacidad WHERE IdCV = @idCV;
                     DELETE FROM Habilidades WHERE idCV = @idCV;
                     DELETE FROM Experiencia WHERE idCV = @idCV;
                     DELETE FROM Educacion WHERE idCV = @idCV;");
@@ -408,6 +422,14 @@ namespace CVJoven.Datos
                     InsertarHabilidad(hab);
                 }
             }
+
+            if (idsDiscapacidad != null)
+            {
+                foreach (long idDisc in idsDiscapacidad)
+                {
+                    InsertarDiscapacidad(cv.IdCV, idDisc);
+                }
+            }
         }
 
         public List<Habilidad> ListarHabilidadesPorUsuario(long idUsuario)
@@ -437,6 +459,128 @@ namespace CVJoven.Datos
                 }
 
                 return lista;
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
+
+        public DataTable ListarTiposDiscapacidad()
+        {
+            AccesoDatos datos = new AccesoDatos();
+            DataTable tabla = new DataTable();
+
+            try
+            {
+                datos.setearConsulta(@"
+                    SELECT IdDiscapacidad, Nombre, Descripcion
+                    FROM TipoDiscapacidad
+                    ORDER BY Nombre");
+
+                datos.ejecutarLectura();
+                tabla.Load(datos.Lector);
+                return tabla;
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
+
+        public void InsertarDiscapacidad(long idCV, long idDiscapacidad)
+        {
+            AccesoDatos datos = new AccesoDatos();
+            try
+            {
+                datos.setearConsulta(@"
+                    INSERT INTO Discapacidad (IdCV, IdDiscapacidad)
+                    VALUES (@idCV, @idDiscapacidad)");
+
+                datos.setearParametro("@idCV", idCV);
+                datos.setearParametro("@idDiscapacidad", idDiscapacidad);
+                datos.ejecutarAccion();
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
+
+        public List<long> ListarIdsDiscapacidadPorCV(long idCV)
+        {
+            List<long> lista = new List<long>();
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.setearConsulta(@"
+                    SELECT IdDiscapacidad
+                    FROM Discapacidad
+                    WHERE IdCV = @idCV");
+
+                datos.setearParametro("@idCV", idCV);
+                datos.ejecutarLectura();
+
+                while (datos.Lector.Read())
+                {
+                    lista.Add(Convert.ToInt64(datos.Lector["IdDiscapacidad"]));
+                }
+
+                return lista;
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
+
+        public List<string> ListarNombresDiscapacidadPorCV(long idCV)
+        {
+            List<string> lista = new List<string>();
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.setearConsulta(@"
+                    SELECT td.Nombre
+                    FROM Discapacidad d
+                    INNER JOIN TipoDiscapacidad td ON d.IdDiscapacidad = td.IdDiscapacidad
+                    WHERE d.IdCV = @idCV
+                    ORDER BY td.Nombre");
+
+                datos.setearParametro("@idCV", idCV);
+                datos.ejecutarLectura();
+
+                while (datos.Lector.Read())
+                {
+                    lista.Add(datos.Lector["Nombre"].ToString());
+                }
+
+                return lista;
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
+
+        public bool UsuarioTieneDiscapacidad(long idUsuario)
+        {
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.setearConsulta(@"
+                    SELECT TOP 1 1
+                    FROM Discapacidad d
+                    INNER JOIN CV c ON d.IdCV = c.IdCV
+                    WHERE c.IdUsuario = @idUsuario");
+
+                datos.setearParametro("@idUsuario", idUsuario);
+                datos.ejecutarLectura();
+
+                return datos.Lector.Read();
             }
             finally
             {
