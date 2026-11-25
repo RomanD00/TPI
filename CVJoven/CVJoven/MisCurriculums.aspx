@@ -1,7 +1,9 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true"
     CodeBehind="MisCurriculums.aspx.cs"
     Inherits="CVJoven.MisCurriculums" %>
-
+<%@ Register Src="~/Controles/Accesibilidad.ascx"
+    TagPrefix="uc"
+    TagName="Accesibilidad" %>
 <!DOCTYPE html>
 <html lang="es">
 <head runat="server">
@@ -23,6 +25,7 @@
 <body class="bg-light">
 
     <form id="form1" runat="server">
+        <uc:Accesibilidad ID="Accesibilidad1" runat="server" />
 
         <!-- BARRA SUPERIOR -->
         <nav class="navbar navbar-expand-lg bg-white border-bottom shadow-sm">

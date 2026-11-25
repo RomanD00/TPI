@@ -110,6 +110,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Candidatos.aspx" />
+    <Content Include="Content\accesibilidad.css" />
+    <Content Include="Scripts\accesibilidad.js" />
+    <Content Include="Controles\Accesibilidad.ascx" />
     <Content Include="CrearCurriculum.aspx" />
     <Content Include="Login.aspx" />
     <Content Include="Logout.aspx" />
@@ -131,6 +134,13 @@
     </Compile>
     <Compile Include="Candidatos.aspx.designer.cs">
       <DependentUpon>Candidatos.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Controles\Accesibilidad.ascx.cs">
+      <DependentUpon>Accesibilidad.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controles\Accesibilidad.ascx.designer.cs">
+      <DependentUpon>Accesibilidad.ascx</DependentUpon>
     </Compile>
     <Compile Include="CrearCurriculum.aspx.cs">
       <DependentUpon>CrearCurriculum.aspx</DependentUpon>
@@ -240,6 +250,9 @@
       <Project>{1295cd0f-8f6f-4a19-b65f-292db61121f9}</Project>
       <Name>CVJoven.Negocio</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Fonts\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

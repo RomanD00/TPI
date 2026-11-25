@@ -1,5 +1,7 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="OfertasLaborales.aspx.cs" Inherits="CVJoven.OfertasLaborales" MaintainScrollPositionOnPostback="true" %>
-
+<%@ Register Src="~/Controles/Accesibilidad.ascx"
+    TagPrefix="uc"
+    TagName="Accesibilidad" %>
 <!DOCTYPE html>
 <html lang="es">
 <head runat="server">
@@ -24,6 +26,7 @@
 </head>
 <body class="bg-light text-dark">
     <form id="form1" runat="server">
+        <uc:Accesibilidad ID="Accesibilidad1" runat="server" />
 
         <!-- 1. CABECERA SUPERIOR -->
         <header class="bg-white border-bottom px-4 d-flex align-items-center justify-content-between" style="height: 70px;">

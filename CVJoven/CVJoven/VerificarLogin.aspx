@@ -1,5 +1,7 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="VerificarLogin.aspx.cs" Inherits="CVJoven.VerificarUsuario" %>
-
+<%@ Register Src="~/Controles/Accesibilidad.ascx"
+    TagPrefix="uc"
+    TagName="Accesibilidad" %>
 <!DOCTYPE html>
 <html lang="es">
 <head runat="server">
@@ -11,6 +13,8 @@
 </head>
 <body class="bg-light d-flex justify-content-center align-items-center vh-100">
     <form id="form1" runat="server" class="w-100">
+                <uc:Accesibilidad ID="Accesibilidad1" runat="server" />
+
         <div class="container d-flex justify-content-center">
             <div class="card border-0 shadow-sm p-4 p-md-5 rounded-4" style="max-width: 420px; width: 100%;">
                 

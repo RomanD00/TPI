@@ -1,5 +1,7 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Login.aspx.cs" Inherits="CVJoven.Login" %>
-
+<%@ Register Src="~/Controles/Accesibilidad.ascx"
+    TagPrefix="uc"
+    TagName="Accesibilidad" %>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
@@ -12,6 +14,9 @@
 </head>
 <body class="bg-light d-flex align-items-center" style="min-height: 100vh;">
     <form id="form1" runat="server" class="w-100">
+
+        <uc:Accesibilidad ID="Accesibilidad1" runat="server" />
+
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-5 col-lg-4">
@@ -73,5 +78,6 @@
             </div>
         </div>
     </form>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

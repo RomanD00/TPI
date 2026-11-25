@@ -1,5 +1,7 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="CrearCurriculum.aspx.cs" Inherits="CVJoven.CrearCurriculum" MaintainScrollPositionOnPostback="true" %>
-
+<%@ Register Src="~/Controles/Accesibilidad.ascx"
+    TagPrefix="uc"
+    TagName="Accesibilidad" %>
 <!DOCTYPE html>
 <html lang="es">
 <head runat="server">
@@ -11,6 +13,8 @@
 </head>
 <body class="bg-light">
     <form id="form1" runat="server">
+                <uc:Accesibilidad ID="Accesibilidad1" runat="server" />
+
         <nav class="navbar bg-white border-bottom shadow-sm">
             <div class="container-fluid px-4">
                 <a class="navbar-brand fw-bold text-primary" href="MisCurriculums.aspx">

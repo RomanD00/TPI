@@ -1,0 +1,67 @@
+﻿/* Tipografía para dislexia */
+@font-face {
+    font-family: 'OpenDyslexic';
+    src: url('../Fonts/OpenDyslexic-Bold.woff2') format('woff2');
+    font-display: swap;
+}
+
+/* Botón flotante */
+.boton-accesibilidad {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    z-index: 1030;
+}
+
+/* Tipografía personalizada */
+body.accesibilidad-tipografia
+:is(p, span, a, label, h1, h2, h3, h4, h5, h6, input, select, textarea, button, li, td, th) {
+    font-family: var(--fuente-accesible), sans-serif !important;
+}
+
+/* Interlineado personalizado */
+body.accesibilidad-interlineado
+:is(p, span, a, label, li, td, th, input, button, textarea, select, h1, h2, h3, h4, h5, h6) {
+    line-height: var(--interlineado-accesible) !important;
+}
+
+/* Espaciado entre letras */
+body.accesibilidad-espaciado {
+    letter-spacing: var(--espaciado-accesible);
+}
+
+    body.accesibilidad-espaciado
+    :is(input, button, select, textarea) {
+        letter-spacing: inherit;
+    }
+
+/* Alto contraste */
+body.alto-contraste,
+body.alto-contraste *:not(.modal-backdrop) {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+    border-color: #ffffff !important;
+}
+
+    body.alto-contraste a {
+        color: #ffff00 !important;
+        text-decoration: underline !important;
+    }
+
+    body.alto-contraste .btn-close {
+        filter: invert(1);
+    }
+
+/* Resaltar enlaces */
+body.enlaces-resaltados a {
+    background-color: #ffff00 !important;
+    color: #000000 !important;
+    text-decoration: underline !important;
+    font-weight: bold !important;
+}
+
+/* Indicador de foco para navegación por teclado */
+body.alto-contraste :focus-visible {
+    outline: 3px solid #ffff00 !important;
+    outline-offset: 3px;
+}

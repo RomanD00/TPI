@@ -1,5 +1,7 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="RegistroUsuarios.aspx.cs" Inherits="CVJoven.RegistroUsuarios" %>
-
+<%@ Register Src="~/Controles/Accesibilidad.ascx"
+    TagPrefix="uc"
+    TagName="Accesibilidad" %>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
@@ -11,7 +13,10 @@
 </head>
 <body class="bg-light d-flex align-items-center min-vh-100 py-4">
 
+
     <form id="form1" runat="server" class="w-100">
+                <uc:Accesibilidad ID="Accesibilidad1" runat="server" />
+
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-12 col-md-8 col-lg-6">

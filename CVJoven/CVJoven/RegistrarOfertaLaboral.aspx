@@ -1,6 +1,8 @@
 ﻿
 <%@ Page Language="C#" AutoEventWireup="true" CodeBehind="RegistrarOfertaLaboral.aspx.cs" Inherits="CVJoven.RegistrarOfertaLaboral" %>
-
+<%@ Register Src="~/Controles/Accesibilidad.ascx"
+    TagPrefix="uc"
+    TagName="Accesibilidad" %>
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -16,6 +18,8 @@
 <body class="bg-light d-flex align-items-center min-vh-100 py-4">
 
     <form id="form1" runat="server" class="w-100">
+                <uc:Accesibilidad ID="Accesibilidad1" runat="server" />
+
 
         <!-- BARRA SUPERIOR -->
 <nav class="navbar navbar-expand-lg bg-white border-bottom shadow-sm">
@@ -305,6 +309,7 @@
                     input.focus();
                 }
             </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
