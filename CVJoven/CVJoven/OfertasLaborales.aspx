@@ -146,7 +146,19 @@
                                                 AutoPostBack="true" OnSelectedIndexChanged="Filtros_SelectedIndexChanged">
                                             </asp:DropDownList>
                                         </div>
+                                        <!-- Acepta discapacidad -->
+                                        <div class="col-6 col-md-3">
+                                            <asp:DropDownList ID="ddlAceptaDiscapacidad" runat="server"
+                                                CssClass="form-select form-select-sm rounded-3 text-secondary"
+                                                AutoPostBack="true"
+                                                OnSelectedIndexChanged="Filtros_SelectedIndexChanged">
 
+                                                <asp:ListItem Value="" Text="Discapacidad"></asp:ListItem>
+                                                <asp:ListItem Value="1" Text="Acepta discapacidad: Sí"></asp:ListItem>
+                                                <asp:ListItem Value="0" Text="Acepta discapacidad: No"></asp:ListItem>
+
+                                            </asp:DropDownList>
+                                        </div>
                                         <!-- Limpiar filtros -->
                                         <div class="col-12 col-md-1 text-md-end">
                                             <asp:LinkButton ID="btnLimpiarFiltros" runat="server" CssClass="btn btn-outline-secondary btn-sm w-100 rounded-3"

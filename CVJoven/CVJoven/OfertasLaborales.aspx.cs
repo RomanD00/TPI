@@ -112,6 +112,7 @@ namespace CVJoven
                     ddlUbicacion.SelectedValue,
                     ddlTamanoEmpresa.SelectedValue,
                     ddlAreaInteres.SelectedValue,
+                    ddlAceptaDiscapacidad.SelectedValue,
                     SoloRecomendadas,
                     out totalRecomendadas,
                     out usuarioTieneHabilidades
@@ -153,7 +154,10 @@ namespace CVJoven
             ddlUbicacion.SelectedIndex = 0;
             ddlTamanoEmpresa.SelectedIndex = 0;
             ddlAreaInteres.SelectedIndex = 0;
+            ddlAceptaDiscapacidad.SelectedIndex = 0;
+
             SoloRecomendadas = false;
+
             CargarOfertas();
         }
 

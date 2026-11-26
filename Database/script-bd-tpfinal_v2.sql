@@ -228,4 +228,6 @@ ALTER TABLE OfertaLaboral
 ADD FechaPublicacion DATETIME NOT NULL
 DEFAULT GETDATE();
 
+ALTER TABLE Experiencia ALTER COLUMN Descripcion VARCHAR(1000);
+
 

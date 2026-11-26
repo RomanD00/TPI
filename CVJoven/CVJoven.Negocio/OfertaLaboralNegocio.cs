@@ -219,6 +219,7 @@ namespace CVJoven.Negocio
             string ubicacion,
             string tamanoEmpresa,
             string sector,
+            string filtroDiscapacidad,
             bool soloRecomendadas,
             out int totalRecomendadas,
             out bool usuarioTieneHabilidades)
@@ -352,6 +353,17 @@ namespace CVJoven.Negocio
                     fila["AceptaDiscapacidad"].ToString().Trim(),
                     "Sí",
                     StringComparison.OrdinalIgnoreCase);
+
+                // Filtro por aceptación de discapacidad
+                if (filtroDiscapacidad == "1" && !aceptaDiscapacidad)
+                {
+                    continue;
+                }
+
+                if (filtroDiscapacidad == "0" && aceptaDiscapacidad)
+                {
+                    continue;
+                }
 
                 bool coincideDiscapacidad = usuarioTieneDiscapacidad && aceptaDiscapacidad;
                 bool esRecomendada = coincidencias.Count > 0 || coincideDiscapacidad;

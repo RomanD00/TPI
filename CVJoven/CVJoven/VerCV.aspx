@@ -1,4 +1,7 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" %>
+<%@ Register Src="~/Controles/Accesibilidad.ascx"
+    TagPrefix="uc"
+    TagName="Accesibilidad" %>
 <%@ Import Namespace="System" %>
 <%@ Import Namespace="System.Collections.Generic" %>
 <%@ Import Namespace="System.Globalization" %>
@@ -472,6 +475,8 @@
 </head>
 <body>
     <form id="form1" runat="server">
+                <uc:Accesibilidad ID="Accesibilidad1" runat="server" />
+
         <!-- BARRA DE ACCIONES SUPERIOR -->
         <div class="container pt-4 no-imprimir" style="max-width: 860px;">
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 bg-white p-3 rounded-3 shadow-sm">
@@ -733,5 +738,7 @@
             }
         }
     </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

@@ -202,32 +202,7 @@
                                     </div>
                                 </div>
 
-                                <!-- Tarjeta 2: Seguridad -->
-                                <div class="card border-0 shadow-sm rounded-4">
-                                    <div class="card-body p-4">
-                                        <h5 class="fw-bold text-dark mb-1">Seguridad</h5>
-                                        <p class="text-muted small mb-4">Actualizá tu contraseña para mantener tu cuenta protegida.</p>
 
-                                        <div class="row g-3">
-                                            <div class="col-12 col-md-4">
-                                                <label for="<%= txtPasswordActual.ClientID %>" class="form-label fw-semibold text-secondary small">Contraseña actual</label>
-                                                <asp:TextBox ID="txtPasswordActual" runat="server" TextMode="Password" CssClass="form-control rounded-3" placeholder="••••••••"></asp:TextBox>
-                                            </div>
-                                            <div class="col-12 col-md-4">
-                                                <label for="<%= txtPasswordNueva.ClientID %>" class="form-label fw-semibold text-secondary small">Nueva contraseña</label>
-                                                <asp:TextBox ID="txtPasswordNueva" runat="server" TextMode="Password" CssClass="form-control rounded-3" placeholder="••••••••"></asp:TextBox>
-                                            </div>
-                                            <div class="col-12 col-md-4">
-                                                <label for="<%= txtPasswordRepetir.ClientID %>" class="form-label fw-semibold text-secondary small">Repetir nueva contraseña</label>
-                                                <asp:TextBox ID="txtPasswordRepetir" runat="server" TextMode="Password" CssClass="form-control rounded-3" placeholder="••••••••"></asp:TextBox>
-                                            </div>
-                                        </div>
-
-                                        <div class="d-flex justify-content-end mt-4 pt-3 border-top">
-                                            <asp:Button ID="btnCambiarPassword" runat="server" Text="Actualizar contraseña" CssClass="btn btn-outline-primary rounded-3 px-4 fw-semibold" ValidationGroup="PasswordGroup" OnClick="btnCambiarPassword_Click" />
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
